@@ -1,3 +1,4 @@
+using EduFlowHub.Persistence.Configurations;
 using FileInfo = System.IO.FileInfo;
 
 namespace EduFlowHub.Persistence.DbContexts;
@@ -16,4 +17,16 @@ public class EducationDbContext
     public DbSet<FileInfo>  FileInfos { get; set; }
     public DbSet<LessonMaterial>  LessonMaterials { get; set; }
     public DbSet<User> Users { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder builder)
+    {
+        builder.ApplyConfiguration(new CourseConfiguration());
+        builder.ApplyConfiguration(new CourseCategoryConfiguration());
+        builder.ApplyConfiguration(new CourseEnrollmentConfiguration());
+        builder.ApplyConfiguration(new FileInfoConfiguration());
+        builder.ApplyConfiguration(new LessonMaterialConfiguration());
+        builder.ApplyConfiguration(new UserConfiguration());
+        
+        base.OnModelCreating(builder);
+    }
 }
