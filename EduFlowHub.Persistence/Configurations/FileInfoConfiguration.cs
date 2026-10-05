@@ -1,27 +1,25 @@
-using FileInfo = EduFlowHub.Domain.Entities.FileInfo;
-
 namespace EduFlowHub.Persistence.Configurations;
 
-public class FileInfoConfiguration
-    : IEntityTypeConfiguration<FileInfo>
+public class FileMetadataConfiguration
+    : IEntityTypeConfiguration<FileMetadata>
 {
 
-    public void Configure(EntityTypeBuilder<FileInfo> builder)
+    public void Configure(EntityTypeBuilder<FileMetadata> builder)
     {
-        builder.HasKey(fileInfo => fileInfo.Id);
+        builder.HasKey(fileMetadata  => fileMetadata.Id);
         
-        builder.Property(fileInfo => fileInfo.Path)
+        builder.Property(fileMetadata => fileMetadata.Path)
             .HasMaxLength(256)
             .IsRequired();
         
-        builder.Property(fileInfo => fileInfo.Extension)
+        builder.Property(fileMetadata => fileMetadata.Extension)
             .HasMaxLength(16)
             .IsRequired();
         
-        builder.Property(fileInfo => fileInfo.Size)
+        builder.Property(fileMetadata => fileMetadata.Size)
             .IsRequired();
         
-        builder.HasIndex(fileInfo => fileInfo.Path)
+        builder.HasIndex(fileMetadata => fileMetadata.Path)
             .IsUnique();
     }
 }
