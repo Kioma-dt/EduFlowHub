@@ -12,6 +12,10 @@ public class UserConfiguration
             .HasMaxLength(256)
             .IsRequired();
         
+        builder.Property(user => user.Role)
+            .HasConversion<string>()
+            .IsRequired();
+        
         builder.Property(user => user.PasswordHash)
             .HasMaxLength(256)
             .IsRequired();
