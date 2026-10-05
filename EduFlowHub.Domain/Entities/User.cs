@@ -1,9 +1,10 @@
+using EduFlowHub.Domain.Entities.Abstractions;
+
 namespace EduFlowHub.Domain.Entities;
 
 public class User
+    : Entity
 {
-    public Guid Id { get; set; }
-    
     public string Name { get; set; } = null!;
     public string PasswordHash { get; set; } = null!;
     

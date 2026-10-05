@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduFlowHub.Domain", "EduFlo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduFlowHub.Persistence", "EduFlowHub.Persistence\EduFlowHub.Persistence.csproj", "{DE72BC23-C6CF-464D-9C6C-F96A6BCCA28B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduFlowHub.Application", "EduFlowHub.Application\EduFlowHub.Application.csproj", "{0FBD83EA-A778-44E8-BF67-89D9E3906554}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{DE72BC23-C6CF-464D-9C6C-F96A6BCCA28B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DE72BC23-C6CF-464D-9C6C-F96A6BCCA28B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DE72BC23-C6CF-464D-9C6C-F96A6BCCA28B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0FBD83EA-A778-44E8-BF67-89D9E3906554}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0FBD83EA-A778-44E8-BF67-89D9E3906554}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0FBD83EA-A778-44E8-BF67-89D9E3906554}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0FBD83EA-A778-44E8-BF67-89D9E3906554}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

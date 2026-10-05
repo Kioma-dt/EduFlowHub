@@ -1,8 +1,10 @@
+using EduFlowHub.Domain.Entities.Abstractions;
+
 namespace EduFlowHub.Domain.Entities;
 
 public class Course
+    : Entity
 {
-    public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public decimal Price { get; set; }

@@ -1,8 +1,10 @@
+using EduFlowHub.Domain.Entities.Abstractions;
+
 namespace EduFlowHub.Domain.Entities;
 
 public class LessonMaterial
+    : Entity
 {
-    public Guid Id { get; set; }
     public string Title { get; set; } = null!;
     public int OrderNumber { get; set; }
     public MaterialType  Type { get; set; }
