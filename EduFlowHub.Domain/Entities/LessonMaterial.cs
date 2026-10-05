@@ -9,8 +9,8 @@ public class LessonMaterial
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     public Guid CourseId { get; set; }
-    public Guid FileInfoId { get; set; }
+    public Guid FileMetadataId { get; set; }
     
     public Course? Course { get; set; }
-    public FileInfo? FileInfo { get; set; }
+    public FileMetadata? FileMetadata { get; set; }
 }

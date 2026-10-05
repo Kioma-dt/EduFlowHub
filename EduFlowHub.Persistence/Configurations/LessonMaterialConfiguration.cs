@@ -27,9 +27,9 @@ public class LessonMaterialConfiguration
             .HasForeignKey(lessonMaterial => lessonMaterial.CourseId)
             .OnDelete(DeleteBehavior.Restrict);
         
-        builder.HasOne(lessonMaterial => lessonMaterial.FileInfo)
+        builder.HasOne(lessonMaterial => lessonMaterial.FileMetadata)
             .WithMany()
-            .HasForeignKey(lessonMaterial => lessonMaterial.FileInfoId)
+            .HasForeignKey(lessonMaterial => lessonMaterial.FileMetadataId)
             .OnDelete(DeleteBehavior.Restrict);
 
         builder.HasIndex(lessonMaterial

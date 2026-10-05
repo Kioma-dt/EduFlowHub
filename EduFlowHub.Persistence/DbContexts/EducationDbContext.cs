@@ -14,7 +14,7 @@ public class EducationDbContext
     public DbSet<Course> Courses { get; set; }
     public DbSet<CourseCategory>  CourseCategories { get; set; }
     public DbSet<CourseEnrollment>  CourseEnrollments { get; set; }
-    public DbSet<FileInfo>  FileInfos { get; set; }
+    public DbSet<FileMetadata>  FileMetadata { get; set; }
     public DbSet<LessonMaterial>  LessonMaterials { get; set; }
     public DbSet<User> Users { get; set; }
 
@@ -23,7 +23,7 @@ public class EducationDbContext
         builder.ApplyConfiguration(new CourseConfiguration());
         builder.ApplyConfiguration(new CourseCategoryConfiguration());
         builder.ApplyConfiguration(new CourseEnrollmentConfiguration());
-        builder.ApplyConfiguration(new FileInfoConfiguration());
+        builder.ApplyConfiguration(new FileMetadataConfiguration());
         builder.ApplyConfiguration(new LessonMaterialConfiguration());
         builder.ApplyConfiguration(new UserConfiguration());
         

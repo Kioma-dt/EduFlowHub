@@ -1,6 +1,6 @@
 namespace EduFlowHub.Domain.Entities;
 
-public class FileInfo
+public class FileMetadata
 {
     public Guid Id { get; set; }
     public string Path { get; set; } = null!;
