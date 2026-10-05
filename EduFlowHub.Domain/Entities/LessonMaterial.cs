@@ -10,4 +10,7 @@ public class LessonMaterial
     
     public Guid CourseId { get; set; }
     public Guid FileInfoId { get; set; }
+    
+    public Course? Course { get; set; }
+    public FileInfo? FileInfo { get; set; }
 }
