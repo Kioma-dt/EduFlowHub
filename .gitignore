@@ -37,7 +37,8 @@ ScaffoldingReadMe.txt
 *.snupkg
 
 # dotenv environment variables file
-.env
+.env*
+!.env.example
 
 # Others
 ~$*
