@@ -6,7 +6,7 @@ public class LessonMaterial
     public string Title { get; set; } = null!;
     public int OrderNumber { get; set; }
     public MaterialType  Type { get; set; }
-    public DateTime CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     
     public Guid CourseId { get; set; }
     public Guid FileInfoId { get; set; }
