@@ -14,12 +14,4 @@
       <PackageReference Include="MediatR" Version="14.2.0" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Features\CourseCategory\Commands\Delete\" />
-      <Folder Include="Features\CourseCategory\Commands\Update\" />
-      <Folder Include="Features\CourseCategory\Dtos\" />
-      <Folder Include="Features\CourseCategory\Queries\Get\" />
-      <Folder Include="Features\CourseCategory\Queries\List\" />
-    </ItemGroup>
-
 </Project>
