@@ -5,8 +5,8 @@ namespace EduFlowHub.Persistence.Repositories;
 public class CourseEnrollmentRepository
     : ICourseEnrollmentRepository
 {
-    DbContext _dbContext;
-    DbSet<CourseEnrollment> _courseEnrollments;
+    private readonly DbContext _dbContext;
+    private readonly DbSet<CourseEnrollment> _courseEnrollments;
 
     public CourseEnrollmentRepository(DbContext dbContext)
     {
