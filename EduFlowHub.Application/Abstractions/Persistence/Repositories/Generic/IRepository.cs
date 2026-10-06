@@ -7,8 +7,8 @@ public interface IRepository<T>
     where T : Entity
 {
     public Task<IEnumerable<T>> GetAllAsync(
-        Expression<Func<T, bool>>? filer = null,
-        Func<IQueryable<Entity>, IOrderedQueryable<Entity>>? orderBy = null,
+        Expression<Func<T, bool>>? filter = null,
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
         params string[] includeProperties);
     
     public Task<T?> GetByIdAsync(

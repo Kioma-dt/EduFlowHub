@@ -17,6 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\EduFlowHub.Application\EduFlowHub.Application.csproj" />
       <ProjectReference Include="..\EduFlowHub.Domain\EduFlowHub.Domain.csproj" />
     </ItemGroup>
 
