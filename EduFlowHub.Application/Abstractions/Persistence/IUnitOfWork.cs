@@ -10,6 +10,6 @@ public interface IUnitOfWork
     public IFileMetadataRepository   FileMetadataRepository { get; }
     public ILessonMaterialRepository   LessonMaterialRepository { get; }
     public IUserRepository UserRepository { get; }
-    
+
     public Task SaveAsync();
 }
