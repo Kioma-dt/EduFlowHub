@@ -21,10 +21,12 @@ public class UserConfiguration
             .IsRequired();
         
         builder.Property(user => user.FirstName)
-            .HasMaxLength(256);
+            .HasMaxLength(256)
+            .IsRequired();
         
         builder.Property(user => user.LastName)
-            .HasMaxLength(256);
+            .HasMaxLength(256)
+            .IsRequired();
 
         builder.Property(user => user.Email)
             .HasMaxLength(256);
