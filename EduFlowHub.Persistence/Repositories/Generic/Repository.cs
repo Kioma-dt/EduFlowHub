@@ -4,14 +4,14 @@ using EduFlowHub.Domain.Entities.Abstractions;
 
 namespace EduFlowHub.Persistence.Repositories.Generic;
 
-public class Repository<T>
+public abstract class Repository<T>
     : IRepository<T>
     where T : Entity
 {
-    readonly DbContext _dbContext;
-    readonly DbSet<T> _dbSet;
+    private readonly DbContext _dbContext;
+    private readonly DbSet<T> _dbSet;
     
-    public Repository(DbContext dbContext)
+    protected Repository(DbContext dbContext)
     {
         _dbContext = dbContext;
         _dbSet = _dbContext.Set<T>();
