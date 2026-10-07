@@ -6,14 +6,14 @@ public class CourseEnrollmentConfiguration
     public void Configure(EntityTypeBuilder<CourseEnrollment> builder)
     {
         builder.HasKey(courseEnrollment => 
-            new { courseEnrollment.CourseId, courseEnrollment.UserId });
+            new { courseEnrollment.CourseId, courseEnrollment.StudentId });
 
         builder.HasOne(courseEnrollment => courseEnrollment.Course)
             .WithMany()
             .HasForeignKey(courseEnrollment => courseEnrollment.CourseId);
         
-        builder.HasOne(courseEnrollment => courseEnrollment.User)
+        builder.HasOne(courseEnrollment => courseEnrollment.Student)
             .WithMany()
-            .HasForeignKey(courseEnrollment => courseEnrollment.UserId);
+            .HasForeignKey(courseEnrollment => courseEnrollment.StudentId);
     }
 }
