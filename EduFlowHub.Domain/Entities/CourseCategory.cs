@@ -1,3 +1,4 @@
+using System.Text.RegularExpressions;
 using EduFlowHub.Domain.Entities.Abstractions;
 
 namespace EduFlowHub.Domain.Entities;
@@ -5,8 +6,44 @@ namespace EduFlowHub.Domain.Entities;
 public class CourseCategory
     : Entity
 {
-    public string Name { get; set; } = null!;
-    public string NormalizedName { get; set; } = null!;
+    private readonly List<Course> _courses = new();
+
+    public CourseCategory()
+    {
+    }
     
-    public IReadOnlyCollection<Course> Courses { get; set; } = new List<Course>();
+    public CourseCategory(string name)
+    {
+        Name = ValidateName(name);
+        NormalizedName = NormalizeName(Name);
+    }
+    
+    public string Name { get; private set; } = null!;
+    public string NormalizedName { get; private set; } = null!;
+    
+    public IReadOnlyCollection<Course> Courses  => _courses.AsReadOnly();
+
+    public void UpdateDetails(string name)
+    {
+        Name = ValidateName(name);
+        NormalizedName = NormalizeName(Name);
+    }
+    
+    private string ValidateName(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new DomainValidationException("Course description cannot be empty");
+        }
+        
+        return name.Trim();
+    }
+    
+    private string NormalizeName(string name)
+    {
+        return Regex.Replace(
+            name.Trim().ToLowerInvariant(),
+            @"\s+",
+            "-");
+    }
 }
