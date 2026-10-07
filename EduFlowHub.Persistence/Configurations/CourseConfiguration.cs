@@ -40,6 +40,6 @@ public class CourseConfiguration
         
         builder.ToTable(table => table.HasCheckConstraint(
             "CK_Course_Price_Positive",
-            "\"Price\" > 0"));
+            "\"Price\" >= 0"));
     }
 }
