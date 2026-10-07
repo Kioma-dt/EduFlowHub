@@ -30,7 +30,10 @@ public class GetCourseByIdHandler
 
         if (course is null)
         {
-            throw new EntityNotFoundException("Course", request.CourseId);
+            throw new EntityNotFoundException(
+                "Course",
+                "Id",
+                request.CourseId.ToString());
         }
         
         return _mapper.Map<CourseDto>(course);

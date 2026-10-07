@@ -5,5 +5,5 @@ namespace EduFlowHub.Application.Abstractions.Persistence.Repositories;
 public interface ICourseCategoryRepository
     : IRepository<CourseCategory>
 {
-    
+    Task<CourseCategory?> GetByNormalizedNameAsync(string normalizedName);
 }
