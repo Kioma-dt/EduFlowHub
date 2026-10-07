@@ -39,14 +39,12 @@ public class CreateCourseHandler
             throw new InvalidEntityReferenceException("Category", request.CategoryId);
         }
 
-        var course = new Domain.Entities.Course()
-        {
-            Title = request.Title,
-            Description = request.Description,
-            Price = request.Price,
-            AuthorId = request.AuthorId,
-            CategoryId = request.CategoryId
-        };
+        var course = new Domain.Entities.Course(
+            request.Title,
+            request.Description,
+            request.Price,
+            request.AuthorId,
+            request.CategoryId);
         
         await _unitOfWork
             .CourseRepository
