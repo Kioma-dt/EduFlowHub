@@ -17,7 +17,7 @@ public class CourseEnrollmentRepository
     public async Task<bool> ExistsAsync(Guid studentId, Guid courseId)
     {
         return await _courseEnrollments.AnyAsync(enrollment => 
-            enrollment.UserId.Equals(studentId) 
+            enrollment.StudentId.Equals(studentId) 
             && enrollment.CourseId.Equals(courseId));
     }
 
@@ -40,7 +40,7 @@ public class CourseEnrollmentRepository
     public async Task DeleteAsync(Guid studentId, Guid courseId)
     {
         CourseEnrollment? courseEnrollment = await _courseEnrollments.FirstOrDefaultAsync(enrollment => 
-                enrollment.UserId.Equals(studentId) 
+                enrollment.StudentId.Equals(studentId) 
                && enrollment.CourseId.Equals(courseId));
 
         if (courseEnrollment is not null)
