@@ -1,3 +1,6 @@
+using EduFlowHub.Application.Features.CourseCategory.Dtos;
+using EduFlowHub.Application.Features.User.Dtos;
+
 namespace EduFlowHub.Application.Features.Course.Dtos;
 
 public sealed record CourseDto(
@@ -6,5 +9,5 @@ public sealed record CourseDto(
     string Description,
     decimal Price,
     CourseStatus Status,
-    string AuthorName,
-    string CategoryName);
+    UserDto Author,
+    CourseCategoryDto Category);
