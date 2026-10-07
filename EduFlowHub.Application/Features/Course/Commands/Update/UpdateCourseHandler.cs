@@ -69,6 +69,14 @@ public class UpdateCourseHandler
             .UpdateAsync(course);
 
         await _unitOfWork.SaveAsync();
-        return _mapper.Map<CourseDto>(course);
+        
+        Domain.Entities.Course courseWithNavigations = await _unitOfWork
+            .CourseRepository
+            .GetByIdAsync(
+                course.Id,
+                course => course.Author,
+                course => course.Category);
+        
+        return _mapper.Map<CourseDto>(courseWithNavigations);
     }
 }
