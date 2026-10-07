@@ -1,6 +1,6 @@
 using EduFlowHub.Application.Features.Course.Dtos;
 
-namespace EduFlowHub.Application.Features.Course.Queries.List;
+namespace EduFlowHub.Application.Features.Course.Queries.ListAll;
 
 public sealed record ListAllCoursesQuery()
     : IRequest<IEnumerable<CourseDto>>;
