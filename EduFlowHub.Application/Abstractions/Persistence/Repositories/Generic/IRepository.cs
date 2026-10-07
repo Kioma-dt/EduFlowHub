@@ -9,11 +9,11 @@ public interface IRepository<T>
     public Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
-        params string[] includeProperties);
+        params Expression<Func<T, object>>[] includes);
     
     public Task<T?> GetByIdAsync(
         Guid id,
-        params string[] includeProperties);
+        params Expression<Func<T, object>>[] includes);
     
     public Task InsertAsync(T entity);
     public Task UpdateAsync(T entity);

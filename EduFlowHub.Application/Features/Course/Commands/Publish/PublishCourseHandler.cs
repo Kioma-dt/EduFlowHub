@@ -23,7 +23,10 @@ public class PublishCourseHandler
     {
         var course = await _unitOfWork
             .CourseRepository
-            .GetByIdAsync(request.CourseId);
+            .GetByIdAsync(
+                request.CourseId,
+                course => course.Author,
+                course => course.Category);
 
         if (course is null)
         {

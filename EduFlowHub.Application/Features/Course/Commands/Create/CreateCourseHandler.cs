@@ -50,7 +50,14 @@ public class CreateCourseHandler
             .CourseRepository
             .InsertAsync(course);
         await _unitOfWork.SaveAsync();
+        
+        Domain.Entities.Course courseWithNavigations = await _unitOfWork
+            .CourseRepository
+            .GetByIdAsync(
+                course.Id,
+                course => course.Author,
+                course => course.Category);
 
-        return _mapper.Map<CourseDto>(course);
+        return _mapper.Map<CourseDto>(courseWithNavigations);
     }
 }
