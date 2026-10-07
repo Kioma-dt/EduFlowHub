@@ -30,10 +30,10 @@ public class UpdateCourseHandler
             throw new EntityNotFoundException("Course", request.CourseId);
         }
         
-        course.Title = request.Title ?? course.Title;
-        course.Description = request.Description ?? course.Description;
-        course.Price = request.Price ?? course.Price;
-        course.Status = request.Status ?? course.Status;
+        course.UpdateDetails(
+            request.Title ?? course.Title,
+            request.Description  ?? course.Description,
+            request.Price ??  course.Price);
 
         if (request.AuthorId.HasValue)
         {
@@ -46,7 +46,7 @@ public class UpdateCourseHandler
                 throw new InvalidEntityReferenceException("User", request.AuthorId.Value);
             }
             
-            course.AuthorId = request.AuthorId.Value;
+            course.ChangeAuthor(request.AuthorId.Value);
         }
 
         if (request.CategoryId.HasValue)
@@ -60,7 +60,7 @@ public class UpdateCourseHandler
                 throw new InvalidEntityReferenceException("Category", request.CategoryId.Value);
             }
             
-            course.CategoryId = request.CategoryId.Value;
+            course.ChangeCategory(request.CategoryId.Value);
         }
         
 

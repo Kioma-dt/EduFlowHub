@@ -5,60 +5,63 @@ namespace EduFlowHub.Domain.Entities;
 public class Course
     : Entity
 {
-    private string _title = null!;
-    private string _description = null!;
-    private decimal _price;
-
     private readonly List<LessonMaterial> _lessonMaterials = new();
 
-    public string Title
+    public Course()
     {
-        get => _title;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new DomainValidationException("Course title cannot be empty");
-            }
-            _title = value;
-        }
     }
 
-    public string Description
+    public Course(
+        string title,
+        string description,
+        decimal price,
+        Guid authorId,
+        Guid categoryId
+    )
     {
-        get => _description;
-        set
-        {
-            if (string.IsNullOrWhiteSpace(value))
-            {
-                throw new DomainValidationException("Course description cannot be empty");
-            }
-            _description = value;
-        }
+        Title = ValidateTitle(title);
+        Description = ValidateDescription(description);
+        Price = ValidatePrice(price);
+        Status = CourseStatus.Draft;
+        AuthorId = ValidateAuthorId(authorId);
+        CategoryId = ValidateCategory(categoryId);
     }
+    
+    public string Title { get; private set; } = null!;
 
-    public decimal Price
-    {
-        get => _price;
-        set
-        {
-            if (value < 0)
-            {
-                throw new DomainValidationException("Course price cannot be negative");
-            }
-            _price = value;
-        }
-    }
+    public string Description { get; private set; } = null!;
+
+    public decimal Price {get; private set;}
+
+    public CourseStatus Status { get; private set; }
     
-    public CourseStatus Status { get; set; }
-    
-    public Guid AuthorId { get; set; }
-    public Guid CategoryId { get; set; }
+    public Guid AuthorId { get; private set; }
+    public Guid CategoryId { get; private set; }
     
     public User? Author { get; private set; }
     public CourseCategory? Category { get; private set; }
 
-    public IReadOnlyCollection<LessonMaterial> LessonMaterials => _lessonMaterials;
+    public IReadOnlyCollection<LessonMaterial> LessonMaterials => _lessonMaterials.AsReadOnly();
+
+    public void UpdateDetails(
+        string title,
+        string description,
+        decimal price)
+    {
+        Title = ValidateTitle(title);
+        Description = ValidateDescription(description);
+        Price = ValidatePrice(price);
+    }
+
+    public void ChangeAuthor(Guid authorId)
+    {
+        AuthorId = ValidateAuthorId(authorId);
+    }
+
+    public void ChangeCategory(Guid categoryId)
+    {
+        CategoryId = ValidateCategory(categoryId);
+    }
 
     public void Archive()
     {
@@ -78,5 +81,55 @@ public class Course
         }
         
         Status = CourseStatus.Published;
+    }
+    
+    private string ValidateTitle(string title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            throw new DomainValidationException("Course title cannot be empty");
+        }
+        
+        return title.Trim();
+    }
+    
+    private string ValidateDescription(string description)
+    {
+        if (string.IsNullOrWhiteSpace(description))
+        {
+            throw new DomainValidationException("Course description cannot be empty");
+        }
+        
+        return description.Trim();
+    }
+
+    private decimal ValidatePrice(decimal price)
+    {
+        if (price < 0)
+        {
+            throw new DomainValidationException("Course price cannot be negative");
+        }
+
+        return price;
+    }
+
+    private Guid ValidateAuthorId(Guid authorId)
+    {
+        if (authorId == Guid.Empty)
+        {
+            throw new DomainValidationException("Author id cannot be empty");
+        }
+
+        return authorId;
+    }
+    
+    private Guid ValidateCategory(Guid categoryId)
+    {
+        if (categoryId == Guid.Empty)
+        {
+            throw new DomainValidationException("Category id cannot be empty");
+        }
+
+        return categoryId;
     }
 }
