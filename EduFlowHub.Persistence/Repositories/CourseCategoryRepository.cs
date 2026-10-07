@@ -12,4 +12,9 @@ public class CourseCategoryRepository
         : base(dbContext)
     {
     }
+
+    public async Task<CourseCategory?> GetByNormalizedNameAsync(string normalizedName)
+    {
+        return _dbSet.FirstOrDefault(category => category.NormalizedName == normalizedName);
+    }
 }

@@ -31,7 +31,10 @@ public class ArchiveCourseHandler
 
         if (course is null)
         {
-            throw new EntityNotFoundException("Course", request.CourseId);
+            throw new EntityNotFoundException(
+                "Course",
+                "Id",
+                request.CourseId.ToString());
         }
         
         course.Archive();
