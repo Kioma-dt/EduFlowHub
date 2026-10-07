@@ -8,8 +8,8 @@ public abstract class Repository<T>
     : IRepository<T>
     where T : Entity
 {
-    private readonly DbContext _dbContext;
-    private readonly DbSet<T> _dbSet;
+    protected readonly DbContext _dbContext;
+    protected readonly DbSet<T> _dbSet;
     
     protected Repository(DbContext dbContext)
     {
@@ -19,8 +19,8 @@ public abstract class Repository<T>
     
     public virtual async Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null,
-        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null, 
-        params string[] includeProperties)
+        Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = _dbSet;
 
@@ -29,9 +29,9 @@ public abstract class Repository<T>
             query = query.Where(filter);
         }
 
-        foreach (var includeProperty in includeProperties)
+        foreach (var include in includes)
         {
-            query = query.Include(includeProperty);
+            query = query.Include(include);
         }
 
         if (orderBy is not null)
@@ -45,16 +45,16 @@ public abstract class Repository<T>
     }
 
     public virtual async Task<T?> GetByIdAsync(
-        Guid id, 
-        params string[] includeProperties)
+        Guid id,
+        params Expression<Func<T, object>>[] includes)
     {
         IQueryable<T> query = _dbSet;
-
-        foreach (var includeProperty in includeProperties)
+        
+        foreach (var include in includes)
         {
-            query = query.Include(includeProperty);
+            query = query.Include(include);
         }
-
+        
         return await query.FirstOrDefaultAsync(entity => id.Equals(entity.Id));
     }
 

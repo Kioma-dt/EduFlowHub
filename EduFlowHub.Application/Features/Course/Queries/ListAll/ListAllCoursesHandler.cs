@@ -23,7 +23,10 @@ public class ListAllCoursesHandler
     {
         var courses = await _unitOfWork
             .CourseRepository
-            .GetAllAsync();
+            .GetAllAsync(null,
+                null,
+                course => course.Author,
+                course => course.Category);
         
         return _mapper.Map<List<CourseDto>>(courses);
     }
