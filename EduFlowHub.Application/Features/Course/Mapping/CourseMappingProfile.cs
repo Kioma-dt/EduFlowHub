@@ -7,10 +7,6 @@ public class CourseMappingProfile
 {
     public  CourseMappingProfile()
     {
-        CreateMap<Domain.Entities.Course, CourseDto>()
-            .ForMember(dest => dest.AuthorName, 
-                opt => opt.MapFrom(src => src.Author.Name))
-            .ForMember(dest => dest.CategoryName,
-                opt => opt.MapFrom(src => src.Category.Name));
+        CreateMap<Domain.Entities.Course, CourseDto>();
     }
 }
