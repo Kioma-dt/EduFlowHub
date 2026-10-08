@@ -12,4 +12,9 @@ public class UserRepository
         : base(dbContext)
     {
     }
+
+    public async Task<User?> GetByNameAsync(string name)
+    {
+        return await _dbSet.FirstOrDefaultAsync(u => u.Name == name);
+    }
 }

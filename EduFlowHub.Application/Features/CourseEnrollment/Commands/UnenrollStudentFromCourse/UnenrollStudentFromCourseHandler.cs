@@ -17,11 +17,12 @@ public class UnenrollStudentFromCourseHandler
         UnenrollStudentFromCourseCommand request, 
         CancellationToken cancellationToken)
     {
-        if (!await _unitOfWork
-                .CourseEnrollmentRepository
-                .ExistsAsync(
-                    request.StudentId,
-                    request.CourseId))
+        var courseEnrollment = await _unitOfWork
+            .CourseEnrollmentRepository
+            .GetByIdAsync(
+                request.StudentId,
+                request.CourseId);
+        if (courseEnrollment is null)
         {
             throw new EntityNotFoundException(
                 "CourseEnrollment",
@@ -31,7 +32,7 @@ public class UnenrollStudentFromCourseHandler
         }
         await _unitOfWork
             .CourseEnrollmentRepository
-            .DeleteAsync(request.StudentId, request.CourseId);
+            .DeleteAsync(courseEnrollment);
         await _unitOfWork.SaveAsync();
     }
 }
