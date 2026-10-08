@@ -31,7 +31,7 @@ public class UserConfiguration
         builder.Property(user => user.Email)
             .HasMaxLength(256);
         
-        builder.Property(user => user.Phone)
+        builder.Property(user => user.PhoneNumber)
             .HasMaxLength(256);
 
         builder.HasIndex(user => user.Name)
