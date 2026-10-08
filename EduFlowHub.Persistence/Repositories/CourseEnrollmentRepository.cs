@@ -14,11 +14,18 @@ public class CourseEnrollmentRepository
         _courseEnrollments = dbContext.Set<CourseEnrollment>();
     }
     
-    public async Task<bool> ExistsAsync(Guid studentId, Guid courseId)
+    public async Task<CourseEnrollment?> GetByIdAsync(
+        Guid studentId, 
+        Guid courseId)
     {
-        return await _courseEnrollments.AnyAsync(enrollment => 
+        return await _courseEnrollments.FirstOrDefaultAsync(enrollment => 
             enrollment.StudentId.Equals(studentId) 
             && enrollment.CourseId.Equals(courseId));
+    }
+
+    public async Task<IEnumerable<CourseEnrollment>> GetAllAsync()
+    {
+        return await _courseEnrollments.ToListAsync();
     }
 
     public Task InsertAsync(CourseEnrollment courseEnrollment)
