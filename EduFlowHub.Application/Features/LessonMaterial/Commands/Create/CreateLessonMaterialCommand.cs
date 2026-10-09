@@ -5,5 +5,7 @@ namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Create;
 public sealed record CreateLessonMaterialCommand(
     string Title,
     int OrderNumber,
-    Stream FileStream)
+    Stream FileStream,
+    string FileExtension,
+    Guid CourseId)
     : IRequest<LessonMaterialDto>;

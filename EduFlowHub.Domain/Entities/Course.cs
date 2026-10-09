@@ -83,6 +83,9 @@ public class Course
         Status = CourseStatus.Published;
     }
     
+    public int GetNextLessonMaterialOrder() =>
+        _lessonMaterials.Count == 0 ? 1 : _lessonMaterials.Max(material => material.OrderNumber) + 1;
+    
     private string ValidateTitle(string title)
     {
         if (string.IsNullOrWhiteSpace(title))

@@ -2,7 +2,7 @@ namespace EduFlowHub.Application.Abstractions.Services;
 
 public interface IFileStorage
 {
-    Task<string> Upload(Stream file, string extension);
-    Task<Stream> Download(string filePath);
-    Task<bool> Delete(string filePath);
+    Task<string> UploadAsync(Stream file, string extension);
+    Task<Stream> DownloadAsync(string filePath);
+    Task<bool> DeleteAsync(string filePath);
 }

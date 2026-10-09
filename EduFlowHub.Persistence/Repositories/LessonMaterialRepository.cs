@@ -12,4 +12,16 @@ public class LessonMaterialRepository
         : base(dbContext)
     {
     }
+
+    public async Task<LessonMaterial?> GetByCourseAndOrderNumberAsync(
+        Guid courseId, 
+        int orderNumber)
+    {
+        return await _dbSet
+            .Include(lessonMaterial => lessonMaterial.Course)
+            .Include(lessonMaterial => lessonMaterial.FileMetadata)
+            .FirstOrDefaultAsync(lessonMaterial 
+                => lessonMaterial.CourseId == courseId
+                   && lessonMaterial.OrderNumber == orderNumber);
+    }
 }
