@@ -21,7 +21,7 @@ public class ChangeUserRoleCommandHandler
         ChangeUserRoleCommand request, 
         CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork
+        Domain.Entities.User?  user = await _unitOfWork
             .UserRepository
             .GetByIdAsync(request.UserId);
 

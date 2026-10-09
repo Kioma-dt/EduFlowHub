@@ -2,7 +2,7 @@ namespace EduFlowHub.Domain.Entities;
 
 public class CourseEnrollment
 {
-    public CourseEnrollment()
+    private CourseEnrollment()
     {
     }
 

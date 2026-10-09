@@ -8,7 +8,7 @@ public class CourseCategory
 {
     private readonly List<Course> _courses = new();
 
-    public CourseCategory()
+    private CourseCategory()
     {
     }
     

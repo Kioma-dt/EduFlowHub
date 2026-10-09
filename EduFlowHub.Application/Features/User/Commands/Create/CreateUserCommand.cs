@@ -11,7 +11,5 @@ public sealed record CreateUserCommand(
     string Password,
     UserRole Role,
     string FirstName,
-    string LastName,
-    string? Email,
-    string? Phone)
+    string LastName)
     : IRequest<UserDto>;
