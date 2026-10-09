@@ -21,7 +21,7 @@ public class ChangeUserNameHandler
         ChangeUserNameCommand request, 
         CancellationToken cancellationToken)
     {
-        var user = await _unitOfWork
+        Domain.Entities.User? user = await _unitOfWork
             .UserRepository
             .GetByIdAsync(request.UserId);
 
@@ -32,7 +32,7 @@ public class ChangeUserNameHandler
                 request.UserId.ToString());
         }
         
-        var userDb = await _unitOfWork
+        Domain.Entities.User?  userDb = await _unitOfWork
             .UserRepository
             .GetByNameAsync(request.UserName);
         

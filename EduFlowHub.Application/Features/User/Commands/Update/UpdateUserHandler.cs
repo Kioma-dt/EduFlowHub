@@ -34,9 +34,7 @@ public class UpdateUserHandler
         
         user.UpdateDetails(
             request.FirstName ?? user.FirstName,
-            request.LastName ?? user.LastName,
-            request.Email ?? user.Email,
-            request.PhoneNumber ?? user.PhoneNumber);
+            request.LastName ?? user.LastName);
         
         await _unitOfWork
             .UserRepository

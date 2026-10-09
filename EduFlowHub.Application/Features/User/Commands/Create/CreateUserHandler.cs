@@ -43,9 +43,7 @@ public class CreateUserHandler
             passwordHash,
             request.Role,
             request.FirstName,
-            request.LastName,
-            request.Email,
-            request.Phone);
+            request.LastName);
         
         await _unitOfWork
             .UserRepository
