@@ -5,14 +5,93 @@ namespace EduFlowHub.Domain.Entities;
 public class LessonMaterial
     : Entity
 {
-    public string Title { get; set; } = null!;
-    public int OrderNumber { get; set; }
-    public MaterialType  Type { get; set; }
-    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    private LessonMaterial()
+    {
+    }
+
+    public LessonMaterial(
+        string title,
+        int orderNumber,
+        MaterialType type,
+        Guid courseId,
+        Guid fileMetadataId)
+    {
+        Title = ValidateTitle(title);
+        OrderNumber = ValidateOrderNumber(orderNumber);
+        Type = type;
+        CourseId = courseId;
+        FileMetadataId = fileMetadataId;
+    }
+
+    public void UpdateDetails(
+        string title,
+        int orderNumber)
+    {
+        Title = ValidateTitle(title);
+        OrderNumber = ValidateOrderNumber(orderNumber);
+    }
+
+    public void ChangeCourse(Guid courseId)
+    {
+        CourseId = ValidateCourseId(courseId);
+    }
+
+    public void ChangeFile(
+        Guid fileMetadataId,
+        MaterialType type)
+    {
+        Type = type;
+        FileMetadataId = ValidateFileMetadataId(fileMetadataId);
+    }
     
-    public Guid CourseId { get; set; }
-    public Guid FileMetadataId { get; set; }
+    public string Title { get; private set; } = null!;
+    public int OrderNumber { get; private set; }
+    public MaterialType  Type { get; private set; }
+    public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     
-    public Course? Course { get; set; }
-    public FileMetadata? FileMetadata { get; set; }
+    public Guid CourseId { get; private set; }
+    public Guid FileMetadataId { get; private set; }
+    
+    public Course? Course { get; private set; }
+    public FileMetadata? FileMetadata { get; private set; }
+    
+    private string ValidateTitle(string title)
+    {
+        if (string.IsNullOrWhiteSpace(title))
+        {
+            throw new DomainValidationException("Lesson Material title cannot be empty");
+        }
+        
+        return title.Trim();
+    }
+    
+    private int ValidateOrderNumber(int orderNumber)
+    {
+        if (orderNumber <= 0)
+        {
+            throw new DomainValidationException("Order number cannot be negative or zero");
+        }
+
+        return orderNumber;
+    }
+
+    private Guid ValidateCourseId(Guid courseId)
+    {
+        if (courseId == Guid.Empty)
+        {
+            throw new DomainValidationException("Course id cannot be empty");
+        }
+
+        return courseId;
+    }
+    
+    private Guid ValidateFileMetadataId(Guid fileMetadataId)
+    {
+        if (fileMetadataId == Guid.Empty)
+        {
+            throw new DomainValidationException("FileMetadata id cannot be empty");
+        }
+
+        return fileMetadataId;
+    }
 }

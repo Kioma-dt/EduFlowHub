@@ -1,4 +1,5 @@
 using EduFlowHub.Application.Features.LessonMaterial.Dtos;
+using EduFlowHub.Application.Features.LessonMaterial.Queries.GetById;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Queries.GetByOrderInCourse;
 
