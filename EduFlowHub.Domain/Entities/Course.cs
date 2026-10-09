@@ -7,7 +7,7 @@ public class Course
 {
     private readonly List<LessonMaterial> _lessonMaterials = new();
 
-    public Course()
+    private Course()
     {
     }
 
