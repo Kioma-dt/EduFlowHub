@@ -24,7 +24,7 @@ public class GetUserByNameHandler
     {
         Domain.Entities.User? user = await _unitOfWork
             .UserRepository
-            .GetByNameAsync(request.UserName);
+            .GetByNameAsync(request.UserName, cancellationToken);
 
         if (user is null)
         {

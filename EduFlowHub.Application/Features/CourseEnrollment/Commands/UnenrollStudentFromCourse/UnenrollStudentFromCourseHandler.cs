@@ -24,7 +24,7 @@ public class UnenrollStudentFromCourseHandler
     {
         var courseEnrollment = await _unitOfWork
             .CourseEnrollmentRepository
-            .GetByIdAsync(request.StudentId, request.CourseId);
+            .GetByIdAsync(request.StudentId, request.CourseId, cancellationToken);
         
         if (courseEnrollment is null)
         {
@@ -39,7 +39,7 @@ public class UnenrollStudentFromCourseHandler
         
         await _unitOfWork
             .CourseEnrollmentRepository
-            .DeleteAsync(courseEnrollment);
-        await _unitOfWork.SaveAsync();
+            .DeleteAsync(courseEnrollment, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

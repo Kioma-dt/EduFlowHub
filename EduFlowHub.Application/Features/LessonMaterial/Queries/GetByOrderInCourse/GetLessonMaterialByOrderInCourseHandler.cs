@@ -25,7 +25,8 @@ public class GetLessonMaterialByOrderInCourseHandler
             .LessonMaterialRepository
             .GetByCourseAndOrderNumberAsync(
                 request.CourseId,
-                request.OrderNumber!);
+                request.OrderNumber!,
+                cancellationToken);
         
         if (lessonMaterial is null)
         {

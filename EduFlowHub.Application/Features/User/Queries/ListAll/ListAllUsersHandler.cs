@@ -24,7 +24,7 @@ public class ListAllUsersHandler
     {
         IEnumerable<Domain.Entities.User> users = await _unitOfWork
             .UserRepository
-            .GetAllAsync();
+            .GetAllAsync(null, null, cancellationToken);
 
         return _mapper.Map<IEnumerable<UserDto>>(users);
     }

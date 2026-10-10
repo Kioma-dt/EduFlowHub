@@ -23,7 +23,7 @@ public class UnpublishCourseHandler
     {
         Domain.Entities.Course? course = await _unitOfWork
             .CourseRepository
-            .GetByIdAsync(request.CourseId);
+            .GetByIdAsync(request.CourseId, cancellationToken);
 
         if (course is null)
         {
@@ -39,8 +39,8 @@ public class UnpublishCourseHandler
         
         await _unitOfWork
             .CourseRepository
-            .UpdateAsync(course);
+            .UpdateAsync(course, cancellationToken);
 
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

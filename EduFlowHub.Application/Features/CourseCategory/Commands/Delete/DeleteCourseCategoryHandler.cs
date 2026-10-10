@@ -19,7 +19,7 @@ public class DeleteCourseCategoryHandler
     {
         var courseCategory = await _unitOfWork
             .CourseCategoryRepository
-            .GetByIdAsync(request.CourseCategoryId);
+            .GetByIdAsync(request.CourseCategoryId, cancellationToken);
 
         if (courseCategory is null)
         {
@@ -31,7 +31,7 @@ public class DeleteCourseCategoryHandler
         
         await _unitOfWork
             .CourseCategoryRepository
-            .DeleteAsync(courseCategory);
-        await _unitOfWork.SaveAsync();
+            .DeleteAsync(courseCategory, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

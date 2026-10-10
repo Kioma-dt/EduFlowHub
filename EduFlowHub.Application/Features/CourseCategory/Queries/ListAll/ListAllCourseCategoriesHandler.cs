@@ -23,7 +23,7 @@ public class ListAllCourseCategoriesHandler
     {
         var courseCategories = await _unitOfWork
             .CourseCategoryRepository
-            .GetAllAsync();
+            .GetAllAsync(null, null, cancellationToken);
         
         return _mapper.Map<IEnumerable<CourseCategoryDto>>(courseCategories);
     }

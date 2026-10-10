@@ -37,7 +37,7 @@ public class RegisterHandler
         }
         
 
-        if (await _unitOfWork.UserRepository.GetByNameAsync(request.Username) is not null)
+        if (await _unitOfWork.UserRepository.GetByNameAsync(request.Username, cancellationToken) is not null)
         {
             throw new EntityAlreadyExistsException(
                 "User",
@@ -54,8 +54,8 @@ public class RegisterHandler
             request.FirstName,
             request.LastName);
 
-        await _unitOfWork.UserRepository.InsertAsync(user);
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.UserRepository.InsertAsync(user, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

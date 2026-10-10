@@ -23,7 +23,7 @@ public class DeleteCourseHandler
     {
         Domain.Entities.Course? course = await _unitOfWork
             .CourseRepository
-            .GetByIdAsync(request.CourseId);
+            .GetByIdAsync(request.CourseId, cancellationToken);
 
         if (course is null)
         {
@@ -37,7 +37,7 @@ public class DeleteCourseHandler
 
         IEnumerable<Domain.Entities.CourseEnrollment> enrollments = await _unitOfWork
             .CourseEnrollmentRepository
-            .GetByCourseIdAsync(course.Id);
+            .GetByCourseIdAsync(course.Id, cancellationToken);
 
         if (enrollments.Any())
         {
@@ -46,8 +46,8 @@ public class DeleteCourseHandler
         
         await _unitOfWork
             .CourseRepository
-            .DeleteAsync(course);
+            .DeleteAsync(course, cancellationToken);
 
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

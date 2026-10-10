@@ -25,6 +25,7 @@ public class GetLessonMaterialByIdHandler
             .LessonMaterialRepository
             .GetByIdAsync(
                 request.LessonMaterialId,
+                cancellationToken,
                 lessonMaterial => lessonMaterial.FileMetadata!);
         
         if (lessonMaterial is null)
