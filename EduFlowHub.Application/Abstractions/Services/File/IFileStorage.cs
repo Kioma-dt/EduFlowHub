@@ -1,4 +1,4 @@
-namespace EduFlowHub.Application.Abstractions.Services;
+namespace EduFlowHub.Application.Abstractions.Services.File;
 
 public interface IFileStorage
 {

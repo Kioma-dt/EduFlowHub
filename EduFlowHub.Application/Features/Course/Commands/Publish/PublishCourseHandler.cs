@@ -1,23 +1,24 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.Course.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Publish;
 
 public class PublishCourseHandler
-    : IRequestHandler<PublishCourseCommand, CourseDto>
+    : IRequestHandler<PublishCourseCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseAccessService _courseAccessService;
 
     public PublishCourseHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseAccessService courseAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _courseAccessService = courseAccessService;
     }
     
-    public async Task<CourseDto> Handle(
+    public async Task Handle(
         PublishCourseCommand request, 
         CancellationToken cancellationToken)
     {
@@ -25,8 +26,7 @@ public class PublishCourseHandler
             .CourseRepository
             .GetByIdAsync(
                 request.CourseId,
-                course => course.Author!,
-                course => course.Category!);
+                course => course.LessonMaterials);
 
         if (course is null)
         {
@@ -36,6 +36,8 @@ public class PublishCourseHandler
                 request.CourseId.ToString());
         }
         
+        _courseAccessService.EnsureCanPublish(course);
+        
         course.Publish();
 
         await _unitOfWork
@@ -43,6 +45,5 @@ public class PublishCourseHandler
             .UpdateAsync(course);
 
         await _unitOfWork.SaveAsync();
-        return _mapper.Map<CourseDto>(course);
     }
 }

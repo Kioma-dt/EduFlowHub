@@ -1,6 +1,6 @@
 using EduFlowHub.Api.Contracts.CurrentUser.Requests;
 using EduFlowHub.Api.Contracts.CurrentUser.Responses;
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.User;
 using EduFlowHub.Application.Features.User.Commands.ChangePassword;
 using EduFlowHub.Application.Features.User.Commands.Update;
 using EduFlowHub.Application.Features.User.Dtos;

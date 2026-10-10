@@ -1,27 +1,28 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.Course.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Update;
 
 public class UpdateCourseHandler
-    : IRequestHandler<UpdateCourseCommand, CourseDto>
+    : IRequestHandler<UpdateCourseCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseAccessService _courseAccessService;
 
     public UpdateCourseHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseAccessService courseAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _courseAccessService = courseAccessService;
     }
     
-    public async Task<CourseDto> Handle(
+    public async Task Handle(
         UpdateCourseCommand request, 
         CancellationToken cancellationToken)
     {
-        var course = await _unitOfWork
+        Domain.Entities.Course? course = await _unitOfWork
             .CourseRepository
             .GetByIdAsync(request.CourseId);
 
@@ -33,6 +34,8 @@ public class UpdateCourseHandler
                 request.CourseId.ToString());
         }
         
+        _courseAccessService.EnsureCanUpdate(course);
+        
         course.UpdateDetails(
             request.Title ?? course.Title,
             request.Description  ?? course.Description,
@@ -40,7 +43,7 @@ public class UpdateCourseHandler
 
         if (request.CategoryId.HasValue)
         {
-            var category = await _unitOfWork
+            Domain.Entities.CourseCategory? category = await _unitOfWork
                 .CourseCategoryRepository
                 .GetByIdAsync(request.CategoryId.Value);
 
@@ -51,21 +54,11 @@ public class UpdateCourseHandler
             
             course.ChangeCategory(request.CategoryId.Value);
         }
-        
 
         await _unitOfWork
             .CourseRepository
             .UpdateAsync(course);
 
         await _unitOfWork.SaveAsync();
-        
-        Domain.Entities.Course courseWithNavigations = await _unitOfWork
-            .CourseRepository
-            .GetByIdAsync(
-                course.Id,
-                course => course.Author,
-                course => course.Category);
-        
-        return _mapper.Map<CourseDto>(courseWithNavigations);
     }
 }

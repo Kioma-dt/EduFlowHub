@@ -1,4 +1,4 @@
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.Authentication;
 
 namespace EduFlowHub.Infrastructure.AuthenticationServices.PasswordHasher;
 

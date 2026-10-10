@@ -1,4 +1,4 @@
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.File;
 
 namespace EduFlowHub.Infrastructure.FileServices.FileCheckers;
 

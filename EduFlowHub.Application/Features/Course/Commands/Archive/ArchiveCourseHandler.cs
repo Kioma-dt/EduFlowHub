@@ -1,33 +1,31 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Exceptions;
+using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.Course.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Archive;
 
 public class ArchiveCourseHandler
-    : IRequestHandler<ArchiveCourseCommand, CourseDto>
+    : IRequestHandler<ArchiveCourseCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseAccessService _courseAccessService;
 
     public ArchiveCourseHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseAccessService courseAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _courseAccessService = courseAccessService;
     }
     
-    public async Task<CourseDto> Handle(
+    public async Task Handle(
         ArchiveCourseCommand request, 
         CancellationToken cancellationToken)
     {
         Domain.Entities.Course? course = await _unitOfWork
             .CourseRepository
-            .GetByIdAsync(
-                request.CourseId,
-                course => course.Author!,
-                course => course.Category!);
+            .GetByIdAsync(request.CourseId);
 
         if (course is null)
         {
@@ -37,6 +35,8 @@ public class ArchiveCourseHandler
                 request.CourseId.ToString());
         }
         
+        _courseAccessService.EnsureCanArchive(course);
+        
         course.Archive();
 
         await _unitOfWork
@@ -44,6 +44,5 @@ public class ArchiveCourseHandler
             .UpdateAsync(course);
 
         await _unitOfWork.SaveAsync();
-        return _mapper.Map<CourseDto>(course);
     }
 }
