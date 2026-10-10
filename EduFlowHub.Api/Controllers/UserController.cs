@@ -32,30 +32,32 @@ public class UserController
     }
     
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         var query = new ListAllUsersQuery();
-        IEnumerable<UserDto> result = await _mediator.Send(query);
+        IEnumerable<UserDto> result = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<UserResponse>>(result);
         return Ok(response);
     }
     
     [HttpGet("{userId:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid userId)
+        [FromRoute] Guid userId,
+        CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery(userId);
-        UserDto result = await _mediator.Send(query);
+        UserDto result = await _mediator.Send(query, cancellationToken);
         var response =  _mapper.Map<UserResponse>(result);
         return Ok(response);
     }
     
     [HttpPost]
     public async Task<IActionResult> Create(
-        [FromBody] CreateUserRequest request)
+        [FromBody] CreateUserRequest request,
+        CancellationToken cancellationToken)
     {
         var command = _mapper.Map<CreateUserCommand>(request);
-        UserDto result = await _mediator.Send(command);
+        UserDto result = await _mediator.Send(command, cancellationToken);
         var response =  _mapper.Map<UserResponse>(result);
         return CreatedAtAction(
             nameof(GetById), 
@@ -66,59 +68,64 @@ public class UserController
     [HttpPatch("{userId:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid userId,
-        [FromBody] UpdateUserRequest request)
+        [FromBody] UpdateUserRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateUserCommand(
             userId,
             request.FirstName,
             request.LastName); 
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpDelete("{userId:guid}")]
     public async Task<IActionResult> Delete(
-        [FromRoute] Guid userId)
+        [FromRoute] Guid userId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteUserCommand(userId);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpPut("{userId:guid}/name")]
     public async Task<IActionResult> ChangeUserName(
         [FromRoute] Guid userId,
-        [FromBody] ChangeUsernameRequest request)
+        [FromBody] ChangeUsernameRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new ChangeUserNameCommand(
             userId,
             request.Username);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpPut("{userId:guid}/password")]
     public async Task<IActionResult> ChangePassword(
         [FromRoute] Guid userId,
-        [FromBody] ChangeUserPasswordRequest request)
+        [FromBody] ChangeUserPasswordRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new ChangeUserPasswordCommand(
             userId,
             request.Password,
             null);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpPut("{userId:guid}/role")]
     public async Task<IActionResult> ChangeRole(
         [FromRoute] Guid userId,
-        [FromBody] ChangeUserRoleRequest request)
+        [FromBody] ChangeUserRoleRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new ChangeUserRoleCommand(
             userId,
             request.Role);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 }
