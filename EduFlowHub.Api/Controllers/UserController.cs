@@ -40,7 +40,7 @@ public class UserController
         return Ok(response);
     }
     
-    [HttpGet("{userId}")]
+    [HttpGet("{userId:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid userId)
     {
@@ -63,7 +63,7 @@ public class UserController
             response);
     }
     
-    [HttpPatch("{userId}")]
+    [HttpPatch("{userId:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid userId,
         [FromBody] UpdateUserRequest request)
@@ -76,7 +76,7 @@ public class UserController
         return NoContent();
     }
     
-    [HttpDelete("{userId}")]
+    [HttpDelete("{userId:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid userId)
     {
@@ -85,7 +85,7 @@ public class UserController
         return NoContent();
     }
     
-    [HttpPut("{userId}/name")]
+    [HttpPut("{userId:guid}/name")]
     public async Task<IActionResult> ChangeUserName(
         [FromRoute] Guid userId,
         [FromBody] ChangeUsernameRequest request)
@@ -97,19 +97,20 @@ public class UserController
         return NoContent();
     }
     
-    [HttpPut("{userId}/password")]
+    [HttpPut("{userId:guid}/password")]
     public async Task<IActionResult> ChangePassword(
         [FromRoute] Guid userId,
         [FromBody] ChangeUserPasswordRequest request)
     {
         var command = new ChangeUserPasswordCommand(
             userId,
-            request.Password);
+            request.Password,
+            null);
         await _mediator.Send(command);
         return NoContent();
     }
     
-    [HttpPut("{userId}/role")]
+    [HttpPut("{userId:guid}/role")]
     public async Task<IActionResult> ChangeRole(
         [FromRoute] Guid userId,
         [FromBody] ChangeUserRoleRequest request)
