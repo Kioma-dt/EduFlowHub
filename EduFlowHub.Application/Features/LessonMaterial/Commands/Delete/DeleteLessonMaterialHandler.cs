@@ -25,6 +25,7 @@ public class DeleteLessonMaterialHandler
         Domain.Entities.LessonMaterial? lessonMaterial = await _unitOfWork
             .LessonMaterialRepository
             .GetByIdAsync(request.LessonMaterialId,
+                cancellationToken,
                 lessonMaterial => lessonMaterial.FileMetadata!);
 
         if (lessonMaterial is null)
@@ -39,10 +40,10 @@ public class DeleteLessonMaterialHandler
         
         await _unitOfWork
             .LessonMaterialRepository
-            .DeleteAsync(lessonMaterial);
+            .DeleteAsync(lessonMaterial, cancellationToken);
         
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync(cancellationToken);
         
-        await _fileStorage.DeleteAsync(filePath);
+        await _fileStorage.DeleteAsync(filePath, cancellationToken);
     }
 }

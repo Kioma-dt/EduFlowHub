@@ -23,7 +23,7 @@ public class ChangeUserRoleCommandHandler
     {
         Domain.Entities.User?  user = await _unitOfWork
             .UserRepository
-            .GetByIdAsync(request.UserId);
+            .GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
         {
@@ -36,8 +36,8 @@ public class ChangeUserRoleCommandHandler
         
         await _unitOfWork
             .UserRepository
-            .UpdateAsync(user);
-        await _unitOfWork.SaveAsync();
+            .UpdateAsync(user, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
         return _mapper.Map<UserDto>(user);
     }

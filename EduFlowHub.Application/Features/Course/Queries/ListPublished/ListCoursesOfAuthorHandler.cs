@@ -27,7 +27,7 @@ public class ListPublishedCoursesHandler
         {
             category = await _unitOfWork
                 .CourseCategoryRepository
-                .GetByNormalizedNameAsync(request.Category);
+                .GetByNormalizedNameAsync(request.Category, cancellationToken);
         }
         
         var courses = await _unitOfWork
@@ -35,7 +35,8 @@ public class ListPublishedCoursesHandler
             .GetWithFiltersAsync(
                 category?.Id,
                 request.AuthorId,
-                CourseStatus.Published);
+                CourseStatus.Published,
+                cancellationToken);
         
         return _mapper.Map<List<CourseDto>>(courses);
     }

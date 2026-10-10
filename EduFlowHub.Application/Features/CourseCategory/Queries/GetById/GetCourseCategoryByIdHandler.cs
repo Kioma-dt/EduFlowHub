@@ -23,8 +23,7 @@ public class GetCourseCategoryByIdHandler
     {
         var courseCategory = await _unitOfWork
             .CourseCategoryRepository
-            .GetByIdAsync(
-                request.CourseCategoryId);
+            .GetByIdAsync(request.CourseCategoryId, cancellationToken);
 
         if (courseCategory is null)
         {

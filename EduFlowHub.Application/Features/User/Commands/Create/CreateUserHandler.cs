@@ -28,7 +28,7 @@ public class CreateUserHandler
     {
         var userDb = await _unitOfWork
             .UserRepository
-            .GetByNameAsync(request.Username);
+            .GetByNameAsync(request.Username, cancellationToken);
 
         if (userDb is not null)
         {
@@ -48,8 +48,8 @@ public class CreateUserHandler
         
         await _unitOfWork
             .UserRepository
-            .InsertAsync(user);
-        await _unitOfWork.SaveAsync();
+            .InsertAsync(user, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
         
 
         return _mapper.Map<UserDto>(user);

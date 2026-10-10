@@ -30,6 +30,7 @@ public class GetLessonMaterialFileHandler
             .LessonMaterialRepository
             .GetByIdAsync(
                 request.LessonMaterialId,
+                cancellationToken,
                 lessonMaterial => lessonMaterial.FileMetadata!);
         
         if (lessonMaterial is null)
@@ -40,7 +41,7 @@ public class GetLessonMaterialFileHandler
                 request.LessonMaterialId.ToString());
         }
 
-        Stream file = await _fileStorage.DownloadAsync(lessonMaterial.FileMetadata!.Path);
+        Stream file = await _fileStorage.DownloadAsync(lessonMaterial.FileMetadata!.Path, cancellationToken);
         string fileExtension = lessonMaterial.FileMetadata!.Extension;
         string fileName = $"{request.LessonMaterialId}{fileExtension}";
         

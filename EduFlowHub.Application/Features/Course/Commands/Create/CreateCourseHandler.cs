@@ -29,7 +29,7 @@ public class CreateCourseHandler
     {
         Domain.Entities.User? author = await _unitOfWork
             .UserRepository
-            .GetByIdAsync(request.AuthorId);
+            .GetByIdAsync(request.AuthorId, cancellationToken);
 
         if (author is null)
         {
@@ -38,7 +38,7 @@ public class CreateCourseHandler
         
         Domain.Entities.CourseCategory? category = await _unitOfWork
             .CourseCategoryRepository
-            .GetByIdAsync(request.CategoryId);
+            .GetByIdAsync(request.CategoryId, cancellationToken);
 
         if (category is null)
         {
@@ -56,8 +56,8 @@ public class CreateCourseHandler
         
         await _unitOfWork
             .CourseRepository
-            .InsertAsync(course);
-        await _unitOfWork.SaveAsync();
+            .InsertAsync(course, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
         
         var authorDto = _mapper.Map<UserDto>(author);
         var courseCategoryDto = _mapper.Map<CourseCategoryDto>(category);

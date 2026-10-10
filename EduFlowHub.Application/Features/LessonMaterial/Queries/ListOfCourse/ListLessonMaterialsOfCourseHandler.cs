@@ -33,7 +33,8 @@ public class ListLessonMaterialsOfCourseHandler
             .LessonMaterialRepository
             .GetAllAsync(
                 lessonMaterial => lessonMaterial.CourseId.Equals(request.CourseId),
-                orderBy);
+                orderBy,
+                cancellationToken);
         
         return _mapper.Map<IEnumerable<LessonMaterialDto>>(lessonMaterials);
     }

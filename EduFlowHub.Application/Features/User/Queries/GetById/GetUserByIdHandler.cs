@@ -24,7 +24,7 @@ public class GetUserByIdHandler
     {
         Domain.Entities.User? user = await _unitOfWork
             .UserRepository
-            .GetByIdAsync(request.UserId);
+            .GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
         {

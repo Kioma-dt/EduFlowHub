@@ -57,6 +57,7 @@ public class ChangeLessonMaterialFileHandler
         Domain.Entities.LessonMaterial? lessonMaterial = await _unitOfWork
             .LessonMaterialRepository
             .GetByIdAsync(request.LessonMaterialId,
+                cancellationToken,
                 lessonMaterial => lessonMaterial.FileMetadata!);
 
         if (lessonMaterial is null)
@@ -72,7 +73,8 @@ public class ChangeLessonMaterialFileHandler
         long fileSize = request.FileStream.Length;
         string filePath = await _fileStorage.UploadAsync(
             request.FileStream,
-            request.FileExtension);
+            request.FileExtension,
+            cancellationToken);
 
         //! КОСТЫЛЬ
         FileMetadata fileMetadata = new FileMetadata(
@@ -83,11 +85,11 @@ public class ChangeLessonMaterialFileHandler
         
         await _unitOfWork
             .FileMetadataRepository
-            .DeleteAsync(lessonMaterial.FileMetadata);
+            .DeleteAsync(lessonMaterial.FileMetadata, cancellationToken);
         
         await _unitOfWork
             .FileMetadataRepository
-            .InsertAsync(fileMetadata);
+            .InsertAsync(fileMetadata, cancellationToken);
         
         MaterialType materialType = MaterialTypeResolver.FromExtension(request.FileExtension);
 
@@ -96,16 +98,17 @@ public class ChangeLessonMaterialFileHandler
         
         await _unitOfWork
             .LessonMaterialRepository
-            .UpdateAsync(lessonMaterial);
+            .UpdateAsync(lessonMaterial, cancellationToken);
         
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync(cancellationToken);
         
-        await _fileStorage.DeleteAsync(filePathOld);
+        await _fileStorage.DeleteAsync(filePathOld, cancellationToken);
         
         Domain.Entities.LessonMaterial lessonMaterialWithNavigations = await _unitOfWork
             .LessonMaterialRepository
             .GetByIdAsync(
                 lessonMaterial.Id,
+                cancellationToken,
                 lessonMaterial => lessonMaterial.FileMetadata);
         
         return _mapper.Map<LessonMaterialDto>(lessonMaterialWithNavigations);

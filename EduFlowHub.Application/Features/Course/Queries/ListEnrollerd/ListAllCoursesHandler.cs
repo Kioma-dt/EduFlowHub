@@ -23,8 +23,7 @@ public class ListAllCoursesHandler
     {
         var courses = await _unitOfWork
             .CourseRepository
-            .GetEnrolledCoursesAsync(
-                request.StudentId);
+            .GetEnrolledCoursesAsync(request.StudentId, cancellationToken);
         
         return _mapper.Map<List<CourseDto>>(courses);
     }

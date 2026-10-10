@@ -19,7 +19,7 @@ public class DeleteUserHandler
     {
         var user = await _unitOfWork
             .UserRepository
-            .GetByIdAsync(request.UserId);
+            .GetByIdAsync(request.UserId, cancellationToken);
 
         if (user is null)
         {
@@ -31,7 +31,7 @@ public class DeleteUserHandler
         
         await _unitOfWork
             .UserRepository
-            .DeleteAsync(user);
-        await _unitOfWork.SaveAsync();
+            .DeleteAsync(user, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }
