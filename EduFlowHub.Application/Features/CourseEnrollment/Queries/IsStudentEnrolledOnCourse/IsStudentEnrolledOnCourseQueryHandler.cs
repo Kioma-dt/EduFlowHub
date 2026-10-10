@@ -19,9 +19,7 @@ public class IsStudentEnrolledOnCourseQueryHandler
     {
         var courseEnrollment = await _unitOfWork
             .CourseEnrollmentRepository
-            .GetByIdAsync(
-                request.StudentId,
-                request.CourseId);
+            .GetByIdAsync(request.StudentId, request.CourseId);
         
         return courseEnrollment is not null;
     }

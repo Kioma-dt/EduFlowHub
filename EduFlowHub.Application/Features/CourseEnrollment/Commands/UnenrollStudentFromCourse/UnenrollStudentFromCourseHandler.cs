@@ -1,4 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.CourseEnrollment.Access.Policy;
+using EduFlowHub.Application.Features.CourseEnrollment.Access.Service;
 
 namespace EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
 
@@ -6,11 +8,14 @@ public class UnenrollStudentFromCourseHandler
     : IRequestHandler<UnenrollStudentFromCourseCommand>
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseEnrollmentAccessService _courseEnrollmentAccessService;
 
     public UnenrollStudentFromCourseHandler(
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseEnrollmentAccessService courseEnrollmentAccessService)
     {
         _unitOfWork = unitOfWork;
+        _courseEnrollmentAccessService = courseEnrollmentAccessService;
     }
     
     public async Task Handle(
@@ -19,9 +24,8 @@ public class UnenrollStudentFromCourseHandler
     {
         var courseEnrollment = await _unitOfWork
             .CourseEnrollmentRepository
-            .GetByIdAsync(
-                request.StudentId,
-                request.CourseId);
+            .GetByIdAsync(request.StudentId, request.CourseId);
+        
         if (courseEnrollment is null)
         {
             throw new EntityNotFoundException(
@@ -30,6 +34,9 @@ public class UnenrollStudentFromCourseHandler
                 $"{request.StudentId.ToString()} and {request.CourseId.ToString()}");
 
         }
+        
+        _courseEnrollmentAccessService.EnsureCanUnEnroll(courseEnrollment);
+        
         await _unitOfWork
             .CourseEnrollmentRepository
             .DeleteAsync(courseEnrollment);
