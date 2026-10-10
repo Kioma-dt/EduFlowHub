@@ -2,7 +2,7 @@ using EduFlowHub.Api.Contracts.CourseCategory.Requests;
 using EduFlowHub.Api.Contracts.CourseCategory.Responses;
 using EduFlowHub.Application.Features.CourseCategory.Commands.Create;
 using EduFlowHub.Application.Features.CourseCategory.Commands.Delete;
-using EduFlowHub.Application.Features.CourseCategory.Commands.UpdateOrCreate;
+using EduFlowHub.Application.Features.CourseCategory.Commands.Update;
 using EduFlowHub.Application.Features.CourseCategory.Dtos;
 using EduFlowHub.Application.Features.CourseCategory.Queries.GetById;
 using EduFlowHub.Application.Features.CourseCategory.Queries.ListAll;
@@ -67,19 +67,11 @@ public class CourseCategoryController
         [FromRoute] Guid courseCategoryId,
         [FromBody] PutCourseCategoryRequest request)
     {
-        var command = new UpdateOrCreateCourseCategoryCommand(
+        var command = new UpdateCourseCategoryCommand(
             courseCategoryId,
             request.Name); 
-        UpdatedOrCreatedCourseCategoryDto result =  await _mediator.Send(command);
-        var response =  _mapper.Map<CourseCategoryResponse>(result.CourseCategory);
-        
-        if (result.Created)
-        {
-            return CreatedAtAction(
-                nameof(GetById), 
-                new { courseCategoryId = response.Id }, 
-                response);
-        }
+        CourseCategoryDto result =  await _mediator.Send(command);
+        var response =  _mapper.Map<CourseCategoryResponse>(result);
         
         return Ok(response);
     }

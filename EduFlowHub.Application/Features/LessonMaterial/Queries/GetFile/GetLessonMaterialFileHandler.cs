@@ -40,7 +40,12 @@ public class GetLessonMaterialFileHandler
         }
 
         Stream file = await _fileStorage.DownloadAsync(lessonMaterial.FileMetadata!.Path);
+        string fileExtension = lessonMaterial.FileMetadata!.Extension;
+        string fileName = $"{request.LessonMaterialId}{fileExtension}";
         
-        return new FileDto(file);
+        return new FileDto(
+            file,
+            fileName,
+            fileExtension);
     }
 }

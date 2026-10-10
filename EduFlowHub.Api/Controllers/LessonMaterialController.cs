@@ -1,0 +1,146 @@
+using EduFlowHub.Api.Contracts.LessonMaterial.Requests;
+using EduFlowHub.Api.Contracts.LessonMaterial.Responses;
+using EduFlowHub.Application.Features.LessonMaterial.Commands.ChangeFile;
+using EduFlowHub.Application.Features.LessonMaterial.Commands.Create;
+using EduFlowHub.Application.Features.LessonMaterial.Commands.Delete;
+using EduFlowHub.Application.Features.LessonMaterial.Commands.Update;
+using EduFlowHub.Application.Features.LessonMaterial.Dtos;
+using EduFlowHub.Application.Features.LessonMaterial.Queries.GetById;
+using EduFlowHub.Application.Features.LessonMaterial.Queries.GetByOrderInCourse;
+using EduFlowHub.Application.Features.LessonMaterial.Queries.GetFile;
+using EduFlowHub.Application.Features.LessonMaterial.Queries.ListOfCourse;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+
+namespace EduFlowHub.Api.Controllers;
+
+[ApiController]
+[Authorize]
+[Route("api/v1/courses/{courseId:guid}/lesson-materials")]
+public class LessonMaterialController
+    : ControllerBase
+{
+    private readonly IMediator _mediator;
+    private readonly IMapper _mapper;
+    
+    public  LessonMaterialController(
+        IMediator mediator,
+        IMapper mapper)
+    {
+        _mediator = mediator;
+        _mapper = mapper;
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromRoute] Guid courseId,
+        [FromQuery] bool orderByNumber = false)
+    {
+        var query = new ListLessonMaterialsOfCourseQuery(
+            courseId,
+            orderByNumber);
+        IEnumerable<LessonMaterialDto> result = await _mediator.Send(query);
+        var response = _mapper.Map<IEnumerable<LessonMaterialResponse>>(result);
+        return Ok(response);
+    }
+    
+    [HttpGet("{lessonMaterial:guid}")]
+    public async Task<IActionResult> GetById(
+        [FromRoute] Guid lessonMaterialId)
+    {
+        var query = new GetLessonMaterialByIdQuery(
+            lessonMaterialId);
+        LessonMaterialDto result = await _mediator.Send(query);
+        var response = _mapper.Map<LessonMaterialResponse>(result);
+        return Ok(response);
+    }
+    
+    [HttpGet("{orderNumber:int}")]
+    public async Task<IActionResult> GetByOrderNumber(
+        [FromRoute] Guid courseId,
+        [FromRoute] int orderNumber)
+    {
+        var query = new GetLessonMaterialByOrderInCourseQuery(
+            courseId,
+            orderNumber);
+        LessonMaterialDto result = await _mediator.Send(query);
+        var response = _mapper.Map<LessonMaterialResponse>(result);
+        return Ok(response);
+    }
+
+
+    [Authorize(Roles = "Admin, Teacher")]
+    [HttpPost]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> Create(
+        [FromRoute] Guid courseId,
+        [FromForm] CreateLessonMaterialRequest request)
+    {
+        await using Stream fileStream = request.File.OpenReadStream();
+        string fileExtension = Path.GetExtension(request.File.FileName);
+        var command = new CreateLessonMaterialCommand(
+            request.Title,
+            request.OrderNumber,
+            fileStream,
+            fileExtension,
+            courseId);
+        LessonMaterialDto result = await _mediator.Send(command);
+        var response = _mapper.Map<LessonMaterialResponse>(result);
+        return CreatedAtAction(
+            nameof(GetById),
+            new { lessonMaterialId = result.Id },
+            response);
+    }
+    
+    [Authorize(Roles = "Admin, Teacher")]
+    [HttpPatch("{lessonMaterialId:guid}")]
+    public async Task<IActionResult> Update(
+        [FromRoute] Guid lessonMaterialId,
+        [FromBody] UpdateLessonMaterialRequest request)
+    {
+        var command = new UpdateLessonMaterialCommand(
+            lessonMaterialId,
+            request.Title,
+            request.OrderNumber);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+    
+    [Authorize(Roles = "Admin, Teacher")]
+    [HttpDelete("{lessonMaterialId:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid lessonMaterialId)
+    {
+        var command = new DeleteLessonMaterialCommand(lessonMaterialId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+    
+    [HttpGet("{lessonMaterialId:guid}/file")]
+    public async Task<IActionResult> GetFile(
+        [FromRoute] Guid lessonMaterialId)
+    {
+        var query = new GetLessonMaterialFileQuery(lessonMaterialId);
+        var result = await _mediator.Send(query);
+        return File(
+            result.FileStream, 
+            ExtensionToContentTypeHelper.GetContentTypeFromExtension(result.FileExtension), 
+            result.FileName);
+    }
+    
+    [HttpPut("{lessonMaterialId:guid}/file")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> ChangeFile(
+        [FromRoute] Guid lessonMaterialId,
+        [FromForm] IFormFile file)
+    {
+        await using Stream fileStream = file.OpenReadStream();
+        string fileExtension = Path.GetExtension(file.FileName);
+        var command = new ChangeLessonMaterialFileCommand(
+            lessonMaterialId,
+            fileStream,
+            fileExtension);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+}

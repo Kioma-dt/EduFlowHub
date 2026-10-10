@@ -13,19 +13,23 @@ public class ChangeLessonMaterialFileHandler
     private readonly IFileStorage _fileStorage;
     private readonly IFileContentTypeChecker  _fileContentTypeChecker;
     private readonly ISupportedFileTypeChecker _supportedFileTypeChecker;
+    private readonly IFileStorageRequirements  _fileStorageRequirements;
+    
 
     public ChangeLessonMaterialFileHandler(
         IMapper mapper,
         IUnitOfWork unitOfWork,
         IFileStorage fileStorage,
         IFileContentTypeChecker fileContentTypeChecker,
-        ISupportedFileTypeChecker supportedFileTypeChecker)
+        ISupportedFileTypeChecker supportedFileTypeChecker,
+        IFileStorageRequirements fileStorageRequirements)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
         _fileStorage = fileStorage;
         _fileContentTypeChecker = fileContentTypeChecker;
         _supportedFileTypeChecker = supportedFileTypeChecker;
+        _fileStorageRequirements = fileStorageRequirements;
     }
 
     public async Task<LessonMaterialDto> Handle(
@@ -42,6 +46,11 @@ public class ChangeLessonMaterialFileHandler
         if (!_supportedFileTypeChecker.IsFileTypeSupported(request.FileExtension))
         {
             throw new UnsupportedFileTypeException(request.FileExtension);
+        }
+
+        if (request.FileStream.Length > _fileStorageRequirements.MaxFileSize)
+        {
+            throw new FileTooLargeException(_fileStorageRequirements.MaxFileSize);
         }
         
         Domain.Entities.LessonMaterial? lessonMaterial = await _unitOfWork
