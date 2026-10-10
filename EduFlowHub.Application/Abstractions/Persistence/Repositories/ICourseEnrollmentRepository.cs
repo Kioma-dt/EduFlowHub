@@ -8,6 +8,9 @@ public interface ICourseEnrollmentRepository
 
     Task<IEnumerable<CourseEnrollment>> GetAllAsync();
     
+    Task<IEnumerable<CourseEnrollment>> GetByCourseIdAsync(Guid courseId);
+    Task<IEnumerable<CourseEnrollment>> GetByStudentIdAsync(Guid studentId);
+    
     Task InsertAsync(CourseEnrollment courseEnrollment);
     Task DeleteAsync(CourseEnrollment courseEnrollment);
     Task DeleteAsync(

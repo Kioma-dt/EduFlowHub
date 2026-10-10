@@ -28,6 +28,24 @@ public class CourseEnrollmentRepository
         return await _courseEnrollments.ToListAsync();
     }
 
+    public async Task<IEnumerable<CourseEnrollment>> GetByCourseIdAsync(Guid courseId)
+    {
+        return await _courseEnrollments
+            .Include(enrollment => enrollment.Student)
+            .Include(enrollment => enrollment.Course)
+            .Where(enrollment => enrollment.CourseId.Equals(courseId))
+            .ToListAsync();
+    }
+
+    public async Task<IEnumerable<CourseEnrollment>> GetByStudentIdAsync(Guid studentId)
+    {
+        return await _courseEnrollments
+            .Include(enrollment => enrollment.Student)
+            .Include(enrollment => enrollment.Course)
+            .Where(enrollment => enrollment.StudentId.Equals(studentId))
+            .ToListAsync();
+    }
+
     public Task InsertAsync(CourseEnrollment courseEnrollment)
     {
         _courseEnrollments.Add(courseEnrollment);
