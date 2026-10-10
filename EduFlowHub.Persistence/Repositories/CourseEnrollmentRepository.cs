@@ -5,72 +5,74 @@ namespace EduFlowHub.Persistence.Repositories;
 public class CourseEnrollmentRepository
     : ICourseEnrollmentRepository
 {
-    private readonly DbContext _dbContext;
-    private readonly DbSet<CourseEnrollment> _courseEnrollments;
+    protected readonly DbContext DbContext;
+    protected readonly DbSet<CourseEnrollment> CourseEnrollments;
 
     public CourseEnrollmentRepository(DbContext dbContext)
     {
-        _dbContext = dbContext;
-        _courseEnrollments = dbContext.Set<CourseEnrollment>();
+        DbContext = dbContext;
+        CourseEnrollments = dbContext.Set<CourseEnrollment>();
     }
     
     public async Task<CourseEnrollment?> GetByIdAsync(
         Guid studentId, 
-        Guid courseId)
+        Guid courseId,
+        CancellationToken cancellationToken)
     {
-        return await _courseEnrollments.FirstOrDefaultAsync(enrollment => 
+        return await CourseEnrollments.FirstOrDefaultAsync(enrollment => 
             enrollment.StudentId.Equals(studentId) 
-            && enrollment.CourseId.Equals(courseId));
+            && enrollment.CourseId.Equals(courseId), 
+            cancellationToken);
     }
 
-    public async Task<IEnumerable<CourseEnrollment>> GetAllAsync()
+    public async Task<IEnumerable<CourseEnrollment>> GetAllAsync(CancellationToken  cancellationToken = default)
     {
-        return await _courseEnrollments.ToListAsync();
+        return await CourseEnrollments.ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<CourseEnrollment>> GetByCourseIdAsync(Guid courseId)
+    public async Task<IEnumerable<CourseEnrollment>> GetByCourseIdAsync(Guid courseId, CancellationToken cancellationToken = default)
     {
-        return await _courseEnrollments
+        return await CourseEnrollments
             .Include(enrollment => enrollment.Student)
             .Include(enrollment => enrollment.Course)
             .Where(enrollment => enrollment.CourseId.Equals(courseId))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public async Task<IEnumerable<CourseEnrollment>> GetByStudentIdAsync(Guid studentId)
+    public async Task<IEnumerable<CourseEnrollment>> GetByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default)
     {
-        return await _courseEnrollments
+        return await CourseEnrollments
             .Include(enrollment => enrollment.Student)
             .Include(enrollment => enrollment.Course)
             .Where(enrollment => enrollment.StudentId.Equals(studentId))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
-    public Task InsertAsync(CourseEnrollment courseEnrollment)
+    public Task InsertAsync(CourseEnrollment courseEnrollment, CancellationToken cancellationToken = default)
     {
-        _courseEnrollments.Add(courseEnrollment);
+        CourseEnrollments.Add(courseEnrollment);
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(CourseEnrollment courseEnrollment)
+    public Task DeleteAsync(CourseEnrollment courseEnrollment, CancellationToken  cancellationToken = default)
     {
-        if (_dbContext.Entry(courseEnrollment).State == EntityState.Detached)
+        if (DbContext.Entry(courseEnrollment).State == EntityState.Detached)
         {
-            _courseEnrollments.Attach(courseEnrollment);
+            CourseEnrollments.Attach(courseEnrollment);
         }
-        _courseEnrollments.Remove(courseEnrollment);
+        CourseEnrollments.Remove(courseEnrollment);
         return Task.CompletedTask;
     }
 
-    public async Task DeleteAsync(Guid studentId, Guid courseId)
+    public async Task DeleteAsync(Guid studentId, Guid courseId, CancellationToken cancellationToken = default)
     {
-        CourseEnrollment? courseEnrollment = await _courseEnrollments.FirstOrDefaultAsync(enrollment => 
+        CourseEnrollment? courseEnrollment = await CourseEnrollments.FirstOrDefaultAsync(enrollment => 
                 enrollment.StudentId.Equals(studentId) 
                && enrollment.CourseId.Equals(courseId));
 
         if (courseEnrollment is not null)
         {
-            await DeleteAsync(courseEnrollment);
+            await DeleteAsync(courseEnrollment, cancellationToken);
         }
     }
 }

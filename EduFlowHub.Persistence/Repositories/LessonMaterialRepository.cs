@@ -15,13 +15,15 @@ public class LessonMaterialRepository
 
     public async Task<LessonMaterial?> GetByCourseAndOrderNumberAsync(
         Guid courseId, 
-        int orderNumber)
+        int orderNumber,
+        CancellationToken cancellationToken = default)
     {
-        return await _dbSet
+        return await DbSet
             .Include(lessonMaterial => lessonMaterial.Course)
             .Include(lessonMaterial => lessonMaterial.FileMetadata)
             .FirstOrDefaultAsync(lessonMaterial 
                 => lessonMaterial.CourseId == courseId
-                   && lessonMaterial.OrderNumber == orderNumber);
+                   && lessonMaterial.OrderNumber == orderNumber,
+                cancellationToken);
     }
 }

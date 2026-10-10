@@ -11,5 +11,5 @@ public interface IUnitOfWork
     public ILessonMaterialRepository   LessonMaterialRepository { get; }
     public IUserRepository UserRepository { get; }
 
-    public Task SaveAsync();
+    public Task SaveAsync(CancellationToken cancellationToken = default);
 }
