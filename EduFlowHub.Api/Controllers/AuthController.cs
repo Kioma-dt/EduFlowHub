@@ -28,10 +28,11 @@ public class AuthController
     [AllowAnonymous]
     [HttpPost("register")]
     public async Task<IActionResult> Register(
-        [FromBody] RegisterRequest request)
+        [FromBody] RegisterRequest request,
+        CancellationToken cancellationToken)
     {
         var command = _mapper.Map<RegisterCommand>(request);
-        UserDto result = await _mediator.Send(command);
+        UserDto result = await _mediator.Send(command, cancellationToken);
         var response =  _mapper.Map<RegisterResponse>(result);
         return StatusCode(StatusCodes.Status201Created, response);
     }
@@ -39,10 +40,11 @@ public class AuthController
     [AllowAnonymous]
     [HttpPost("login")]
     public async Task<IActionResult> Login(
-        [FromBody] LoginRequest request)
+        [FromBody] LoginRequest request,
+        CancellationToken cancellationToken)
     {
         var query = _mapper.Map<LoginQuery>(request);
-        UserTokenDto result = await _mediator.Send(query);
+        UserTokenDto result = await _mediator.Send(query,  cancellationToken);
         var response =  _mapper.Map<LoginResponse>(result);
         return Ok(response);
     }

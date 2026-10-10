@@ -31,35 +31,37 @@ public class CurrentUserController
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetById()
+    public async Task<IActionResult> GetById(CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery(_currentUser.CurrentUserId);
-        UserDto result = await _mediator.Send(query);
+        UserDto result = await _mediator.Send(query, cancellationToken);
         var response =  _mapper.Map<CurrentUserResponse>(result);
         return Ok(response);
     }
     
     [HttpPatch]
     public async Task<IActionResult> Update(
-        [FromBody] UpdateCurrentUserRequest request)
+        [FromBody] UpdateCurrentUserRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateUserCommand(
             _currentUser.CurrentUserId,
             request.FirstName,
             request.LastName); 
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpPut("password")]
     public async Task<IActionResult> ChangePassword(
-        [FromBody] ChangeCurrentUserPasswordRequest request)
+        [FromBody] ChangeCurrentUserPasswordRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new ChangeUserPasswordCommand(
             _currentUser.CurrentUserId,
             request.Password,
             request.OldPassword);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 }

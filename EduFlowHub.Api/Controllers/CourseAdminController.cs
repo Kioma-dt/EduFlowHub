@@ -31,24 +31,26 @@ public class CourseAdminController
 
     [HttpGet]
     public async Task<IActionResult> GetAll(
-        [FromQuery] GetAllCoursesQueryString filterQuery)
+        [FromQuery] GetAllCoursesQueryString filterQuery,
+        CancellationToken cancellationToken)
     {
         var query = new ListAllCoursesQuery(
             filterQuery.Category,
             filterQuery.AuthorId,
             filterQuery.Status);
         
-        IEnumerable<CourseDto> courses = await _mediator.Send(query);
+        IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<CourseAdminResponse>>(courses);
         return Ok(response);
     }
 
     [HttpPost]
     public async Task<IActionResult> Create(
-        [FromBody] CreateCourseAdminRequest request)
+        [FromBody] CreateCourseAdminRequest request,
+        CancellationToken cancellationToken)
     {
         var command = _mapper.Map<CreateCourseCommand>(request);
-        CourseDto course = await _mediator.Send(command);
+        CourseDto course = await _mediator.Send(command, cancellationToken);
         var response = _mapper.Map<CourseAdminResponse>(course);
         return CreatedAtAction(
             actionName: nameof(CourseController.GetById),
@@ -59,31 +61,34 @@ public class CourseAdminController
     
     [HttpPost("{courseId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish(
-        [FromRoute] Guid courseId)
+        [FromRoute] Guid courseId,
+        CancellationToken cancellationToken)
     {
         var command = new UnpublishCourseCommand(courseId);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpPost("{courseId:guid}/restore")]
     public async Task<IActionResult> Restore(
-        [FromRoute] Guid courseId)
+        [FromRoute] Guid courseId,
+        CancellationToken cancellationToken)
     {
         var command = new RestoreCourseCommand(courseId);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpPut("{courseId:guid}/author")]
     public async Task<IActionResult> ChangeAuthor(
         [FromRoute] Guid courseId,
-        [FromBody] ChangeCourseAuthorRequest request)
+        [FromBody] ChangeCourseAuthorRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new ChangeCourseAuthorCommand(
             courseId,
             request.AuthorId);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 }
