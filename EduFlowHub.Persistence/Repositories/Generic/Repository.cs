@@ -8,21 +8,22 @@ public abstract class Repository<T>
     : IRepository<T>
     where T : Entity
 {
-    protected readonly DbContext _dbContext;
-    protected readonly DbSet<T> _dbSet;
+    protected readonly DbContext DbContext;
+    protected readonly DbSet<T> DbSet;
     
     protected Repository(DbContext dbContext)
     {
-        _dbContext = dbContext;
-        _dbSet = _dbContext.Set<T>();
+        DbContext = dbContext;
+        DbSet = DbContext.Set<T>();
     }
     
     public virtual async Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        CancellationToken  cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {
-        IQueryable<T> query = _dbSet;
+        IQueryable<T> query = DbSet;
 
         if (filter is not null)
         {
@@ -36,57 +37,60 @@ public abstract class Repository<T>
 
         if (orderBy is not null)
         {
-            return await orderBy(query).ToListAsync();
+            return await orderBy(query).ToListAsync(cancellationToken);
         }
         else
         {
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken);
         }
     }
 
     public virtual async Task<T?> GetByIdAsync(
         Guid id,
+        CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {
-        IQueryable<T> query = _dbSet;
+        IQueryable<T> query = DbSet;
         
         foreach (var include in includes)
         {
             query = query.Include(include);
         }
         
-        return await query.FirstOrDefaultAsync(entity => id.Equals(entity.Id));
+        return await query.FirstOrDefaultAsync(
+            entity => id.Equals(entity.Id),
+            cancellationToken);
     }
 
-    public virtual async Task InsertAsync(T entity)
+    public virtual async Task InsertAsync(T entity, CancellationToken cancellationToken = default)
     {
-        await _dbSet.AddAsync(entity);
+        await DbSet.AddAsync(entity, cancellationToken);
     }
 
-    public virtual Task UpdateAsync(T entity)
+    public virtual Task UpdateAsync(T entity, CancellationToken cancellationToken = default)
     {
-        _dbSet.Attach(entity);
-        _dbContext.Entry(entity).State = EntityState.Modified;
+        DbSet.Attach(entity);
+        DbContext.Entry(entity).State = EntityState.Modified;
         return Task.CompletedTask;
     }
 
-    public virtual Task DeleteAsync(T entity)
+    public virtual Task DeleteAsync(T entity, CancellationToken cancellationToken = default)
     {
-        if (_dbContext.Entry(entity).State == EntityState.Detached)
+        if (DbContext.Entry(entity).State == EntityState.Detached)
         {
-            _dbSet.Attach(entity);
+            DbSet.Attach(entity);
         }
-        _dbSet.Remove(entity);
+        DbSet.Remove(entity);
         return Task.CompletedTask;
     }
 
-    public virtual async Task DeleteAsync(Guid id)
+    public virtual async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
     {
-        T? entityToDelete = await _dbSet.FirstOrDefaultAsync(entity => entity.Id.Equals(id));
+        T? entityToDelete = await DbSet.FirstOrDefaultAsync(entity => entity.Id.Equals(id), cancellationToken);
 
         if (entityToDelete is not null)
         {
-            await DeleteAsync(entityToDelete);
+            await DeleteAsync(entityToDelete, cancellationToken);
         }
     }
 }

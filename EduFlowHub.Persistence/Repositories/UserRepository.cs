@@ -13,8 +13,8 @@ public class UserRepository
     {
     }
 
-    public async Task<User?> GetByNameAsync(string name)
+    public async Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
     {
-        return await _dbSet.FirstOrDefaultAsync(u => u.Name == name);
+        return await DbSet.FirstOrDefaultAsync(u => u.Name == name, cancellationToken);
     }
 }

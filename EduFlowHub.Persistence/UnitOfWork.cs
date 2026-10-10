@@ -42,9 +42,9 @@ public class UnitOfWork
     public ILessonMaterialRepository LessonMaterialRepository => _lessonMaterialRepository;
     public IUserRepository UserRepository => _userRepository;
     
-    public async Task SaveAsync()
+    public async Task SaveAsync(CancellationToken cancellationToken = default)
     {
-        await _dbContext.SaveChangesAsync();
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 
     private bool _disposed = false;

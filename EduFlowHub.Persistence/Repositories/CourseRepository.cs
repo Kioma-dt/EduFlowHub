@@ -13,24 +13,25 @@ public class CourseRepository
     {
     }
 
-    public async Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId)
+    public async Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId, CancellationToken  cancellationToken = default)
     {
-        return await _dbContext.Set<CourseEnrollment>()
+        return await DbContext.Set<CourseEnrollment>()
             .Include(enrollment => enrollment.Course)
             .ThenInclude(enrollment => enrollment.Author)
             .Include(enrollment => enrollment.Course)
             .ThenInclude(enrollment => enrollment.Category)
             .Where(enrollment => enrollment.StudentId.Equals(studentId))
             .Select(enrollment => enrollment.Course!)
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<IEnumerable<Course>> GetWithFiltersAsync(
         Guid? categoryId,
         Guid? authorId, 
-        CourseStatus? status)
+        CourseStatus? status,
+        CancellationToken  cancellationToken = default)
     {
-        IQueryable<Course> query = _dbSet.AsQueryable();
+        IQueryable<Course> query = DbSet.AsQueryable();
 
         if (categoryId.HasValue)
         {
@@ -45,6 +46,6 @@ public class CourseRepository
             query = query.Where(course => course.Status.Equals(status));
         }
         
-        return await query.ToListAsync();
+        return await query.ToListAsync(cancellationToken);
     }
 }
