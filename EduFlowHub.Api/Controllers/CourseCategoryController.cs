@@ -11,8 +11,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EduFlowHub.Api.Controllers;
 
+[Authorize]
 [ApiController]
-[Route("api/v1/course-category")]
+[Route("api/v1/course-categories")]
 public class CourseCategoryController
     : ControllerBase
 {
@@ -27,7 +28,6 @@ public class CourseCategoryController
         _mapper = mapper;
     }
     
-    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Get()
     {
@@ -36,8 +36,7 @@ public class CourseCategoryController
         var response = _mapper.Map<IEnumerable<CourseCategoryResponse>>(result);
         return Ok(response);
     }
-    
-    [Authorize]
+
     [HttpGet("{courseCategoryId:guid}")]
     public async Task<IActionResult> GetById(
         [FromRoute] Guid courseCategoryId)
