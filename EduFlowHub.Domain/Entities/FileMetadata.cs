@@ -51,12 +51,12 @@ public class FileMetadata
             throw new DomainValidationException("File extenstion cannot be empty");
         }
 
-        if (!FilePathRegex.IsMatch(extension.ToLower().Trim()))
+        if (!FilePathRegex.IsMatch(extension.ToLowerInvariant().Trim()))
         {
             throw new DomainValidationException("File extension is in not valid format");
         }
         
-        return extension.ToLower().Trim();
+        return extension.ToLowerInvariant().Trim();
     }
     
     private long ValidateSize (long size)
