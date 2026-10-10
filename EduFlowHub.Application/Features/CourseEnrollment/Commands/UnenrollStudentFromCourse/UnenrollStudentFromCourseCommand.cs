@@ -2,7 +2,5 @@ using EduFlowHub.Application.Features.CourseEnrollment.Commands.EnrollStudentOnC
 
 namespace EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
 
-public sealed record UnenrollStudentFromCourseCommand(
-    Guid StudentId,
-    Guid CourseId)
+public sealed record UnenrollStudentFromCourseCommand(Guid StudentId, Guid CourseId)
     : IRequest;
