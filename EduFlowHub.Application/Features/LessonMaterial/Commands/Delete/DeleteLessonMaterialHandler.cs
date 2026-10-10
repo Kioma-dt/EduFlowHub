@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.File;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Delete;
 
