@@ -15,4 +15,8 @@
       <Folder Include="AuthorizationServices\PasswordHasher\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Mime-Detective" Version="25.8.1" />
+    </ItemGroup>
+
 </Project>

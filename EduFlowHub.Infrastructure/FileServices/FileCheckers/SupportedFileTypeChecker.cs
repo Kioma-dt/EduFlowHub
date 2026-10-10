@@ -1,6 +1,5 @@
 using EduFlowHub.Application.Abstractions.Services;
-using EduFlowHub.Infrastructure.FileSevices.Options;
-using Microsoft.Extensions.Options;
+using EduFlowHub.Infrastructure.FileServices.Abstractions;
 
 namespace EduFlowHub.Infrastructure.FileServices.FileCheckers;
 
@@ -9,11 +8,9 @@ public class SupportedFileTypeChecker
 {
     private readonly HashSet<string> _supportedExtensions;
 
-    public SupportedFileTypeChecker(
-        IOptions<SupportedFileExtensionsOptions>  options)
+    public SupportedFileTypeChecker(ISupportedFileTypes supportedFileTypes)
     {
-        _supportedExtensions = new HashSet<string>(options
-            .Value
+        _supportedExtensions = new HashSet<string>(supportedFileTypes
             .Extensions
             .Select(extension => extension.ToLowerInvariant()));
     }
