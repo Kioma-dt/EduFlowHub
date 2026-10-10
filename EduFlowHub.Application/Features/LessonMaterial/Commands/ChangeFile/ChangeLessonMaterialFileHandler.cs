@@ -76,12 +76,10 @@ public class ChangeLessonMaterialFileHandler
             request.FileExtension,
             cancellationToken);
 
-        //! КОСТЫЛЬ
         FileMetadata fileMetadata = new FileMetadata(
             filePath,
             request.FileExtension,
             fileSize);
-        fileMetadata.GenerateGuid();
         
         await _unitOfWork
             .FileMetadataRepository
@@ -93,7 +91,8 @@ public class ChangeLessonMaterialFileHandler
         
         MaterialType materialType = MaterialTypeResolver.FromExtension(request.FileExtension);
 
-        lessonMaterial.ChangeFile(fileMetadata.Id,
+        lessonMaterial.ChangeFile(
+            fileMetadata,
             materialType);
         
         await _unitOfWork
@@ -104,13 +103,6 @@ public class ChangeLessonMaterialFileHandler
         
         await _fileStorage.DeleteAsync(filePathOld, cancellationToken);
         
-        Domain.Entities.LessonMaterial lessonMaterialWithNavigations = await _unitOfWork
-            .LessonMaterialRepository
-            .GetByIdAsync(
-                lessonMaterial.Id,
-                cancellationToken,
-                lessonMaterial => lessonMaterial.FileMetadata);
-        
-        return _mapper.Map<LessonMaterialDto>(lessonMaterialWithNavigations);
+        return _mapper.Map<LessonMaterialDto>(lessonMaterial);
     }
 }

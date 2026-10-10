@@ -85,16 +85,10 @@ public class CreateLessonMaterialHandler
             request.FileExtension,
             cancellationToken);
 
-        //! КОСТЫЛЬ
         FileMetadata fileMetadata = new FileMetadata(
             filePath,
             request.FileExtension,
             fileSize);
-        fileMetadata.GenerateGuid();
-
-        await _unitOfWork
-            .FileMetadataRepository
-            .InsertAsync(fileMetadata, cancellationToken);
         
         MaterialType materialType = MaterialTypeResolver.FromExtension(request.FileExtension);
 
@@ -103,7 +97,7 @@ public class CreateLessonMaterialHandler
             request.OrderNumber,
             materialType,
             request.CourseId,
-            fileMetadata.Id);
+            fileMetadata);
         
         await _unitOfWork
             .LessonMaterialRepository
