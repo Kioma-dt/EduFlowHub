@@ -29,20 +29,21 @@ public class CourseCategoryController
     }
     
     [HttpGet]
-    public async Task<IActionResult> Get()
+    public async Task<IActionResult> Get(CancellationToken cancellationToken)
     {
         var query = new ListAllCourseCategoriesQuery();
-        IEnumerable<CourseCategoryDto> result = await _mediator.Send(query);
+        IEnumerable<CourseCategoryDto> result = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<CourseCategoryResponse>>(result);
         return Ok(response);
     }
 
     [HttpGet("{courseCategoryId:guid}")]
     public async Task<IActionResult> GetById(
-        [FromRoute] Guid courseCategoryId)
+        [FromRoute] Guid courseCategoryId,
+        CancellationToken cancellationToken)
     {
         var query = new GetCourseCategoryByIdQuery(courseCategoryId);
-        CourseCategoryDto result = await _mediator.Send(query);
+        CourseCategoryDto result = await _mediator.Send(query, cancellationToken);
         var response =  _mapper.Map<CourseCategoryResponse>(result);
         return Ok(response);
     }
@@ -50,10 +51,11 @@ public class CourseCategoryController
     [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<IActionResult> Create(
-        [FromBody] CreateCourseCategoryRequest request)
+        [FromBody] CreateCourseCategoryRequest request,
+        CancellationToken cancellationToken)
     {
         var command = _mapper.Map<CreateCourseCategoryCommand>(request);
-        CourseCategoryDto result = await _mediator.Send(command);
+        CourseCategoryDto result = await _mediator.Send(command, cancellationToken);
         var response =  _mapper.Map<CourseCategoryResponse>(result);
         return CreatedAtAction(
             nameof(GetById), 
@@ -65,12 +67,13 @@ public class CourseCategoryController
     [HttpPut("{courseCategoryId:guid}")]
     public async Task<IActionResult> Put(
         [FromRoute] Guid courseCategoryId,
-        [FromBody] PutCourseCategoryRequest request)
+        [FromBody] PutCourseCategoryRequest request,
+        CancellationToken cancellationToken)
     {
         var command = new UpdateCourseCategoryCommand(
             courseCategoryId,
             request.Name); 
-        CourseCategoryDto result =  await _mediator.Send(command);
+        CourseCategoryDto result =  await _mediator.Send(command, cancellationToken);
         var response =  _mapper.Map<CourseCategoryResponse>(result);
         
         return Ok(response);
@@ -79,10 +82,11 @@ public class CourseCategoryController
     [Authorize(Roles = "Admin")]
     [HttpDelete("{courseCategoryId:guid}")]
     public async Task<IActionResult> Delete(
-        [FromRoute] Guid courseCategoryId)
+        [FromRoute] Guid courseCategoryId,
+        CancellationToken cancellationToken)
     {
         var command = new DeleteCourseCategoryCommand(courseCategoryId);
-        await _mediator.Send(command);
+        await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
 }
