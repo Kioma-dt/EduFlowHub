@@ -9,7 +9,7 @@ public class FileMetadataConfiguration
         builder.HasKey(fileMetadata  => fileMetadata.Id);
         
         builder.Property(fileMetadata => fileMetadata.Path)
-            .HasMaxLength(256)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder.Property(fileMetadata => fileMetadata.Extension)
@@ -18,6 +18,11 @@ public class FileMetadataConfiguration
         
         builder.Property(fileMetadata => fileMetadata.Size)
             .IsRequired();
+        
+        builder.HasOne(fileMetadata => fileMetadata.LessonMaterial)
+            .WithOne(lessonMaterial => lessonMaterial.FileMetadata)
+            .HasForeignKey<FileMetadata>(fileMetadata => fileMetadata.LessonMaterialId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasIndex(fileMetadata => fileMetadata.Path)
             .IsUnique();

@@ -8,11 +8,11 @@ public class CourseCategoryConfiguration
         builder.HasKey(courseCategory => courseCategory.Id);
         
         builder.Property(courseCategory => courseCategory.Name)
-            .HasMaxLength(256)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder.Property(courseCategory => courseCategory.NormalizedName)
-            .HasMaxLength(256)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder.HasMany(courseCategory => courseCategory.Courses)
