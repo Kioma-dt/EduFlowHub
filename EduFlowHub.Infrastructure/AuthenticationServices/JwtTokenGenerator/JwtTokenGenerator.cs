@@ -1,9 +1,9 @@
 using System.IdentityModel.Tokens.Jwt;
-using EduFlowHub.Application.Abstractions.Services;
 using EduFlowHub.Domain.Enums;
 
 using System.Security.Claims;
 using System.Text;
+using EduFlowHub.Application.Abstractions.Services.Authentication;
 using EduFlowHub.Infrastructure.AuthenticationServices.JwtTokenGenerator.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;

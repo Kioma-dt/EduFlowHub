@@ -7,6 +7,6 @@ public sealed record CreateCourseCommand(
     string Title,
     string Description,
     decimal Price,
-    Guid AuthorId,
-    Guid CategoryId)
+    Guid CategoryId,
+    Guid AuthorId)
     : IRequest<CourseDto>;

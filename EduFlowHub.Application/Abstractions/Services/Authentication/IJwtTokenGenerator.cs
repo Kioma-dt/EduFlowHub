@@ -1,6 +1,6 @@
 using EduFlowHub.Application.Features.Authentication.Queries.Login;
 
-namespace EduFlowHub.Application.Abstractions.Services;
+namespace EduFlowHub.Application.Abstractions.Services.Authentication;
 
 public interface IJwtTokenGenerator
 {

@@ -1,7 +1,7 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services;
-using EduFlowHub.Application.Features.Authentication.Exceptions;
 using EduFlowHub.Application.Features.User.Dtos;
+using EduFlowHub.Application.Features.User.Exceptions;
 
 namespace EduFlowHub.Application.Features.User.Commands.ChangePassword;
 

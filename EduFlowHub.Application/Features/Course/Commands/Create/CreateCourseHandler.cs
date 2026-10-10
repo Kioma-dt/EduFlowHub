@@ -1,5 +1,8 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.Course.Dtos;
+using EduFlowHub.Application.Features.CourseCategory.Dtos;
+using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Create;
 
@@ -8,13 +11,16 @@ public class CreateCourseHandler
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseAccessService _courseAccessService;
 
     public CreateCourseHandler(
         IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseAccessService courseAccessService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _courseAccessService = courseAccessService;
     }
     
     public async Task<CourseDto> Handle(
@@ -46,18 +52,25 @@ public class CreateCourseHandler
             request.AuthorId,
             request.CategoryId);
         
+        _courseAccessService.EnsureCanCreate(course);
+        
         await _unitOfWork
             .CourseRepository
             .InsertAsync(course);
         await _unitOfWork.SaveAsync();
         
-        Domain.Entities.Course courseWithNavigations = await _unitOfWork
-            .CourseRepository
-            .GetByIdAsync(
-                course.Id,
-                course => course.Author,
-                course => course.Category);
+        var authorDto = _mapper.Map<UserDto>(author);
+        var courseCategoryDto = _mapper.Map<CourseCategoryDto>(category);
 
-        return _mapper.Map<CourseDto>(courseWithNavigations);
+        var courseDto = new CourseDto(
+            course.Id,
+            course.Title,
+            course.Description,
+            course.Price,
+            course.Status,
+            authorDto,
+            courseCategoryDto);
+
+        return courseDto;
     }
 }

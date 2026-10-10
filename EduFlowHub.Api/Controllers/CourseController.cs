@@ -1,9 +1,11 @@
 using EduFlowHub.Api.Contracts.Course.QueryStrings;
 using EduFlowHub.Api.Contracts.Course.Requests;
 using EduFlowHub.Api.Contracts.Course.Responses;
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.User;
+using EduFlowHub.Application.Features.Course.Commands.Archive;
 using EduFlowHub.Application.Features.Course.Commands.Create;
 using EduFlowHub.Application.Features.Course.Commands.Delete;
+using EduFlowHub.Application.Features.Course.Commands.Publish;
 using EduFlowHub.Application.Features.Course.Commands.Update;
 using EduFlowHub.Application.Features.Course.Dtos;
 using EduFlowHub.Application.Features.Course.Queries.GetById;
@@ -82,8 +84,8 @@ public class CourseController
             request.Title,
             request.Description,
             request.Price,
-            _currentUser.CurrentUserId,
-            request.CategoryId);
+            request.CategoryId,
+            _currentUser.CurrentUserId);
         CourseDto result = await _mediator.Send(command);
         var response = _mapper.Map<CourseResponse>(result);
         
@@ -104,6 +106,26 @@ public class CourseController
             request.Description,
             request.Price,
             request.CategoryId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+    
+    [Authorize(Roles = "Admin, Teacher")]
+    [HttpPost("{courseId:guid}/publish")]
+    public async Task<IActionResult> Publish(
+        [FromRoute] Guid courseId)
+    {
+        var command = new PublishCourseCommand(courseId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+    
+    [Authorize(Roles = "Admin, Teacher")]
+    [HttpPost("{courseId:guid}/archive")]
+    public async Task<IActionResult> Archive(
+        [FromRoute] Guid courseId)
+    {
+        var command = new ArchiveCourseCommand(courseId);
         await _mediator.Send(command);
         return NoContent();
     }
