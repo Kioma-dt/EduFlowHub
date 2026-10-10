@@ -21,12 +21,21 @@ public class ListAllCoursesHandler
         ListAllCoursesQuery request, 
         CancellationToken cancellationToken)
     {
+        Domain.Entities.CourseCategory? category = null;
+
+        if (request.Category is not null)
+        {
+            category = await _unitOfWork
+                .CourseCategoryRepository
+                .GetByNormalizedNameAsync(request.Category);
+        }
+        
         var courses = await _unitOfWork
             .CourseRepository
-            .GetAllAsync(null,
-                null,
-                course => course.Author,
-                course => course.Category);
+            .GetWithFiltersAsync(
+                category?.Id,
+                request.AuthorId,
+                request.Status);
         
         return _mapper.Map<List<CourseDto>>(courses);
     }
