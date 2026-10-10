@@ -36,12 +36,12 @@ public class RegisterRequestValidator
             .NotEmpty()
             .MaximumLength(128)
             .Must(username => !username.Any(char.IsWhiteSpace))
-            .WithMessage("Firstname cannot contain whitespaces");
+            .WithMessage("FirstName cannot contain whitespaces");
         
         RuleFor(request => request.LastName)
             .NotEmpty()
             .MaximumLength(128)
             .Must(username => !username.Any(char.IsWhiteSpace))
-            .WithMessage("Firstname cannot contain whitespaces");
+            .WithMessage("LastName cannot contain whitespaces");
     }
 }
