@@ -49,8 +49,8 @@ namespace EduFlowHub.Persistence.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.HasKey("Id");
 
@@ -60,7 +60,7 @@ namespace EduFlowHub.Persistence.Migrations
 
                     b.ToTable("Courses", t =>
                         {
-                            t.HasCheckConstraint("CK_Course_Price_Positive", "\"Price\" > 0");
+                            t.HasCheckConstraint("CK_Course_Price_Positive", "\"Price\" >= 0");
                         });
                 });
 
@@ -72,13 +72,13 @@ namespace EduFlowHub.Persistence.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("NormalizedName")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.HasKey("Id");
 
@@ -93,12 +93,12 @@ namespace EduFlowHub.Persistence.Migrations
                     b.Property<Guid>("CourseId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid>("StudentId")
                         .HasColumnType("uuid");
 
-                    b.HasKey("CourseId", "UserId");
+                    b.HasKey("CourseId", "StudentId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("StudentId");
 
                     b.ToTable("CourseEnrollments");
                 });
@@ -114,15 +114,21 @@ namespace EduFlowHub.Persistence.Migrations
                         .HasMaxLength(16)
                         .HasColumnType("character varying(16)");
 
+                    b.Property<Guid>("LessonMaterialId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Path")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<long>("Size")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("LessonMaterialId")
+                        .IsUnique();
 
                     b.HasIndex("Path")
                         .IsUnique();
@@ -142,16 +148,13 @@ namespace EduFlowHub.Persistence.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<Guid>("FileMetadataId")
-                        .HasColumnType("uuid");
-
                     b.Property<int>("OrderNumber")
                         .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasMaxLength(128)
+                        .HasColumnType("character varying(128)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -160,8 +163,6 @@ namespace EduFlowHub.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("FileMetadataId");
 
                     b.HasIndex("OrderNumber", "CourseId")
                         .IsUnique();
@@ -178,15 +179,13 @@ namespace EduFlowHub.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Email")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -197,10 +196,6 @@ namespace EduFlowHub.Persistence.Migrations
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("Phone")
                         .HasMaxLength(256)
                         .HasColumnType("character varying(256)");
 
@@ -243,15 +238,26 @@ namespace EduFlowHub.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("EduFlowHub.Domain.Entities.User", "User")
+                    b.HasOne("EduFlowHub.Domain.Entities.User", "Student")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("StudentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
 
-                    b.Navigation("User");
+                    b.Navigation("Student");
+                });
+
+            modelBuilder.Entity("EduFlowHub.Domain.Entities.FileMetadata", b =>
+                {
+                    b.HasOne("EduFlowHub.Domain.Entities.LessonMaterial", "LessonMaterial")
+                        .WithOne("FileMetadata")
+                        .HasForeignKey("EduFlowHub.Domain.Entities.FileMetadata", "LessonMaterialId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("LessonMaterial");
                 });
 
             modelBuilder.Entity("EduFlowHub.Domain.Entities.LessonMaterial", b =>
@@ -259,18 +265,10 @@ namespace EduFlowHub.Persistence.Migrations
                     b.HasOne("EduFlowHub.Domain.Entities.Course", "Course")
                         .WithMany("LessonMaterials")
                         .HasForeignKey("CourseId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EduFlowHub.Domain.Entities.FileMetadata", "FileMetadata")
-                        .WithMany()
-                        .HasForeignKey("FileMetadataId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Course");
-
-                    b.Navigation("FileMetadata");
                 });
 
             modelBuilder.Entity("EduFlowHub.Domain.Entities.Course", b =>
@@ -281,6 +279,11 @@ namespace EduFlowHub.Persistence.Migrations
             modelBuilder.Entity("EduFlowHub.Domain.Entities.CourseCategory", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("EduFlowHub.Domain.Entities.LessonMaterial", b =>
+                {
+                    b.Navigation("FileMetadata");
                 });
 #pragma warning restore 612, 618
         }
