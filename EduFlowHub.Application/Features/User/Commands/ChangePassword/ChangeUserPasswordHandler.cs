@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Features.Authentication.Exceptions;
 using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.User.Commands.ChangePassword;
@@ -34,6 +35,14 @@ public class ChangeUserPasswordHandler
             throw new EntityNotFoundException("User", 
                 "Id",
                 request.UserId.ToString());
+        }
+
+        if (request.OldPassword is null
+            || !_passwordHasher.VerifyHashedPassword(
+                request.OldPassword,
+                user.PasswordHash))
+        {
+            throw new WrongPasswordException();
         }
         
         string passwordHash =  _passwordHasher.HashPassword(request.Password);
