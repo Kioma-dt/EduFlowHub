@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduFlowHub.Application", "E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduFlowHub.Infrastructure", "EduFlowHub.Infrastructure\EduFlowHub.Infrastructure.csproj", "{EDF3B8F0-3740-4F1A-8E51-789AB7D06437}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EduFlowHub.Api", "EduFlowHub.Api\EduFlowHub.Api.csproj", "{7FC6654F-E335-4C35-BB4D-1CC0EC23AA18}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{EDF3B8F0-3740-4F1A-8E51-789AB7D06437}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF3B8F0-3740-4F1A-8E51-789AB7D06437}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF3B8F0-3740-4F1A-8E51-789AB7D06437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FC6654F-E335-4C35-BB4D-1CC0EC23AA18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC6654F-E335-4C35-BB4D-1CC0EC23AA18}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC6654F-E335-4C35-BB4D-1CC0EC23AA18}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC6654F-E335-4C35-BB4D-1CC0EC23AA18}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
