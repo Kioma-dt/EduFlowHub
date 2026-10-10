@@ -26,6 +26,7 @@ public class PublishCourseHandler
             .CourseRepository
             .GetByIdAsync(
                 request.CourseId,
+                cancellationToken,
                 course => course.LessonMaterials);
 
         if (course is null)
@@ -42,8 +43,8 @@ public class PublishCourseHandler
 
         await _unitOfWork
             .CourseRepository
-            .UpdateAsync(course);
+            .UpdateAsync(course, cancellationToken);
 
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

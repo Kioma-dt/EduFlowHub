@@ -38,7 +38,8 @@ public class LocalFileStorage
     
     public async Task<string> UploadAsync(
         Stream fileStream, 
-        string fileExtension)
+        string fileExtension,
+        CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(fileStream);
 
@@ -65,13 +66,12 @@ public class LocalFileStorage
             bufferSize: _maxFileSize,
             useAsync: true);
 
-        await fileStream.CopyToAsync(destination);
+        await fileStream.CopyToAsync(destination, cancellationToken);
 
         return filePath;
     }
 
-    public Task<Stream> DownloadAsync(
-        string filePath)
+    public Task<Stream> DownloadAsync(string filePath, CancellationToken cancellationToken = default)
     {
         var fullPath = GetFullPath(filePath);
 
@@ -86,8 +86,7 @@ public class LocalFileStorage
         return Task.FromResult(stream);
     }
 
-    public Task<bool> DeleteAsync(
-        string filePath)
+    public Task<bool> DeleteAsync(string filePath, CancellationToken cancellationToken = default)
     {
         var fullPath = GetFullPath(filePath);
 

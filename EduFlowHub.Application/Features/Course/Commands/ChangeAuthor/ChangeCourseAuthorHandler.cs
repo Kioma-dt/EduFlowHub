@@ -29,7 +29,7 @@ public class ChangeCourseAuthorHandler
     {
         Domain.Entities.Course? course = await _unitOfWork
             .CourseRepository
-            .GetByIdAsync(request.CourseId);
+            .GetByIdAsync(request.CourseId, cancellationToken);
 
         if (course is null)
         {
@@ -43,7 +43,7 @@ public class ChangeCourseAuthorHandler
 
         Domain.Entities.User? newAuthor = await _unitOfWork
             .UserRepository
-            .GetByIdAsync(request.AuthorId);
+            .GetByIdAsync(request.AuthorId, cancellationToken);
         
         if (newAuthor is null)
         {
@@ -64,8 +64,8 @@ public class ChangeCourseAuthorHandler
 
         await _unitOfWork
             .CourseRepository
-            .UpdateAsync(course);
+            .UpdateAsync(course, cancellationToken);
 
-        await _unitOfWork.SaveAsync();
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

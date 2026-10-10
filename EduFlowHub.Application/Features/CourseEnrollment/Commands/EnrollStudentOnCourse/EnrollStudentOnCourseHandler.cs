@@ -26,7 +26,7 @@ public class EnrollStudentOnCourseHandler
     {
         if (await _unitOfWork
                 .CourseEnrollmentRepository
-                .GetByIdAsync(request.StudentId, request.CourseId) is not null)
+                .GetByIdAsync(request.StudentId, request.CourseId, cancellationToken) is not null)
         {
             throw new EntityAlreadyExistsException(
                 "CourseEnrollment", 
@@ -36,7 +36,7 @@ public class EnrollStudentOnCourseHandler
         
         var student = await _unitOfWork
             .UserRepository
-            .GetByIdAsync(request.StudentId);
+            .GetByIdAsync(request.StudentId, cancellationToken);
 
         if (student is null)
         {
@@ -45,7 +45,7 @@ public class EnrollStudentOnCourseHandler
         
         var course = await _unitOfWork
             .CourseRepository
-            .GetByIdAsync(request.CourseId);
+            .GetByIdAsync(request.CourseId, cancellationToken);
 
         if (course is null)
         {

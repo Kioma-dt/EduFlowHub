@@ -27,7 +27,7 @@ public class ListCoursesOfAuthorHandler
         {
             category = await _unitOfWork
                 .CourseCategoryRepository
-                .GetByNormalizedNameAsync(request.Category);
+                .GetByNormalizedNameAsync(request.Category, cancellationToken);
         }
         
         var courses = await _unitOfWork
@@ -35,7 +35,8 @@ public class ListCoursesOfAuthorHandler
             .GetWithFiltersAsync(
                 category?.Id,
                 request.AuthorId,
-                request.Status);
+                request.Status,
+                cancellationToken);
         
         return _mapper.Map<List<CourseDto>>(courses);
     }

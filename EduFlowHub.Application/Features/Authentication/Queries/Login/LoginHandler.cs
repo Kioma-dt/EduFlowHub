@@ -32,7 +32,7 @@ public class LoginHandler
     {
         Domain.Entities.User? user = await _unitOfWork
             .UserRepository
-            .GetByNameAsync(request.Username);
+            .GetByNameAsync(request.Username, cancellationToken);
 
         if (user is null
             || !_passwordHasher.VerifyHashedPassword(request.Password, user.PasswordHash)) 

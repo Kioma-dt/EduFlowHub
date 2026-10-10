@@ -25,8 +25,9 @@ public class GetCourseByIdHandler
             .CourseRepository
             .GetByIdAsync(
                 request.CourseId,
-                course => course.Author,
-                course => course.Category);
+                cancellationToken,
+                course => course.Author!,
+                course => course.Category!);
 
         if (course is null)
         {

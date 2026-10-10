@@ -25,7 +25,7 @@ public class CreateCourseCategoryHandler
         
         Domain.Entities.CourseCategory?  courseCategoryDb = await _unitOfWork
             .CourseCategoryRepository
-            .GetByNormalizedNameAsync(courseCategory.NormalizedName);
+            .GetByNormalizedNameAsync(courseCategory.NormalizedName, cancellationToken);
 
         if (courseCategoryDb is not null)
         {
@@ -37,8 +37,8 @@ public class CreateCourseCategoryHandler
         
         await _unitOfWork
             .CourseCategoryRepository
-            .InsertAsync(courseCategory);
-        await _unitOfWork.SaveAsync();
+            .InsertAsync(courseCategory, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
         return _mapper.Map<CourseCategoryDto>(courseCategory);
     }

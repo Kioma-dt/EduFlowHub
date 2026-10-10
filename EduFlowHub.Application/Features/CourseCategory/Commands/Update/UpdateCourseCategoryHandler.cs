@@ -23,7 +23,7 @@ public class UpdateCourseCategoryHandler
     {
         var courseCategory = await _unitOfWork
             .CourseCategoryRepository
-            .GetByIdAsync(request.CourseCategoryId);
+            .GetByIdAsync(request.CourseCategoryId, cancellationToken);
 
         if (courseCategory is null)
         {
@@ -37,8 +37,8 @@ public class UpdateCourseCategoryHandler
         
         await _unitOfWork
             .CourseCategoryRepository
-            .UpdateAsync(courseCategory);
-        await _unitOfWork.SaveAsync();
+            .UpdateAsync(courseCategory, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
 
 
         return _mapper.Map<CourseCategoryDto>(courseCategory);

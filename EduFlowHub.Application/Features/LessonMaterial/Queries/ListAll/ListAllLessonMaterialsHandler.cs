@@ -31,7 +31,7 @@ public class ListAllLessonMaterialsHandler
         
         IEnumerable<Domain.Entities.LessonMaterial> lessonMaterials = await _unitOfWork
             .LessonMaterialRepository
-            .GetAllAsync(null, orderBy);
+            .GetAllAsync(null, orderBy, cancellationToken);
         
         return _mapper.Map<IEnumerable<LessonMaterialDto>>(lessonMaterials);
     }

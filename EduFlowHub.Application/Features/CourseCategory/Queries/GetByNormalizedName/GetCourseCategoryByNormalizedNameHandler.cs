@@ -23,7 +23,7 @@ public class GetCourseCategoryByNormalizedNameHandler
     {
         var courseCategory = await _unitOfWork
             .CourseCategoryRepository
-            .GetByNormalizedNameAsync(request.NormalizedName);
+            .GetByNormalizedNameAsync(request.NormalizedName, cancellationToken);
 
         if (courseCategory is null)
         {
