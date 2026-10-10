@@ -1,5 +1,5 @@
 using EduFlowHub.Application.Abstractions.Persistence;
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.Authentication;
 using EduFlowHub.Application.Features.Authentication.Dtos;
 using EduFlowHub.Application.Features.Authentication.Exceptions;
 using EduFlowHub.Application.Features.User.Dtos;
@@ -34,15 +34,10 @@ public class LoginHandler
             .UserRepository
             .GetByNameAsync(request.Username);
 
-        if (user is null)
+        if (user is null
+            || !_passwordHasher.VerifyHashedPassword(request.Password, user.PasswordHash)) 
         {
-            throw new UsernameNotFoundException(request.Username);
-        }
-
-        if (!_passwordHasher.VerifyHashedPassword(request.Password, user.PasswordHash))
-        {
-            throw new WrongPasswordException();
-
+            throw new LoginFailedException();
         }
 
         string jwtToken = _jwtTokenGenerator.GenerateJwtToken(user.Id, user.Role);

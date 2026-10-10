@@ -2,8 +2,9 @@ using EduFlowHub.Api.Contracts.CourseAdmin.QueryStrings;
 using EduFlowHub.Api.Contracts.CourseAdmin.Requests;
 using EduFlowHub.Api.Contracts.CourseAdmin.Responses;
 using EduFlowHub.Application.Features.Course.Commands.ChangeAuthor;
-using EduFlowHub.Application.Features.Course.Commands.ChangeStatus;
 using EduFlowHub.Application.Features.Course.Commands.Create;
+using EduFlowHub.Application.Features.Course.Commands.Restore;
+using EduFlowHub.Application.Features.Course.Commands.Unpublish;
 using EduFlowHub.Application.Features.Course.Dtos;
 using EduFlowHub.Application.Features.Course.Queries.ListAll;
 using Microsoft.AspNetCore.Authorization;
@@ -56,14 +57,20 @@ public class CourseAdminController
             response);
     }
     
-    [HttpPut("{courseId:guid}/status")]
-    public async Task<IActionResult> ChangeStatus(
-        [FromRoute] Guid courseId,
-        [FromBody] ChangeCourseStatusRequest request)
+    [HttpPost("{courseId:guid}/unpublish")]
+    public async Task<IActionResult> Unpublish(
+        [FromRoute] Guid courseId)
     {
-        var command = new ChangeCourseStatusCommand(
-            courseId,
-            request.Status);
+        var command = new UnpublishCourseCommand(courseId);
+        await _mediator.Send(command);
+        return NoContent();
+    }
+    
+    [HttpPost("{courseId:guid}/restore")]
+    public async Task<IActionResult> Restore(
+        [FromRoute] Guid courseId)
+    {
+        var command = new RestoreCourseCommand(courseId);
         await _mediator.Send(command);
         return NoContent();
     }

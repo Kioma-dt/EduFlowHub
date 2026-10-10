@@ -1,5 +1,5 @@
 using EduFlowHub.Application.Abstractions.Persistence;
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.Authentication;
 using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.Authentication.Commands.Register;
@@ -10,6 +10,12 @@ public class RegisterHandler
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
+    
+    private static readonly HashSet<UserRole> SelfRegisterRoles = new ()
+    {
+        UserRole.Student,
+        UserRole.Teacher
+    };
 
     public RegisterHandler(
         IMapper mapper,
@@ -25,18 +31,16 @@ public class RegisterHandler
         RegisterCommand request,
         CancellationToken cancellationToken)
     {
-        if (request.Role == UserRole.Admin)
+        if (!SelfRegisterRoles.Contains(request.Role))
         {
-            throw new ApplicationException("You cannot register admin users");
+            throw new ApplicationValidationException($"You cannot register user with role {request.Role}");
         }
         
-        Domain.Entities.User? userDb = await _unitOfWork
-            .UserRepository
-            .GetByNameAsync(request.Username);
 
-        if (userDb is not null)
+        if (await _unitOfWork.UserRepository.GetByNameAsync(request.Username) is not null)
         {
-            throw new EntityAlreadyExistsException("User",
+            throw new EntityAlreadyExistsException(
+                "User",
                 "Name",
                 request.Username);
         }
@@ -50,11 +54,8 @@ public class RegisterHandler
             request.FirstName,
             request.LastName);
 
-        await _unitOfWork
-            .UserRepository
-            .InsertAsync(user);
+        await _unitOfWork.UserRepository.InsertAsync(user);
         await _unitOfWork.SaveAsync();
-
 
         return _mapper.Map<UserDto>(user);
     }

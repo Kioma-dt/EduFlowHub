@@ -1,23 +1,29 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.Course.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Commands.ChangeAuthor;
 
 public class ChangeCourseAuthorHandler
-    : IRequestHandler<ChangeCourseAuthorCommand, CourseDto>
+    : IRequestHandler<ChangeCourseAuthorCommand>
 {
-    IMapper _mapper;
-    IUnitOfWork _unitOfWork;
+    private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseAccessService _courseAccessService;
+
+    private static readonly HashSet<UserRole> AllowedAuthors = new ()
+    {
+        UserRole.Teacher
+    };
 
     public ChangeCourseAuthorHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseAccessService courseAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _courseAccessService = courseAccessService;
     }
 
-    public async Task<CourseDto> Handle(
+    public async Task Handle(
         ChangeCourseAuthorCommand request, 
         CancellationToken cancellationToken)
     {
@@ -33,13 +39,25 @@ public class ChangeCourseAuthorHandler
                 request.CourseId.ToString());
         }
         
-        Domain.Entities.User? author = await _unitOfWork
+        _courseAccessService.EnsureCanChangeAuthor(course);
+
+        Domain.Entities.User? newAuthor = await _unitOfWork
             .UserRepository
             .GetByIdAsync(request.AuthorId);
-
-        if (author is null)
+        
+        if (newAuthor is null)
         {
             throw new InvalidEntityReferenceException("User", request.AuthorId);
+        }
+
+        if (!AllowedAuthors.Contains(newAuthor.Role))
+        {
+            throw new ApplicationException($"Author {newAuthor.Role} is not allowed");
+        }
+
+        if (newAuthor.Id == course.AuthorId)
+        {
+            return;
         }
             
         course.ChangeAuthor(request.AuthorId);
@@ -49,14 +67,5 @@ public class ChangeCourseAuthorHandler
             .UpdateAsync(course);
 
         await _unitOfWork.SaveAsync();
-        
-        Domain.Entities.Course courseWithNavigations = await _unitOfWork
-            .CourseRepository
-            .GetByIdAsync(
-                course.Id,
-                course => course.Author,
-                course => course.Category);
-        
-        return _mapper.Map<CourseDto>(courseWithNavigations);
     }
 }

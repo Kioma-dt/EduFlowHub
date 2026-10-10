@@ -1,5 +1,5 @@
 using System.Text.RegularExpressions;
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.File;
 using EduFlowHub.Application.Features.LessonMaterial.Exceptions;
 using EduFlowHub.Infrastructure.FileServices.Exceptions;
 using EduFlowHub.Infrastructure.FileServices.FileStorage.Local.Options;

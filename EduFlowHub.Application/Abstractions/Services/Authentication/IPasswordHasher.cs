@@ -1,4 +1,4 @@
-namespace EduFlowHub.Application.Abstractions.Services;
+namespace EduFlowHub.Application.Abstractions.Services.Authentication;
 
 public interface IPasswordHasher
 {

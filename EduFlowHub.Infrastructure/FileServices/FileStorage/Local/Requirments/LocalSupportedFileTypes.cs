@@ -1,4 +1,4 @@
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.File;
 using EduFlowHub.Infrastructure.FileServices.FileStorage.Local.Options;
 using Microsoft.Extensions.Options;
 

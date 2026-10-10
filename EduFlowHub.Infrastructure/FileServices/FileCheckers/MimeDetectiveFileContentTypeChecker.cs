@@ -1,5 +1,5 @@
 using System.Collections.Immutable;
-using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.File;
 using MimeDetective;
 using MimeDetective.Engine;
 

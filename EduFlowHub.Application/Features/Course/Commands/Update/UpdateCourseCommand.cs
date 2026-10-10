@@ -8,4 +8,4 @@ public sealed record UpdateCourseCommand(
     string? Description,
     decimal? Price,
     Guid? CategoryId)
-    : IRequest<CourseDto>;
+    : IRequest;
