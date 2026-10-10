@@ -38,20 +38,6 @@ public class UpdateCourseHandler
             request.Description  ?? course.Description,
             request.Price ??  course.Price);
 
-        if (request.AuthorId.HasValue)
-        {
-            var author = await _unitOfWork
-                .UserRepository
-                .GetByIdAsync(request.AuthorId.Value);
-
-            if (author is null)
-            {
-                throw new InvalidEntityReferenceException("User", request.AuthorId.Value);
-            }
-            
-            course.ChangeAuthor(request.AuthorId.Value);
-        }
-
         if (request.CategoryId.HasValue)
         {
             var category = await _unitOfWork
