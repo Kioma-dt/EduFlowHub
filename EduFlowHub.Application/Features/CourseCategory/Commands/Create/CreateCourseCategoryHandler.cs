@@ -23,6 +23,18 @@ public class CreateCourseCategoryHandler
     {
         var courseCategory = new Domain.Entities.CourseCategory(request.Name);
         
+        Domain.Entities.CourseCategory?  courseCategoryDb = await _unitOfWork
+            .CourseCategoryRepository
+            .GetByNormalizedNameAsync(courseCategory.NormalizedName);
+
+        if (courseCategoryDb is not null)
+        {
+            throw new EntityAlreadyExistsException(
+                "CourseCategory",
+                "Name",
+                courseCategoryDb.Name);
+        }
+        
         await _unitOfWork
             .CourseCategoryRepository
             .InsertAsync(courseCategory);
