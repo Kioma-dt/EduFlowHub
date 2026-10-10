@@ -2,10 +2,10 @@ using System.Text.RegularExpressions;
 using EduFlowHub.Application.Abstractions.Services;
 using EduFlowHub.Application.Features.LessonMaterial.Exceptions;
 using EduFlowHub.Infrastructure.FileServices.Exceptions;
-using EduFlowHub.Infrastructure.FileServices.Options;
+using EduFlowHub.Infrastructure.FileServices.FileStorage.Local.Options;
 using Microsoft.Extensions.Options;
 
-namespace EduFlowHub.Infrastructure.FileServices.FileStorage;
+namespace EduFlowHub.Infrastructure.FileServices.FileStorage.Local;
 
 public class LocalFileStorage
     : IFileStorage
@@ -20,16 +20,19 @@ public class LocalFileStorage
     
     private readonly string _rootPath;
     private readonly int _maxFileSize;
-    private readonly ISupportedFileTypeChecker _supportedFileTypeChecker;
+    private readonly HashSet<string> _supportedExtensions;
 
     public LocalFileStorage(
-        IOptions<RootFileStoragePathOptions> rootFilePathOptions,
-        IOptions<MaxFileSizeOptions>  maxFileSizeOptions,
-        ISupportedFileTypeChecker supportedFileTypeChecker)
+        IOptions<LocalRootFileStoragePathOptions> rootFilePathOptions,
+        IOptions<LocalMaxFileSizeOptions>  maxFileSizeOptions,
+        IOptions<LocalSupportedFileExtensionsOptions> supportedExtensions)
     {
         _rootPath = rootFilePathOptions.Value.RootPath;
         _maxFileSize = maxFileSizeOptions.Value.MaxFileSize;
-        _supportedFileTypeChecker = supportedFileTypeChecker;
+        _supportedExtensions = new HashSet<string>(supportedExtensions
+            .Value
+            .Extensions
+            .Select(extension => extension.ToLowerInvariant()));
         Directory.CreateDirectory(_rootPath);
     }
     
@@ -46,7 +49,7 @@ public class LocalFileStorage
         }
         
         if (!FileExtensionRegex.IsMatch(fileExtension)
-            || _supportedFileTypeChecker.IsFileTypeSupported(fileExtension))
+            || !_supportedExtensions.Contains(fileExtension.ToLowerInvariant()))
         {
             throw new UnsupportedFileTypeException(fileExtension);
         }
