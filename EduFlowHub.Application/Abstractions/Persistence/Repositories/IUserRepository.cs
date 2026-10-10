@@ -5,5 +5,5 @@ namespace EduFlowHub.Application.Abstractions.Persistence.Repositories;
 public interface IUserRepository
     : IRepository<User>
 {
-    Task<User?> GetByNameAsync(string name);
+    Task<User?> GetByNameAsync(string name, CancellationToken cancellationToken = default);
 }

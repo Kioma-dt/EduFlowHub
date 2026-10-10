@@ -13,8 +13,10 @@ public class CourseCategoryRepository
     {
     }
 
-    public async Task<CourseCategory?> GetByNormalizedNameAsync(string normalizedName)
+    public async Task<CourseCategory?> GetByNormalizedNameAsync(string normalizedName,  CancellationToken cancellationToken = default)
     {
-        return _dbSet.FirstOrDefault(category => category.NormalizedName == normalizedName);
+        return await DbSet.FirstOrDefaultAsync(
+            category => category.NormalizedName == normalizedName, 
+            cancellationToken);
     }
 }

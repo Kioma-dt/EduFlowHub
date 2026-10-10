@@ -7,10 +7,11 @@ namespace EduFlowHub.Application.Abstractions.Persistence.Repositories;
 public interface ICourseRepository
     : IRepository<Course>
 {
-    Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId);
+    Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId, CancellationToken cancellationToken = default);
     
     Task<IEnumerable<Course>> GetWithFiltersAsync(
         Guid? categoryId,
         Guid? authorId,
-        CourseStatus? status);
+        CourseStatus? status,
+        CancellationToken cancellationToken = default);
 }

@@ -7,5 +7,6 @@ public interface ILessonMaterialRepository
 {
     Task<LessonMaterial?> GetByCourseAndOrderNumberAsync(
         Guid courseId,
-        int orderNumber);
+        int orderNumber, 
+        CancellationToken cancellationToken = default);
 }
