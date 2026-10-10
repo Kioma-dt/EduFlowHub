@@ -44,7 +44,7 @@ public class RegisterHandler
             throw new UsernameNotFoundException(request.Username);
         }
 
-        if (!_passwordHasher.VerifyHashedPassword(user.PasswordHash, request.Password))
+        if (!_passwordHasher.VerifyHashedPassword(request.Password, user.PasswordHash))
         {
             throw new WrongPasswordException();
 
