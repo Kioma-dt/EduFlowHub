@@ -8,7 +8,7 @@ public class CourseConfiguration
         builder.HasKey(course => course.Id);
         
         builder.Property(course => course.Title)
-            .HasMaxLength(256)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder.Property(course => course.Description)
@@ -36,7 +36,7 @@ public class CourseConfiguration
         builder.HasMany(course => course.LessonMaterials)
             .WithOne(lesson => lesson.Course)
             .HasForeignKey(lesson => lesson.CourseId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.ToTable(table => table.HasCheckConstraint(
             "CK_Course_Price_Positive",

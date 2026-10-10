@@ -9,7 +9,7 @@ public class LessonMaterialConfiguration
         builder.HasKey(lessonMaterial => lessonMaterial.Id);
         
         builder.Property(lessonMaterial => lessonMaterial.Title)
-            .HasMaxLength(256)
+            .HasMaxLength(128)
             .IsRequired();
         
         builder.Property(lessonMaterial => lessonMaterial.OrderNumber)
@@ -25,12 +25,12 @@ public class LessonMaterialConfiguration
         builder.HasOne(lessonMaterial => lessonMaterial.Course)
             .WithMany(lesson => lesson.LessonMaterials)
             .HasForeignKey(lessonMaterial => lessonMaterial.CourseId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .OnDelete(DeleteBehavior.Cascade);
         
         builder.HasOne(lessonMaterial => lessonMaterial.FileMetadata)
-            .WithMany()
-            .HasForeignKey(lessonMaterial => lessonMaterial.FileMetadataId)
-            .OnDelete(DeleteBehavior.Restrict);
+            .WithOne(fileMetadata => fileMetadata.LessonMaterial)
+            .HasForeignKey<FileMetadata>(fileMetadata => fileMetadata.LessonMaterialId)
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasIndex(lessonMaterial
             => new { lessonMaterial.OrderNumber, lessonMaterial.CourseId })
