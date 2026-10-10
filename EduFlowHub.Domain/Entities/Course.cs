@@ -80,11 +80,30 @@ public class Course
             throw new InvalidCourseStatusTransitionException(Status, CourseStatus.Published);
         }
         
+        if (_lessonMaterials.Count < 1)
+        {
+            throw new DomainValidationException("Cannot publish a course without lesson materials");
+        }
+
+        CheckLessonMaterialOrder();
+        
         Status = CourseStatus.Published;
     }
-    
-    public int GetNextLessonMaterialOrder() =>
-        _lessonMaterials.Count == 0 ? 1 : _lessonMaterials.Max(material => material.OrderNumber) + 1;
+
+    public void ChangeStatus(CourseStatus status)
+    {
+        if (status == CourseStatus.Published)
+        {
+            if (_lessonMaterials.Count < 1)
+            {
+                throw new DomainValidationException("Cannot publish a course without lesson materials");
+            }
+
+            CheckLessonMaterialOrder();
+        }
+        
+        Status = status;
+    }
     
     private string ValidateTitle(string title)
     {
@@ -134,5 +153,22 @@ public class Course
         }
 
         return categoryId;
+    }
+
+    private void CheckLessonMaterialOrder()
+    {
+        var orders = _lessonMaterials
+            .Select(lessonMaterial => lessonMaterial.OrderNumber)
+            .OrderBy(order => order)
+            .ToList();
+
+        for (var i = 0; i < orders.Count; i++)
+        {
+            if (orders[i] != i + 1)
+            {
+                throw new DomainValidationException(
+                    "Lesson materials must be numbered sequentially starting from 1 without gaps or duplicates");
+            }
+        }
     }
 }
