@@ -7,7 +7,5 @@ public sealed record UpdateCourseCommand(
     string? Title,
     string? Description,
     decimal? Price,
-    CourseStatus? Status,
-    Guid? AuthorId,
     Guid? CategoryId)
     : IRequest<CourseDto>;

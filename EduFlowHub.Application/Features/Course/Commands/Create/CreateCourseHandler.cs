@@ -21,7 +21,7 @@ public class CreateCourseHandler
         CreateCourseCommand request, 
         CancellationToken cancellationToken)
     {
-        var author = await _unitOfWork
+        Domain.Entities.User? author = await _unitOfWork
             .UserRepository
             .GetByIdAsync(request.AuthorId);
 
@@ -30,7 +30,7 @@ public class CreateCourseHandler
             throw new InvalidEntityReferenceException("User", request.AuthorId);
         }
         
-        var category = await _unitOfWork
+        Domain.Entities.CourseCategory? category = await _unitOfWork
             .CourseCategoryRepository
             .GetByIdAsync(request.CategoryId);
 

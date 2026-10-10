@@ -21,12 +21,12 @@ public class PublishCourseHandler
         PublishCourseCommand request, 
         CancellationToken cancellationToken)
     {
-        var course = await _unitOfWork
+        Domain.Entities.Course? course = await _unitOfWork
             .CourseRepository
             .GetByIdAsync(
                 request.CourseId,
-                course => course.Author,
-                course => course.Category);
+                course => course.Author!,
+                course => course.Category!);
 
         if (course is null)
         {
