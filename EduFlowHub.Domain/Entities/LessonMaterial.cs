@@ -14,13 +14,13 @@ public class LessonMaterial
         int orderNumber,
         MaterialType type,
         Guid courseId,
-        Guid fileMetadataId)
+        FileMetadata fileMetadata)
     {
         Title = ValidateTitle(title);
         OrderNumber = ValidateOrderNumber(orderNumber);
         Type = type;
         CourseId = courseId;
-        FileMetadataId = fileMetadataId;
+        FileMetadata = fileMetadata;
     }
 
     public void UpdateDetails(
@@ -37,11 +37,11 @@ public class LessonMaterial
     }
 
     public void ChangeFile(
-        Guid fileMetadataId,
+        FileMetadata fileMetadata,
         MaterialType type)
     {
         Type = type;
-        FileMetadataId = ValidateFileMetadataId(fileMetadataId);
+        FileMetadata = fileMetadata;
     }
     
     public string Title { get; private set; } = null!;
@@ -50,7 +50,6 @@ public class LessonMaterial
     public DateTime CreatedAt { get; private set; } = DateTime.UtcNow;
     
     public Guid CourseId { get; private set; }
-    public Guid FileMetadataId { get; private set; }
     
     public Course? Course { get; private set; }
     public FileMetadata? FileMetadata { get; private set; }
@@ -83,15 +82,5 @@ public class LessonMaterial
         }
 
         return courseId;
-    }
-    
-    private Guid ValidateFileMetadataId(Guid fileMetadataId)
-    {
-        if (fileMetadataId == Guid.Empty)
-        {
-            throw new DomainValidationException("FileMetadata id cannot be empty");
-        }
-
-        return fileMetadataId;
     }
 }

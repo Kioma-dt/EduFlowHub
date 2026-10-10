@@ -20,14 +20,12 @@ public class FileMetadata
         Size = ValidateSize(size);
     }
 
-    public void GenerateGuid()
-    {
-        Id =  Guid.NewGuid();
-    }
-    
     public string Path { get; private set; } = null!;
     public string Extension { get; private set; } = null!;
     public long Size { get; private set; }
+    
+    public Guid LessonMaterialId { get; private set; }
+    public LessonMaterial LessonMaterial { get; private set; } = null!;
     
     private string ValidatePath(string path)
     {
