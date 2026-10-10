@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services;
+using EduFlowHub.Application.Abstractions.Services.Authentication;
 using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.User.Commands.Create;
