@@ -5,19 +5,19 @@ public class CreateCourseRequestValidator
 {
     public CreateCourseRequestValidator()
     {
-        RuleFor(x => x.Title)
+        RuleFor(request => request.Title)
             .NotEmpty()
             .MaximumLength(128);
 
-        RuleFor(x => x.Description)
+        RuleFor(request => request.Description)
             .NotEmpty()
             .MaximumLength(1024);
 
-        RuleFor(x => x.Price)
+        RuleFor(request => request.Price)
             .GreaterThanOrEqualTo(0)
             .PrecisionScale(10, 2, false);
 
-        RuleFor(x => x.CategoryId)
+        RuleFor(request => request.CategoryId)
             .NotEmpty();
     }
 }

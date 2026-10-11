@@ -5,7 +5,7 @@ public class ChangeCourseAuthorRequestValidator
 {
     public ChangeCourseAuthorRequestValidator()
     {
-        RuleFor(x => x.AuthorId)
+        RuleFor(request => request.AuthorId)
             .NotEmpty();
     }
 }
