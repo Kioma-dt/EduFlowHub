@@ -5,7 +5,7 @@ public class CreateCourseCategoryRequestValidator
 {
     public CreateCourseCategoryRequestValidator()
     {
-        RuleFor(courseCategory => courseCategory.Name)
+        RuleFor(request => request.Name)
             .NotEmpty()
             .MinimumLength(3)
             .MaximumLength(128);
