@@ -1,23 +1,24 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.User.Access.Service;
 using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.User.Commands.Update;
 
 public class UpdateUserHandler
-    : IRequestHandler<UpdateUserCommand, UserDto>
+    : IRequestHandler<UpdateUserCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserAccessService  _userAccessService;
 
     public UpdateUserHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        IUserAccessService  userAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _userAccessService = userAccessService;
     }
     
-    public async Task<UserDto> Handle(
+    public async Task Handle(
         UpdateUserCommand request, 
         CancellationToken cancellationToken)
     {
@@ -32,6 +33,8 @@ public class UpdateUserHandler
                 request.UserId.ToString());
         }
         
+        _userAccessService.EnsureCanUpdate(user);
+        
         user.UpdateDetails(
             request.FirstName ?? user.FirstName,
             request.LastName ?? user.LastName);
@@ -40,7 +43,5 @@ public class UpdateUserHandler
             .UserRepository
             .UpdateAsync(user, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
-
-        return _mapper.Map<UserDto>(user);
     }
 }

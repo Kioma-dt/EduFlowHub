@@ -12,9 +12,9 @@ public class CourseCategoryAccessService
         _courseCategoryAccessPolicy = courseCategoryAccessPolicy;
     }
     
-    public void EnsureCanCreate(Domain.Entities.CourseCategory courseCategory)
+    public void EnsureCanCreate()
     {
-        if (!_courseCategoryAccessPolicy.CanCreate(courseCategory))
+        if (!_courseCategoryAccessPolicy.CanCreate())
         {
             throw new AccessDeniedException("Create course category");
         }

@@ -12,9 +12,9 @@ public class CourseEnrollmentAccessService
         _courseEnrollmentAccessPolicy = courseEnrollmentAccessPolicy;
     }
     
-    public void EnsureCanEnroll(Domain.Entities.CourseEnrollment courseEnrollment)
+    public void EnsureCanEnroll(Guid studentId)
     {
-        if (!_courseEnrollmentAccessPolicy.CanEnroll(courseEnrollment))
+        if (!_courseEnrollmentAccessPolicy.CanEnroll(studentId))
         {
             throw new AccessDeniedException("Course enrollment");
         }

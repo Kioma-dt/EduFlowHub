@@ -18,6 +18,6 @@ public class CourseCategoryAccessPolicy
         _currentUser.CurrentUserRole ==  UserRole.Admin;
     public bool CanDelete(Domain.Entities.CourseCategory courseCategory) =>
         _currentUser.CurrentUserRole ==  UserRole.Admin;
-    public bool CanCreate(Domain.Entities.CourseCategory courseCategory) =>
+    public bool CanCreate() =>
         _currentUser.CurrentUserRole ==  UserRole.Admin;
 }

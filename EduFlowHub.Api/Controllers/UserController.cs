@@ -1,14 +1,12 @@
 using EduFlowHub.Api.Contracts.User.Requests;
 using EduFlowHub.Api.Contracts.User.Responses;
-using EduFlowHub.Application.Features.User.Commands.ChangeName;
-using EduFlowHub.Application.Features.User.Commands.ChangePassword;
-using EduFlowHub.Application.Features.User.Commands.ChangeRole;
+using EduFlowHub.Application.Features.User.Commands.ChangePasswordWithoutOldPassword;
 using EduFlowHub.Application.Features.User.Commands.Create;
 using EduFlowHub.Application.Features.User.Commands.Delete;
 using EduFlowHub.Application.Features.User.Commands.Update;
 using EduFlowHub.Application.Features.User.Dtos;
 using EduFlowHub.Application.Features.User.Queries.GetById;
-using EduFlowHub.Application.Features.User.Queries.List;
+using EduFlowHub.Application.Features.User.Queries.ListAll;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -89,42 +87,15 @@ public class UserController
         return NoContent();
     }
     
-    [HttpPut("{userId:guid}/name")]
-    public async Task<IActionResult> ChangeUserName(
-        [FromRoute] Guid userId,
-        [FromBody] ChangeUsernameRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = new ChangeUserNameCommand(
-            userId,
-            request.Username);
-        await _mediator.Send(command, cancellationToken);
-        return NoContent();
-    }
-    
     [HttpPut("{userId:guid}/password")]
     public async Task<IActionResult> ChangePassword(
         [FromRoute] Guid userId,
         [FromBody] ChangeUserPasswordRequest request,
         CancellationToken cancellationToken)
     {
-        var command = new ChangeUserPasswordCommand(
+        var command = new ChangeUserPasswordWithoutOldPasswordCommand(
             userId,
-            request.Password,
-            null);
-        await _mediator.Send(command, cancellationToken);
-        return NoContent();
-    }
-    
-    [HttpPut("{userId:guid}/role")]
-    public async Task<IActionResult> ChangeRole(
-        [FromRoute] Guid userId,
-        [FromBody] ChangeUserRoleRequest request,
-        CancellationToken cancellationToken)
-    {
-        var command = new ChangeUserRoleCommand(
-            userId,
-            request.Role);
+            request.Password);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

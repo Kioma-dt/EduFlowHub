@@ -24,6 +24,8 @@ public class EnrollStudentOnCourseHandler
         EnrollStudentOnCourseCommand request, 
         CancellationToken cancellationToken)
     {
+        _courseAccessService.EnsureCanEnroll(request.StudentId);
+        
         if (await _unitOfWork
                 .CourseEnrollmentRepository
                 .GetByIdAsync(request.StudentId, request.CourseId, cancellationToken) is not null)
@@ -60,8 +62,6 @@ public class EnrollStudentOnCourseHandler
         var enrollment = new Domain.Entities.CourseEnrollment(
             request.CourseId, 
             request.StudentId);
-        
-        _courseAccessService.EnsureCanEnroll(enrollment);
         
         await _unitOfWork
             .CourseEnrollmentRepository
