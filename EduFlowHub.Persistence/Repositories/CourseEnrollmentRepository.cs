@@ -48,6 +48,23 @@ public class CourseEnrollmentRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<bool> ExistsAsync(Guid? courseId, Guid? studentId, CancellationToken cancellationToken = default)
+    {
+        var query = CourseEnrollments.AsQueryable();
+
+        if (!courseId.HasValue)
+        {
+            query = query.Where(enrollment => enrollment.CourseId.Equals(courseId));
+        }
+        
+        if (!studentId.HasValue)
+        {
+            query = query.Where(enrollment => enrollment.StudentId.Equals(studentId));
+        }
+        
+        return await query.AnyAsync(cancellationToken);
+    }
+
     public Task InsertAsync(CourseEnrollment courseEnrollment, CancellationToken cancellationToken = default)
     {
         CourseEnrollments.Add(courseEnrollment);

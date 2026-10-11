@@ -30,8 +30,8 @@ public class UnenrollStudentFromCourseHandler
         {
             throw new EntityNotFoundException(
                 "CourseEnrollment",
-                "Student and Course Id",
-                $"{request.StudentId.ToString()} and {request.CourseId.ToString()}");
+                "Student/Course Id",
+                $"{request.StudentId.ToString()}/{request.CourseId.ToString()}");
 
         }
         

@@ -6,12 +6,10 @@ public interface ICourseEnrollmentRepository
         Guid studentId, 
         Guid courseId,
         CancellationToken cancellationToken = default);
-
     Task<IEnumerable<CourseEnrollment>> GetAllAsync(CancellationToken cancellationToken = default);
-    
     Task<IEnumerable<CourseEnrollment>> GetByCourseIdAsync(Guid courseId, CancellationToken cancellationToken = default);
     Task<IEnumerable<CourseEnrollment>> GetByStudentIdAsync(Guid studentId, CancellationToken cancellationToken = default);
-    
+    Task<bool> ExistsAsync(Guid? courseId, Guid? studentId, CancellationToken cancellationToken = default);
     Task InsertAsync(CourseEnrollment courseEnrollment, CancellationToken cancellationToken = default);
     Task DeleteAsync(CourseEnrollment courseEnrollment, CancellationToken cancellationToken = default);
     Task DeleteAsync(

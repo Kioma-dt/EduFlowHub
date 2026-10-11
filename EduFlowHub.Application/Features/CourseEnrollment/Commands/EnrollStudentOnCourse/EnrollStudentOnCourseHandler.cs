@@ -65,7 +65,7 @@ public class EnrollStudentOnCourseHandler
         
         await _unitOfWork
             .CourseEnrollmentRepository
-            .InsertAsync(enrollment);
-        await _unitOfWork.SaveAsync();
+            .InsertAsync(enrollment, cancellationToken);
+        await _unitOfWork.SaveAsync(cancellationToken);
     }
 }

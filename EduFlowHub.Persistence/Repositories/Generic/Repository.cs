@@ -62,6 +62,34 @@ public abstract class Repository<T>
             cancellationToken);
     }
 
+    public async Task<bool> ExistsAsync(
+        Expression<Func<T, bool>>? filter = null, 
+        CancellationToken  cancellationToken = default)
+    {
+        IQueryable<T> query = DbSet;
+
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
+        
+        return await query.AnyAsync(cancellationToken);
+    }
+
+    public async Task<long> CountAsync(
+        Expression<Func<T, bool>>? filter = null,
+        CancellationToken cancellationToken = default)
+    {
+        IQueryable<T> query = DbSet;
+
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
+        
+        return await query.CountAsync(cancellationToken);
+    }
+
     public virtual async Task InsertAsync(T entity, CancellationToken cancellationToken = default)
     {
         await DbSet.AddAsync(entity, cancellationToken);
