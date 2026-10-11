@@ -20,6 +20,8 @@ public abstract class Repository<T>
     public virtual async Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        int page = 10,
+        int pageSize = 10,
         CancellationToken  cancellationToken = default,
         params Expression<Func<T, object>>[] includes)
     {
@@ -34,14 +36,23 @@ public abstract class Repository<T>
         {
             query = query.Include(include);
         }
+        
+        int skip = (page - 1) * pageSize;
+        int take = pageSize;
 
         if (orderBy is not null)
         {
-            return await orderBy(query).ToListAsync(cancellationToken);
+            return await orderBy(query)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
         }
         else
         {
-            return await query.ToListAsync(cancellationToken);
+            return await query.OrderBy(x => x.Id).
+                Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
         }
     }
 
