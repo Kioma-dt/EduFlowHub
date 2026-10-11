@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Dtos;
+using EduFlowHub.Application.Filters.Course;
 
 namespace EduFlowHub.Application.Features.Course.Queries.ListOfAuthor;
 
@@ -8,35 +9,44 @@ public class ListCoursesOfAuthorHandler
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ICourseFilterBuilder _filterBuilder;
 
     public ListCoursesOfAuthorHandler(
         IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ICourseFilterBuilder filterBuilder)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _filterBuilder = filterBuilder;
     }
     
     public async Task<IEnumerable<CourseDto>> Handle(
         ListCoursesOfAuthorQuery request, 
         CancellationToken cancellationToken)
     {
-        Domain.Entities.CourseCategory? category = null;
-
-        if (request.Category is not null)
+        List<CourseFilter> filters = new List<CourseFilter>()
         {
-            category = await _unitOfWork
-                .CourseCategoryRepository
-                .GetByNormalizedNameAsync(request.Category, cancellationToken);
+            new CourseFilter(CourseFilterType.AuthorId, request.AuthorId),
+        };
+        
+        if (request.CategoryNormalizedName is not null)
+        {
+            filters.Add(new CourseFilter(CourseFilterType.CategoryNormalizedName, request.CategoryNormalizedName));
+        }
+        if(request.Status is not null)
+        {
+            filters.Add(new CourseFilter(CourseFilterType.Status, request.Status));
         }
         
-        var courses = await _unitOfWork
+        IEnumerable<Domain.Entities.Course> courses = await _unitOfWork
             .CourseRepository
-            .GetWithFiltersAsync(
-                category?.Id,
-                request.AuthorId,
-                request.Status,
-                cancellationToken);
+            .GetAllAsync(
+                _filterBuilder.BuildFilter(filters),
+                null,
+                cancellationToken,
+                course => course.Author!,
+                course => course.Category!);
         
         return _mapper.Map<List<CourseDto>>(courses);
     }
