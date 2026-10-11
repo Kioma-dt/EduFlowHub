@@ -35,7 +35,6 @@ public class RegisterHandler
         {
             throw new ApplicationValidationException($"You cannot register user with role {request.Role}");
         }
-        
 
         if (await _unitOfWork.UserRepository.GetByNameAsync(request.Username, cancellationToken) is not null)
         {

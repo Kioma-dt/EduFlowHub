@@ -16,8 +16,7 @@ public class GetUserByIdHandler
         _mapper = mapper;
         _unitOfWork = unitOfWork;
     }
-
-
+    
     public async Task<UserDto> Handle(
         GetUserByIdQuery request,
         CancellationToken cancellationToken)
@@ -28,7 +27,8 @@ public class GetUserByIdHandler
 
         if (user is null)
         {
-            throw new EntityNotFoundException("User",
+            throw new EntityNotFoundException(
+                "User",
                 "Id",
                 request.UserId.ToString());
         }

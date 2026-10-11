@@ -82,11 +82,13 @@ public class LessonMaterialController
     {
         await using Stream fileStream = request.File.OpenReadStream();
         string fileExtension = Path.GetExtension(request.File.FileName);
+        long fileLength = request.File.Length;
         var command = new CreateLessonMaterialCommand(
             request.Title,
             request.OrderNumber,
             fileStream,
             fileExtension,
+            fileLength,
             courseId);
         LessonMaterialDto result = await _mediator.Send(command, cancellationToken);
         var response = _mapper.Map<LessonMaterialResponse>(result);

@@ -36,10 +36,7 @@ public class DeleteCourseHandler
         
         _courseAccessService.EnsureCanDelete(course);
 
-        if (course.Status != CourseStatus.Draft)
-        {
-            throw new DomainWrongStatusException("Can not change not draft course");
-        }
+        course.EnsureCanDelete();
         
         if (await _unitOfWork.CourseEnrollmentRepository.ExistsAsync(course.Id, null, cancellationToken))
         {

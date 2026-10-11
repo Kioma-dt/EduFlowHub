@@ -1,7 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services.File;
 using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
-using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Delete;
 
@@ -43,10 +42,7 @@ public class DeleteLessonMaterialHandler
         
         _lessonMaterialAccessService.EnsureCanDelete(lessonMaterial);
         
-        if (lessonMaterial.Course!.Status != CourseStatus.Draft)
-        {
-            throw new DomainWrongStatusException("Can not change not draft course");
-        }
+        lessonMaterial.Course?.EnsureCanChange();
         
         string filePath = lessonMaterial.FileMetadata!.Path;
         

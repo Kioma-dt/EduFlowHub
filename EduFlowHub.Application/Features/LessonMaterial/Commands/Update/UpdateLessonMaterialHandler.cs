@@ -40,10 +40,7 @@ public class UpdateLessonMaterialHandler
         
         _lessonMaterialAccessService.EnsureCanUpdate(lessonMaterial);
         
-        if (lessonMaterial.Course!.Status != CourseStatus.Draft)
-        {
-            throw new DomainWrongStatusException("Can not change not draft course");
-        }
+        lessonMaterial.Course?.EnsureCanChange();
         
         lessonMaterial.UpdateDetails(
             request.Title ??  lessonMaterial.Title,

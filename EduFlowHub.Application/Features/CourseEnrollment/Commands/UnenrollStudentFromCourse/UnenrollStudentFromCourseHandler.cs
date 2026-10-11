@@ -1,5 +1,4 @@
 using EduFlowHub.Application.Abstractions.Persistence;
-using EduFlowHub.Application.Features.CourseEnrollment.Access.Policy;
 using EduFlowHub.Application.Features.CourseEnrollment.Access.Service;
 
 namespace EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;

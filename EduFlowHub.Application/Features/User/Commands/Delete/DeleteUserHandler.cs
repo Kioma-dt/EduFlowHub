@@ -27,7 +27,8 @@ public class DeleteUserHandler
 
         if (user is null)
         {
-            throw new EntityNotFoundException("User", 
+            throw new EntityNotFoundException(
+                "User", 
                 "Id",
                 request.UserId.ToString());
         }

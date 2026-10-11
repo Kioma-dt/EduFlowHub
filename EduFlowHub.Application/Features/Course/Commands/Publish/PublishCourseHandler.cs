@@ -1,6 +1,5 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Access.Service;
-using EduFlowHub.Application.Features.Course.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Publish;
 
