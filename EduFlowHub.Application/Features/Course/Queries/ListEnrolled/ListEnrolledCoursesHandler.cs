@@ -1,15 +1,15 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Dtos;
 
-namespace EduFlowHub.Application.Features.Course.Queries.ListEnrollerd;
+namespace EduFlowHub.Application.Features.Course.Queries.ListEnrolled;
 
-public class ListEnrollerdCoursesHandler
+public class ListEnrolledCoursesHandler
     : IRequestHandler<ListEnrolledCoursesQuery, IEnumerable<CourseDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ListEnrollerdCoursesHandler(
+    public ListEnrolledCoursesHandler(
         IMapper mapper,
         IUnitOfWork unitOfWork)
     {

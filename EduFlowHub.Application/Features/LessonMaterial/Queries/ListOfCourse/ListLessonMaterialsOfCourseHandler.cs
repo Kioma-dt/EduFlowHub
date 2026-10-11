@@ -1,4 +1,5 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
 using EduFlowHub.Application.Features.LessonMaterial.Dtos;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Queries.ListOfCourse;
@@ -8,19 +9,24 @@ public class ListLessonMaterialsOfCourseHandler
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILessonMaterialAccessService _lessonMaterialAccessService;
 
     public ListLessonMaterialsOfCourseHandler(
         IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILessonMaterialAccessService lessonMaterialAccessService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _lessonMaterialAccessService = lessonMaterialAccessService;
     }
 
     public async Task<IEnumerable<LessonMaterialDto>> Handle(
         ListLessonMaterialsOfCourseQuery request,
         CancellationToken cancellationToken)
     {
+        await _lessonMaterialAccessService.EnsureCanViewAsync(request.CourseId, cancellationToken);
+        
         Func<IQueryable<Domain.Entities.LessonMaterial>, IOrderedQueryable<Domain.Entities.LessonMaterial>>? orderBy= null;
         if (request.OrderByNumber)
         {
