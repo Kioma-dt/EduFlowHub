@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Access.Service;
+using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Delete;
 
@@ -34,6 +35,11 @@ public class DeleteCourseHandler
         }
         
         _courseAccessService.EnsureCanDelete(course);
+
+        if (course.Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
+        }
         
         if (await _unitOfWork.CourseEnrollmentRepository.ExistsAsync(course.Id, null, cancellationToken))
         {

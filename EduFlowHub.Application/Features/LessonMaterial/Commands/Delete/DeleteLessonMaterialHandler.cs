@@ -1,6 +1,7 @@
 using EduFlowHub.Application.Abstractions.Persistence;
-using EduFlowHub.Application.Abstractions.Services;
 using EduFlowHub.Application.Abstractions.Services.File;
+using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
+using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Delete;
 
@@ -9,13 +10,16 @@ public class DeleteLessonMaterialHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFileStorage _fileStorage;
+    private readonly ILessonMaterialAccessService _lessonMaterialAccessService;
 
     public DeleteLessonMaterialHandler(
         IUnitOfWork unitOfWork,
-        IFileStorage fileStorage)
+        IFileStorage fileStorage,
+        ILessonMaterialAccessService lessonMaterialAccessService)
     {
         _unitOfWork = unitOfWork;
         _fileStorage = fileStorage;
+        _lessonMaterialAccessService = lessonMaterialAccessService;
     }
 
     public async Task Handle(
@@ -26,7 +30,8 @@ public class DeleteLessonMaterialHandler
             .LessonMaterialRepository
             .GetByIdAsync(request.LessonMaterialId,
                 cancellationToken,
-                lessonMaterial => lessonMaterial.FileMetadata!);
+                lessonMaterial => lessonMaterial.FileMetadata!,
+                lessonMaterial => lessonMaterial.Course!);
 
         if (lessonMaterial is null)
         {
@@ -34,6 +39,13 @@ public class DeleteLessonMaterialHandler
                 "LessonMaterial",
                 "Id",
                 request.LessonMaterialId.ToString());
+        }
+        
+        _lessonMaterialAccessService.EnsureCanDelete(lessonMaterial);
+        
+        if (lessonMaterial.Course!.Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
         }
         
         string filePath = lessonMaterial.FileMetadata!.Path;
