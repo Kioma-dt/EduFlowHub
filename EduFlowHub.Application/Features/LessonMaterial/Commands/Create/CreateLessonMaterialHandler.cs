@@ -1,8 +1,10 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services;
 using EduFlowHub.Application.Abstractions.Services.File;
+using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
 using EduFlowHub.Application.Features.LessonMaterial.Dtos;
 using EduFlowHub.Application.Features.LessonMaterial.Exceptions;
+using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Create;
 
@@ -15,6 +17,7 @@ public class CreateLessonMaterialHandler
     private readonly IFileContentTypeChecker  _fileContentTypeChecker;
     private readonly ISupportedFileTypeChecker _supportedFileTypeChecker;
     private readonly IFileStorageRequirements  _fileStorageRequirements;
+    private readonly ILessonMaterialAccessService _lessonMaterialAccessService;
 
     public CreateLessonMaterialHandler(
         IMapper mapper,
@@ -22,7 +25,8 @@ public class CreateLessonMaterialHandler
         IFileStorage fileStorage,
         IFileContentTypeChecker fileContentTypeChecker,
         ISupportedFileTypeChecker supportedFileTypeChecker,
-        IFileStorageRequirements fileStorageRequirements)
+        IFileStorageRequirements fileStorageRequirements,
+        ILessonMaterialAccessService lessonMaterialAccessService)
     {
         _mapper = mapper;
         _unitOfWork = unitOfWork;
@@ -30,12 +34,31 @@ public class CreateLessonMaterialHandler
         _fileContentTypeChecker = fileContentTypeChecker;
         _supportedFileTypeChecker = supportedFileTypeChecker;
         _fileStorageRequirements = fileStorageRequirements;
+        _lessonMaterialAccessService = lessonMaterialAccessService;
     }
 
     public async Task<LessonMaterialDto> Handle(
         CreateLessonMaterialCommand request, 
         CancellationToken cancellationToken)
     {
+        Domain.Entities.Course? course = await _unitOfWork
+            .CourseRepository
+            .GetByIdAsync(request.CourseId, cancellationToken);
+
+        if (course is null)
+        {
+            throw new InvalidEntityReferenceException(
+                "Course",
+                request.CourseId);
+        }
+        
+        _lessonMaterialAccessService.EnsureCanCreate(course.AuthorId);
+        
+        if (course.Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
+        }
+        
         if (!_fileContentTypeChecker.IsContentTypeCorrect(
                 request.FileStream,
                 request.FileExtension))
@@ -53,25 +76,12 @@ public class CreateLessonMaterialHandler
             throw new FileTooLargeException(_fileStorageRequirements.MaxFileSize);
         }
         
-        Domain.Entities.Course? course = await _unitOfWork
-            .CourseRepository
-            .GetByIdAsync(request.CourseId, cancellationToken);
-
-        if (course is null)
-        {
-            throw new InvalidEntityReferenceException(
-                "Course",
-                request.CourseId);
-        }
-
-        Domain.Entities.LessonMaterial? dbLessonMaterial = await _unitOfWork
-            .LessonMaterialRepository
-            .GetByCourseAndOrderNumberAsync(
-                request.CourseId,
-                request.OrderNumber,
-                cancellationToken);
-
-        if (dbLessonMaterial is not null)
+        if (await _unitOfWork
+                .LessonMaterialRepository
+                .GetByCourseAndOrderNumberAsync(
+                    request.CourseId,
+                    request.OrderNumber,
+                    cancellationToken) is not null)
         {
             throw new EntityAlreadyExistsException(
                 "LessonMaterial",
@@ -104,14 +114,16 @@ public class CreateLessonMaterialHandler
             .InsertAsync(lessonMaterial, cancellationToken);
         
         await _unitOfWork.SaveAsync(cancellationToken);
-
-        Domain.Entities.LessonMaterial lessonMaterialWithNavigations = await _unitOfWork
-            .LessonMaterialRepository
-            .GetByIdAsync(
-                lessonMaterial.Id,
-                cancellationToken,
-                lessonMaterial => lessonMaterial.FileMetadata);
         
-        return _mapper.Map<LessonMaterialDto>(lessonMaterialWithNavigations);
+        var fileMetadataDto = _mapper.Map<FileMetadataDto>(fileMetadata);
+        var lessonMaterialDto = new LessonMaterialDto(
+            lessonMaterial.Id,
+            lessonMaterial.Title,
+            lessonMaterial.OrderNumber,
+            lessonMaterial.Type,
+            lessonMaterial.CreatedAt,
+            fileMetadataDto);
+        
+        return lessonMaterialDto;
     }
 }

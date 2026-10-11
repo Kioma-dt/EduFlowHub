@@ -144,10 +144,12 @@ public class LessonMaterialController
     {
         await using Stream fileStream = file.OpenReadStream();
         string fileExtension = Path.GetExtension(file.FileName);
+        var fileLength = file.Length;
         var command = new ChangeLessonMaterialFileCommand(
             lessonMaterialId,
             fileStream,
-            fileExtension);
+            fileExtension,
+            fileLength);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

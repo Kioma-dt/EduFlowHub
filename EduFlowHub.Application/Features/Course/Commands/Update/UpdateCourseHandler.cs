@@ -1,6 +1,7 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.Course.Dtos;
+using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.Course.Commands.Update;
 
@@ -35,6 +36,11 @@ public class UpdateCourseHandler
         }
         
         _courseAccessService.EnsureCanUpdate(course);
+        
+        if (course.Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
+        }
         
         course.UpdateDetails(
             request.Title ?? course.Title,

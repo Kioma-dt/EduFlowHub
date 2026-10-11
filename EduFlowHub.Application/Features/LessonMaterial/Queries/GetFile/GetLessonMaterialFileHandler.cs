@@ -45,9 +45,6 @@ public class GetLessonMaterialFileHandler
         string fileExtension = lessonMaterial.FileMetadata!.Extension;
         string fileName = $"{request.LessonMaterialId}{fileExtension}";
         
-        return new FileDto(
-            file,
-            fileName,
-            fileExtension);
+        return new FileDto(file, fileName, fileExtension);
     }
 }

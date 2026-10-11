@@ -2,8 +2,5 @@ using EduFlowHub.Application.Features.LessonMaterial.Dtos;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Update;
 
-public sealed record UpdateLessonMaterialCommand(
-    Guid LessonMaterialId,
-    string? Title,
-    int? OrderNumber)
-    : IRequest<LessonMaterialDto>;
+public sealed record UpdateLessonMaterialCommand(Guid LessonMaterialId, string? Title, int? OrderNumber)
+    : IRequest;

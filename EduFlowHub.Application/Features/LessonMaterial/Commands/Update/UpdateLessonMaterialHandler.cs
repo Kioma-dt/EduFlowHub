@@ -1,23 +1,25 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
 using EduFlowHub.Application.Features.LessonMaterial.Dtos;
+using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.Update;
 
 public class UpdateLessonMaterialHandler
-    : IRequestHandler<UpdateLessonMaterialCommand, LessonMaterialDto>
+    : IRequestHandler<UpdateLessonMaterialCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILessonMaterialAccessService _lessonMaterialAccessService;
 
     public UpdateLessonMaterialHandler(
-        IMapper mapper,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILessonMaterialAccessService lessonMaterialAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
+        _lessonMaterialAccessService =  lessonMaterialAccessService;
     }
 
-    public async Task<LessonMaterialDto> Handle(
+    public async Task Handle(
         UpdateLessonMaterialCommand request, 
         CancellationToken cancellationToken)
     {
@@ -25,7 +27,8 @@ public class UpdateLessonMaterialHandler
             .LessonMaterialRepository
             .GetByIdAsync(request.LessonMaterialId,
                 cancellationToken,
-                lessonMaterial => lessonMaterial.FileMetadata!);
+                lessonMaterial => lessonMaterial.FileMetadata!,
+                lessonMaterial => lessonMaterial.Course!);
 
         if (lessonMaterial is null)
         {
@@ -33,6 +36,13 @@ public class UpdateLessonMaterialHandler
                 "LessonMaterial",
                 "Id",
                 request.LessonMaterialId.ToString());
+        }
+        
+        _lessonMaterialAccessService.EnsureCanUpdate(lessonMaterial);
+        
+        if (lessonMaterial.Course!.Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
         }
         
         lessonMaterial.UpdateDetails(
@@ -44,14 +54,5 @@ public class UpdateLessonMaterialHandler
             .UpdateAsync(lessonMaterial, cancellationToken);
         
         await _unitOfWork.SaveAsync(cancellationToken);
-
-        Domain.Entities.LessonMaterial lessonMaterialWithNavigations = await _unitOfWork
-            .LessonMaterialRepository
-            .GetByIdAsync(
-                lessonMaterial.Id,
-                cancellationToken,
-                lessonMaterial => lessonMaterial.FileMetadata);
-        
-        return _mapper.Map<LessonMaterialDto>(lessonMaterialWithNavigations);
     }
 }
