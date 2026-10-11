@@ -5,7 +5,7 @@ public class ChangeCourseStatusRequestValidator
 {
     public ChangeCourseStatusRequestValidator()
     {
-        RuleFor(x => x.Status)
+        RuleFor(request => request.Status)
             .IsInEnum();
     }
 }
