@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using EduFlowHub.Application.Abstractions.Persistence.Repositories;
 using EduFlowHub.Persistence.Repositories.Generic;
 
@@ -25,7 +26,7 @@ public class CourseRepository
                                             && course.AuthorId.Equals(authorId)), cancellationToken);
     }
 
-    public async Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId, CancellationToken  cancellationToken = default)
+    public async Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId, Expression<Func<Course, bool>> filter, CancellationToken  cancellationToken = default)
     {
         return await DbContext.Set<CourseEnrollment>()
             .Include(enrollment => enrollment.Course)
@@ -35,29 +36,5 @@ public class CourseRepository
             .Where(enrollment => enrollment.StudentId.Equals(studentId))
             .Select(enrollment => enrollment.Course!)
             .ToListAsync(cancellationToken);
-    }
-
-    public async Task<IEnumerable<Course>> GetWithFiltersAsync(
-        Guid? categoryId,
-        Guid? authorId, 
-        CourseStatus? status,
-        CancellationToken  cancellationToken = default)
-    {
-        IQueryable<Course> query = DbSet.AsQueryable();
-
-        if (categoryId.HasValue)
-        {
-            query = query.Where(course => course.CategoryId.Equals(categoryId));
-        }
-        if (authorId.HasValue)
-        {
-            query = query.Where(course => course.AuthorId.Equals(authorId));
-        }
-        if (status.HasValue)
-        {
-            query = query.Where(course => course.Status.Equals(status));
-        }
-        
-        return await query.ToListAsync(cancellationToken);
     }
 }

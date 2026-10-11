@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using EduFlowHub.Application.Abstractions.Persistence.Repositories.Generic;
 using EduFlowHub.Application.Features.Course.Dtos;
 using EduFlowHub.Application.Features.Course.Queries.ListAll;
@@ -8,11 +9,8 @@ public interface ICourseRepository
     : IRepository<Course>
 {
     Task<Course?> GetByIdForAuthorAsync(Guid courseId, Guid authorId, CancellationToken cancellationToken = default);
-    Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId, CancellationToken cancellationToken = default);
-    
-    Task<IEnumerable<Course>> GetWithFiltersAsync(
-        Guid? categoryId,
-        Guid? authorId,
-        CourseStatus? status,
+    Task<IEnumerable<Course>> GetEnrolledCoursesAsync(
+        Guid studentId, 
+        Expression<Func<Course, bool>> filter,
         CancellationToken cancellationToken = default);
 }

@@ -47,7 +47,7 @@ public class CourseController
         [FromQuery] GetPublishedCoursesQueryString filterQuery,
         CancellationToken cancellationToken)
     {
-        var query = new ListPublishedCoursesQuery(filterQuery.AuthorId, filterQuery.Category);
+        var query = new ListPublishedCoursesQuery(filterQuery.AuthorId, filterQuery.CategoryNormalizedName);
         IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
         return Ok(response);
@@ -60,7 +60,7 @@ public class CourseController
         CancellationToken cancellationToken)
     {
         var query = new ListAllCoursesQuery(
-            filterQuery.Category,
+            filterQuery.CategoryNormalizedName,
             filterQuery.AuthorId,
             filterQuery.Status);
         IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);

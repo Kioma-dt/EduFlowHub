@@ -4,6 +4,6 @@ namespace EduFlowHub.Application.Features.Course.Queries.ListOfAuthor;
 
 public sealed record ListCoursesOfAuthorQuery(
     Guid AuthorId,
-    string? Category,
+    string? CategoryNormalizedName,
     CourseStatus? Status)
     : IRequest<IEnumerable<CourseDto>>;

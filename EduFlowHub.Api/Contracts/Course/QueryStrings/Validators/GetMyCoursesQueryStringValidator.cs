@@ -5,10 +5,10 @@ public class GetMyCoursesQueryStringValidator
 {
     public  GetMyCoursesQueryStringValidator()
     {
-        RuleFor(query => query.Category)
+        RuleFor(query => query.CategoryNormalizedName)
             .NotEmpty()
             .MaximumLength(128)
-            .When(query => query.Category is not null);
+            .When(query => query.CategoryNormalizedName is not null);
         
         RuleFor(query => query.Status)
             .IsInEnum()
