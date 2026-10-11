@@ -17,9 +17,9 @@ public class CourseAccessPolicy
         || _currentUser.CurrentUserRole == UserRole.Admin
         || course.AuthorId == _currentUser.CurrentUserId;
 
-    public bool CanCreate(Domain.Entities.Course course) =>
+    public bool CanCreate(Guid authorId) =>
         _currentUser.CurrentUserRole == UserRole.Admin
-        || course.AuthorId == _currentUser.CurrentUserId;
+        || authorId == _currentUser.CurrentUserId;
 
     public bool CanArchive(Domain.Entities.Course course) =>
         _currentUser.CurrentUserRole == UserRole.Admin

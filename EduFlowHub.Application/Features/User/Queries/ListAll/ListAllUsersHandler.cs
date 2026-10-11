@@ -1,7 +1,7 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.User.Dtos;
 
-namespace EduFlowHub.Application.Features.User.Queries.List;
+namespace EduFlowHub.Application.Features.User.Queries.ListAll;
 
 public class ListAllUsersHandler
     : IRequestHandler<ListAllUsersQuery, IEnumerable<UserDto>>

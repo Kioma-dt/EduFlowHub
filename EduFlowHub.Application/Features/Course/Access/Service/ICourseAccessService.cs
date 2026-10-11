@@ -4,7 +4,7 @@ public interface ICourseAccessService
 {
     void EnsureCanArchive(Domain.Entities.Course course);
     void EnsureCanChangeAuthor(Domain.Entities.Course course);
-    void EnsureCanCreate(Domain.Entities.Course course);
+    void EnsureCanCreate(Guid authorId);
     void EnsureCanDelete(Domain.Entities.Course course);
     void EnsureCanPublish(Domain.Entities.Course course);
     void EnsureCanRestore(Domain.Entities.Course course);

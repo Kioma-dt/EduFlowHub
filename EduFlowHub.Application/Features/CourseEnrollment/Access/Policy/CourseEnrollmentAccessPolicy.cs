@@ -12,10 +12,10 @@ public class CourseEnrollmentAccessPolicy
         _currentUser = currentUser;
     }
     
-    public bool CanEnroll(Domain.Entities.CourseEnrollment enrollment) =>
+    public bool CanEnroll(Guid studentId) =>
         (_currentUser.CurrentUserRole ==  UserRole.Admin 
          || (_currentUser.CurrentUserRole == UserRole.Student
-             && _currentUser.CurrentUserId == enrollment.StudentId));
+             && _currentUser.CurrentUserId == studentId));
 
     public bool CanUnEnroll(Domain.Entities.CourseEnrollment enrollment) =>
         (_currentUser.CurrentUserRole ==  UserRole.Admin 

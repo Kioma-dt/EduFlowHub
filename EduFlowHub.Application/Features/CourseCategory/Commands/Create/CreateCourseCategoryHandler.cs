@@ -25,6 +25,8 @@ public class CreateCourseCategoryHandler
         CreateCourseCategoryCommand request, 
         CancellationToken cancellationToken)
     {
+        _courseCategoryAccessService.EnsureCanCreate();
+        
         var courseCategory = new Domain.Entities.CourseCategory(request.Name);
         
         if (await _unitOfWork
@@ -36,8 +38,6 @@ public class CreateCourseCategoryHandler
                 "Name",
                 request.Name);
         }
-        
-        _courseCategoryAccessService.EnsureCanCreate(courseCategory);
         
         await _unitOfWork
             .CourseCategoryRepository

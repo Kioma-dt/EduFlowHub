@@ -38,15 +38,15 @@ public class CourseAccessService
                 course.Id.ToString());
         }
 
-        if (!_courseAccessPolicy.CanArchive(course))
+        if (!_courseAccessPolicy.CanChangeAuthor(course))
         {
             throw new AccessDeniedException("Change course author");
         }
     }
 
-    public void EnsureCanCreate(Domain.Entities.Course course)
+    public void EnsureCanCreate(Guid authorId)
     {
-        if (!_courseAccessPolicy.CanCreate(course))
+        if (!_courseAccessPolicy.CanCreate(authorId))
         {
             throw new AccessDeniedException("Create course");
         }

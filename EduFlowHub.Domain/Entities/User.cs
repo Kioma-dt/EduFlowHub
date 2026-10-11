@@ -31,20 +31,10 @@ public class User
         FirstName = ValidateFirstName(firstName);
         LastName = ValidateLastName(lastName);
     }
-
-    public void ChangeName(string name)
-    {
-        Name = ValidateName(name);
-    }
-
+    
     public void ChangePasswordHash(string passwordHash)
     {
         PasswordHash = ValidatePasswordHash(passwordHash);
-    }
-
-    public void ChangeRole(UserRole role)
-    {
-        Role = role;
     }
     
     public string Name { get; private set; } = null!;
