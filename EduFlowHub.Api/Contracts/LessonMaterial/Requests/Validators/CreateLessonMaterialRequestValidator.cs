@@ -5,15 +5,14 @@ public  class CreateLessonMaterialRequestValidator
 {
     public CreateLessonMaterialRequestValidator()
     {
-        RuleFor(x => x.Title)
-            .Cascade(CascadeMode.Stop)
+        RuleFor(request => request.Title)
             .NotEmpty()
             .MaximumLength(128);
 
-        RuleFor(x => x.OrderNumber)
+        RuleFor(request => request.OrderNumber)
             .GreaterThan(0);
 
-        RuleFor(x => x.File)
+        RuleFor(request => request.File)
             .Cascade(CascadeMode.Stop)
             .NotNull();
     }

@@ -5,8 +5,7 @@ public class ChangeLessonMaterialFileRequestValidator
 {
     public ChangeLessonMaterialFileRequestValidator()
     {
-        RuleFor(x => x.File)
-            .Cascade(CascadeMode.Stop)
+        RuleFor(request => request.File)
             .NotNull();
     }
 }
