@@ -4,5 +4,5 @@ namespace EduFlowHub.Application.Features.Course.Queries.ListPublished;
 
 public sealed record ListPublishedCoursesQuery(
     Guid? AuthorId,
-    string? Category)
+    string? CategoryNormalizedName)
     : IRequest<IEnumerable<CourseDto>>;

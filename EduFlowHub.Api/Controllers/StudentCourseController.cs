@@ -1,7 +1,8 @@
+using EduFlowHub.Api.Contracts.Course.QueryStrings;
 using EduFlowHub.Api.Contracts.Course.Responses;
 using EduFlowHub.Application.Abstractions.Services.User;
 using EduFlowHub.Application.Features.Course.Dtos;
-using EduFlowHub.Application.Features.Course.Queries.ListEnrolled;
+using EduFlowHub.Application.Features.Course.Queries.ListEnrolledPublished;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.EnrollStudentOnCourse;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
 using Microsoft.AspNetCore.Authorization;
@@ -31,9 +32,11 @@ public class StudentCourseController
     
     [Authorize(Roles = "Student")]
     [HttpGet("enrolled")]
-    public async Task<ActionResult<IEnumerable<CourseResponse>>> GetEnrolled(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<CourseResponse>>> GetEnrolled(
+        [FromQuery] GetStudentEnrolledCoursesQueryString filter,
+        CancellationToken cancellationToken)
     {
-        var query = new ListEnrolledCoursesQuery(_currentUser.CurrentUserId);
+        var query = new ListEnrolledCoursesPublishedQuery(_currentUser.CurrentUserId, filter.CategoryNormalizedName, filter.AuthorId);
         IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
         return Ok(response);

@@ -15,7 +15,7 @@ public class CourseFilterBuilder
 {
     private readonly ICourseFilterSpecificationFactory _filterSpecificationFactory;
 
-    private static Expression<Func<Domain.Entities.Course, bool>> _alwaysTrue = course => true;
+    private static readonly Expression<Func<Domain.Entities.Course, bool>> AlwaysTrue = course => true;
 
     public CourseFilterBuilder(ICourseFilterSpecificationFactory filterSpecificationFactory)
     {
@@ -40,6 +40,6 @@ public class CourseFilterBuilder
             }
         }
 
-        return expression ?? _alwaysTrue;
+        return expression ?? AlwaysTrue;
     }
 }

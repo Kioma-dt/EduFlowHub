@@ -42,7 +42,7 @@ public class TeacherCourseController
     {
         var query = new ListCoursesOfAuthorQuery(
             _currentUser.CurrentUserId,
-            filterQuery.Category,
+            filterQuery.CategoryNormalizedName,
             filterQuery.Status);
         IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
