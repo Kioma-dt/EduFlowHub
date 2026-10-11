@@ -40,9 +40,9 @@ public class CourseAccessPolicy
 
     public bool CanEditDetails(Domain.Entities.Course course) =>
         _currentUser.CurrentUserRole == UserRole.Admin
-        || (course.AuthorId == _currentUser.CurrentUserId && course.Status == CourseStatus.Draft);
+        || (course.AuthorId == _currentUser.CurrentUserId);
 
     public bool CanDelete(Domain.Entities.Course course) =>
         _currentUser.CurrentUserRole == UserRole.Admin
-        || (course.AuthorId == _currentUser.CurrentUserId && course.Status == CourseStatus.Draft);
+        || (course.AuthorId == _currentUser.CurrentUserId);
 }
