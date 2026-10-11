@@ -17,6 +17,9 @@ public class CreateCourseRequestValidator
             .GreaterThanOrEqualTo(0)
             .PrecisionScale(10, 2, false);
 
+        RuleFor(request => request.AuthorId)
+            .NotEmpty();
+
         RuleFor(request => request.CategoryId)
             .NotEmpty();
     }
