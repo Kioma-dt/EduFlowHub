@@ -10,14 +10,14 @@ public class UpdateCurrentUserValidator
             .MaximumLength(128)
             .Must(username => !username.Any(char.IsWhiteSpace))
             .WithMessage("Firstname cannot contain whitespaces")
-            .When(request => request is not null);
+            .When(request => request.FirstName is not null);
         
         RuleFor(request => request.LastName)
             .NotEmpty()
             .MaximumLength(128)
             .Must(username => !username.Any(char.IsWhiteSpace))
             .WithMessage("Lastname cannot contain whitespaces")
-            .When(request => request is not null);
+            .When(request => request.LastName is not null);
         
         RuleFor(request => request)
             .Must(request =>

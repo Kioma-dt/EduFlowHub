@@ -10,7 +10,7 @@ public class UpdateLessonMaterialRequestValidator
                 title is null || !string.IsNullOrWhiteSpace(title))
             .WithMessage("Lesson Material title cannot be only whitespaces")
             .MaximumLength(128)
-            .When(x => x.Title is not null);
+            .When(request => request.Title is not null);
 
         RuleFor(request => request.OrderNumber)
             .GreaterThan(0)
