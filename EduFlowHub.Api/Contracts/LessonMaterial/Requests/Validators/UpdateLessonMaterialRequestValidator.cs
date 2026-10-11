@@ -5,19 +5,19 @@ public class UpdateLessonMaterialRequestValidator
 {
     public UpdateLessonMaterialRequestValidator()
     {
-        RuleFor(x => x.Title)
+        RuleFor(request => request.Title)
             .Must(title =>
                 title is null || !string.IsNullOrWhiteSpace(title))
             .WithMessage("Lesson Material title cannot be only whitespaces")
             .MaximumLength(128)
             .When(x => x.Title is not null);
 
-        RuleFor(x => x.OrderNumber)
+        RuleFor(request => request.OrderNumber)
             .GreaterThan(0)
-            .When(x => x.OrderNumber.HasValue);
+            .When(request => request.OrderNumber.HasValue);
 
-        RuleFor(x => x)
-            .Must(x => x.Title is not null || x.OrderNumber.HasValue)
+        RuleFor(request => request)
+            .Must(request => request.Title is not null || request.OrderNumber.HasValue)
             .WithMessage("At least one parameter must be specified");
     }
 }
