@@ -1,29 +1,28 @@
 using EduFlowHub.Application.Abstractions.Persistence;
-using EduFlowHub.Application.Abstractions.Services;
 using EduFlowHub.Application.Abstractions.Services.Authentication;
-using EduFlowHub.Application.Features.User.Dtos;
+using EduFlowHub.Application.Features.User.Access.Service;
 using EduFlowHub.Application.Features.User.Exceptions;
 
 namespace EduFlowHub.Application.Features.User.Commands.ChangePassword;
 
 public class ChangeUserPasswordHandler
-    : IRequestHandler<ChangeUserPasswordCommand, UserDto>
+    : IRequestHandler<ChangeUserPasswordCommand>
 {
-    private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IUserAccessService  _userAccessService;
 
     public ChangeUserPasswordHandler(
-        IMapper mapper,
         IUnitOfWork unitOfWork,
-        IPasswordHasher passwordHasher)
+        IPasswordHasher passwordHasher,
+        IUserAccessService userAccessService)
     {
-        _mapper = mapper;
         _unitOfWork = unitOfWork;
         _passwordHasher =  passwordHasher;
+        _userAccessService = userAccessService;
     }
     
-    public async Task<UserDto> Handle(
+    public async Task Handle(
         ChangeUserPasswordCommand request, 
         CancellationToken cancellationToken)
     {
@@ -37,15 +36,14 @@ public class ChangeUserPasswordHandler
                 "Id",
                 request.UserId.ToString());
         }
+        
+        _userAccessService.EnsureCanChangePassword(user);
 
-        if (request.OldPassword is null
-            || !_passwordHasher.VerifyHashedPassword(
-                request.OldPassword,
-                user.PasswordHash))
+        if(!_passwordHasher.VerifyHashedPassword(request.OldPassword, user.PasswordHash))
         {
             throw new WrongPasswordException();
         }
-        
+
         string passwordHash =  _passwordHasher.HashPassword(request.Password);
         
         user.ChangePasswordHash(passwordHash);
@@ -54,7 +52,5 @@ public class ChangeUserPasswordHandler
             .UserRepository
             .UpdateAsync(user, cancellationToken);
         await _unitOfWork.SaveAsync(cancellationToken);
-        
-        return _mapper.Map<UserDto>(user);
     }
 }

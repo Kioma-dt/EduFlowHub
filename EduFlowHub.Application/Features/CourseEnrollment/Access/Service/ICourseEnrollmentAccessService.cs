@@ -5,6 +5,6 @@ namespace EduFlowHub.Application.Features.CourseEnrollment.Access.Service;
 
 public interface ICourseEnrollmentAccessService
 {
-    void EnsureCanEnroll(Domain.Entities.CourseEnrollment courseEnrollment);
+    void EnsureCanEnroll(Guid studentId);
     void EnsureCanUnEnroll(Domain.Entities.CourseEnrollment courseEnrollment);
 }

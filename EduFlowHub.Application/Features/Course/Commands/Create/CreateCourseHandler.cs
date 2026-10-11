@@ -27,6 +27,8 @@ public class CreateCourseHandler
         CreateCourseCommand request, 
         CancellationToken cancellationToken)
     {
+        _courseAccessService.EnsureCanCreate(request.AuthorId);
+        
         Domain.Entities.User? author = await _unitOfWork
             .UserRepository
             .GetByIdAsync(request.AuthorId, cancellationToken);
@@ -51,8 +53,6 @@ public class CreateCourseHandler
             request.Price,
             request.AuthorId,
             request.CategoryId);
-        
-        _courseAccessService.EnsureCanCreate(course);
         
         await _unitOfWork
             .CourseRepository

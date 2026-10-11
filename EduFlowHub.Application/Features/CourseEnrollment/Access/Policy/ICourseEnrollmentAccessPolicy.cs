@@ -2,6 +2,6 @@ namespace EduFlowHub.Application.Features.CourseEnrollment.Access.Policy;
 
 public interface ICourseEnrollmentAccessPolicy
 {
-    bool CanEnroll(Domain.Entities.CourseEnrollment enrollment);
+    bool CanEnroll(Guid studentId);
     bool CanUnEnroll(Domain.Entities.CourseEnrollment enrollment);
 }
