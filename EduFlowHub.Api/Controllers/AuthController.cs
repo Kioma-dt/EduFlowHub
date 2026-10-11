@@ -27,7 +27,7 @@ public class AuthController
 
     [AllowAnonymous]
     [HttpPost("register")]
-    public async Task<IActionResult> Register(
+    public async Task<ActionResult<RegisterResponse>> Register(
         [FromBody] RegisterRequest request,
         CancellationToken cancellationToken)
     {
@@ -39,7 +39,7 @@ public class AuthController
     
     [AllowAnonymous]
     [HttpPost("login")]
-    public async Task<IActionResult> Login(
+    public async Task<ActionResult<LoginResponse>> Login(
         [FromBody] LoginRequest request,
         CancellationToken cancellationToken)
     {

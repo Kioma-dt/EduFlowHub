@@ -30,7 +30,7 @@ public class CourseAdminController
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll(
+    public async Task<ActionResult<IEnumerable<CourseAdminResponse>>> GetAll(
         [FromQuery] GetAllCoursesQueryString filterQuery,
         CancellationToken cancellationToken)
     {
@@ -45,7 +45,7 @@ public class CourseAdminController
     }
 
     [HttpPost]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<CourseAdminResponse>> Create(
         [FromBody] CreateCourseAdminRequest request,
         CancellationToken cancellationToken)
     {
