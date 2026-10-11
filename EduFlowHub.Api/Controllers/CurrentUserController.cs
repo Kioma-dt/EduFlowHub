@@ -31,7 +31,7 @@ public class CurrentUserController
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetById(CancellationToken cancellationToken)
+    public async Task<ActionResult<CurrentUserResponse>> GetById(CancellationToken cancellationToken)
     {
         var query = new GetUserByIdQuery(_currentUser.CurrentUserId);
         UserDto result = await _mediator.Send(query, cancellationToken);

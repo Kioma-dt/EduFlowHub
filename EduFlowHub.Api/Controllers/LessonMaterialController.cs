@@ -32,7 +32,7 @@ public class LessonMaterialController
     }
 
     [HttpGet]
-    public async Task<IActionResult> Get(
+    public async Task<ActionResult<IEnumerable<LessonMaterialResponse>>> Get(
         CancellationToken cancellationToken,
         [FromRoute] Guid courseId,
         [FromQuery] bool orderByNumber = false)
@@ -46,7 +46,7 @@ public class LessonMaterialController
     }
     
     [HttpGet("{lessonMaterial:guid}")]
-    public async Task<IActionResult> GetById(
+    public async Task<ActionResult<LessonMaterialResponse>> GetById(
         [FromRoute] Guid lessonMaterialId,
         CancellationToken cancellationToken)
     {
@@ -58,7 +58,7 @@ public class LessonMaterialController
     }
     
     [HttpGet("{orderNumber:int}")]
-    public async Task<IActionResult> GetByOrderNumber(
+    public async Task<ActionResult<LessonMaterialResponse>> GetByOrderNumber(
         [FromRoute] Guid courseId,
         [FromRoute] int orderNumber,
         CancellationToken cancellationToken)
@@ -75,7 +75,7 @@ public class LessonMaterialController
     [Authorize(Roles = "Admin, Teacher")]
     [HttpPost]
     [Consumes("multipart/form-data")]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<LessonMaterialResponse>> Create(
         [FromRoute] Guid courseId,
         [FromForm] CreateLessonMaterialRequest request,
         CancellationToken cancellationToken)
