@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.CourseEnrollment.Access.Service;
+using EduFlowHub.Application.Features.CourseEnrollment.Exceptions;
 
 namespace EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
 
@@ -27,10 +28,7 @@ public class UnenrollStudentFromCourseHandler
         
         if (courseEnrollment is null)
         {
-            throw new EntityNotFoundException(
-                "CourseEnrollment",
-                "Student/Course Id",
-                $"{request.StudentId.ToString()}/{request.CourseId.ToString()}");
+            throw new StudentIsNotEnrolledOnCourseException(request.StudentId, request.CourseId);
 
         }
         

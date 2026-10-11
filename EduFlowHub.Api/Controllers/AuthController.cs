@@ -4,6 +4,7 @@ using EduFlowHub.Application.Features.Authentication.Commands.Register;
 using EduFlowHub.Application.Features.Authentication.Dtos;
 using EduFlowHub.Application.Features.Authentication.Queries.Login;
 using EduFlowHub.Application.Features.User.Dtos;
+
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

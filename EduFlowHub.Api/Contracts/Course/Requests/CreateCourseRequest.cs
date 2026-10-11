@@ -4,4 +4,5 @@ public sealed record CreateCourseRequest(
     string Title,
     string Description,
     decimal Price,
+    Guid AuthorId,
     Guid CategoryId);

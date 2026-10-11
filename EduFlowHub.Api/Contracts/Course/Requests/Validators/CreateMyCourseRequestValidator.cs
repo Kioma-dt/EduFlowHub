@@ -1,9 +1,9 @@
-namespace EduFlowHub.Api.Contracts.CourseAdmin.Requests.Validators;
+namespace EduFlowHub.Api.Contracts.Course.Requests.Validators;
 
-public class CreateCourseAdminRequestValidator
-    : AbstractValidator<CreateCourseAdminRequest>
+public class CreateMyCourseRequestValidator
+    : AbstractValidator<CreateMyCourseRequest>
 {
-    public CreateCourseAdminRequestValidator()
+    public CreateMyCourseRequestValidator()
     {
         RuleFor(request => request.Title)
             .NotEmpty()
@@ -16,9 +16,6 @@ public class CreateCourseAdminRequestValidator
         RuleFor(request => request.Price)
             .GreaterThanOrEqualTo(0)
             .PrecisionScale(10, 2, false);
-
-        RuleFor(request => request.AuthorId)
-            .NotEmpty();
 
         RuleFor(request => request.CategoryId)
             .NotEmpty();

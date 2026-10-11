@@ -1,4 +1,4 @@
-namespace EduFlowHub.Api.Contracts.CourseAdmin.Requests.Validators;
+namespace EduFlowHub.Api.Contracts.Course.Requests.Validators;
 
 public class ChangeCourseAuthorRequestValidator
     : AbstractValidator<ChangeCourseAuthorRequest>
