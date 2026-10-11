@@ -1,5 +1,6 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services.File;
+using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
 using EduFlowHub.Application.Features.LessonMaterial.Dtos;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Queries.GetFile;
@@ -9,19 +10,24 @@ public class GetLessonMaterialFileHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFileStorage _fileStorage;
+    private readonly ILessonMaterialAccessService _lessonMaterialAccessService;
 
     public GetLessonMaterialFileHandler(
         IUnitOfWork unitOfWork,
-        IFileStorage fileStorage)
+        IFileStorage fileStorage,
+        ILessonMaterialAccessService lessonMaterialAccessService)
     {
         _unitOfWork = unitOfWork;
         _fileStorage =  fileStorage;
+        _lessonMaterialAccessService = lessonMaterialAccessService;
     }
 
     public async Task<FileDto> Handle(
         GetLessonMaterialFileQuery request,
         CancellationToken cancellationToken)
     {
+        await _lessonMaterialAccessService.EnsureCanViewAsync(request.CourseId, cancellationToken);
+        
         Domain.Entities.LessonMaterial? lessonMaterial = await _unitOfWork
             .LessonMaterialRepository
             .GetByIdAsync(

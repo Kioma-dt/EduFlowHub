@@ -6,4 +6,5 @@ public interface ILessonMaterialAccessService
     void EnsureCanCreate(Guid authorId);
     void EnsureCanDelete(Domain.Entities.LessonMaterial lessonMaterial);
     void EnsureCanUpdate(Domain.Entities.LessonMaterial lessonMaterial);
+    Task EnsureCanViewAsync(Guid courseId, CancellationToken cancellationToken = default);
 }

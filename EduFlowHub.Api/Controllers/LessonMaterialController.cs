@@ -38,27 +38,25 @@ public class LessonMaterialController
         [FromRoute] Guid courseId,
         [FromQuery] bool orderByNumber = false)
     {
-        var query = new ListLessonMaterialsOfCourseQuery(
-            courseId,
-            orderByNumber);
+        var query = new ListLessonMaterialsOfCourseQuery(courseId, orderByNumber);
         IEnumerable<LessonMaterialDto> result = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<IEnumerable<LessonMaterialResponse>>(result);
         return Ok(response);
     }
     
-    [HttpGet("{lessonMaterial:guid}")]
+    [HttpGet("{lessonMaterialId:guid}")]
     public async Task<ActionResult<LessonMaterialResponse>> GetById(
+        [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
         CancellationToken cancellationToken)
     {
-        var query = new GetLessonMaterialByIdQuery(
-            lessonMaterialId);
+        var query = new GetLessonMaterialByIdQuery(lessonMaterialId, courseId);
         LessonMaterialDto result = await _mediator.Send(query, cancellationToken);
         var response = _mapper.Map<LessonMaterialResponse>(result);
         return Ok(response);
     }
     
-    [HttpGet("{orderNumber:int}")]
+    [HttpGet("by-order/{orderNumber:int}")]
     public async Task<ActionResult<LessonMaterialResponse>> GetByOrderNumber(
         [FromRoute] Guid courseId,
         [FromRoute] int orderNumber,
@@ -95,19 +93,21 @@ public class LessonMaterialController
         var response = _mapper.Map<LessonMaterialResponse>(result);
         return CreatedAtAction(
             nameof(GetById),
-            new { lessonMaterialId = result.Id },
+            new { courseId, lessonMaterialId = result.Id } ,
             response);
     }
     
     [Authorize(Roles = "Admin, Teacher")]
     [HttpPatch("{lessonMaterialId:guid}")]
     public async Task<IActionResult> Update(
+        [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
         [FromBody] UpdateLessonMaterialRequest request,
         CancellationToken cancellationToken)
     {
         var command = new UpdateLessonMaterialCommand(
             lessonMaterialId,
+            courseId,
             request.Title,
             request.OrderNumber);
         await _mediator.Send(command, cancellationToken);
@@ -117,20 +117,22 @@ public class LessonMaterialController
     [Authorize(Roles = "Admin, Teacher")]
     [HttpDelete("{lessonMaterialId:guid}")]
     public async Task<IActionResult> Delete(
+        [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
         CancellationToken cancellationToken)
     {
-        var command = new DeleteLessonMaterialCommand(lessonMaterialId);
+        var command = new DeleteLessonMaterialCommand(lessonMaterialId, courseId);
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }
     
     [HttpGet("{lessonMaterialId:guid}/file")]
     public async Task<IActionResult> GetFile(
+        [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
         CancellationToken cancellationToken)
     {
-        var query = new GetLessonMaterialFileQuery(lessonMaterialId);
+        var query = new GetLessonMaterialFileQuery(lessonMaterialId, courseId);
         var result = await _mediator.Send(query, cancellationToken);
         return File(
             result.FileStream, 
@@ -141,6 +143,7 @@ public class LessonMaterialController
     [HttpPut("{lessonMaterialId:guid}/file")]
     [Consumes("multipart/form-data")]
     public async Task<IActionResult> ChangeFile(
+        [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
         [FromForm] IFormFile file,
         CancellationToken cancellationToken)
@@ -150,6 +153,7 @@ public class LessonMaterialController
         var fileLength = file.Length;
         var command = new ChangeLessonMaterialFileCommand(
             lessonMaterialId,
+            courseId,
             fileStream,
             fileExtension,
             fileLength);

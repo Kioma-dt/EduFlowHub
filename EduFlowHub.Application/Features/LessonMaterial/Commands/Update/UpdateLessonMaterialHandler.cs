@@ -30,7 +30,8 @@ public class UpdateLessonMaterialHandler
                 lessonMaterial => lessonMaterial.FileMetadata!,
                 lessonMaterial => lessonMaterial.Course!);
 
-        if (lessonMaterial is null)
+        if (lessonMaterial is null
+            || lessonMaterial.CourseId != request.CourseId)
         {
             throw new EntityNotFoundException(
                 "LessonMaterial",

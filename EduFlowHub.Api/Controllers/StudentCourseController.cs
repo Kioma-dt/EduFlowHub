@@ -1,7 +1,7 @@
 using EduFlowHub.Api.Contracts.Course.Responses;
 using EduFlowHub.Application.Abstractions.Services.User;
 using EduFlowHub.Application.Features.Course.Dtos;
-using EduFlowHub.Application.Features.Course.Queries.ListEnrollerd;
+using EduFlowHub.Application.Features.Course.Queries.ListEnrolled;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.EnrollStudentOnCourse;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
 using Microsoft.AspNetCore.Authorization;
