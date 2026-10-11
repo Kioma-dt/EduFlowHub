@@ -1,3 +1,4 @@
+using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services.User;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Access.Policy;
@@ -6,10 +7,14 @@ public class LessonMaterialAccessPolicy
     : ILessonMaterialAccessPolicy
 {
     private readonly ICurrentUser _currentUser;
+    private readonly IUnitOfWork _unitOfWork;
     
-    public LessonMaterialAccessPolicy(ICurrentUser currentUser)
+    public LessonMaterialAccessPolicy(
+        ICurrentUser currentUser,
+        IUnitOfWork unitOfWork)
     {
         _currentUser = currentUser;
+        _unitOfWork = unitOfWork;
     }
 
     public bool CanView(Domain.Entities.LessonMaterial lessonMaterial, Domain.Entities.CourseEnrollment? enrollment)
@@ -25,6 +30,16 @@ public class LessonMaterialAccessPolicy
                 && _currentUser.CurrentUserRole == UserRole.Student 
                 && _currentUser.CurrentUserId == enrollment.StudentId
                 && lessonMaterial.Course.Id == enrollment.CourseId);
+    }
+
+    public bool CanViewList(Guid authorId, Domain.Entities.CourseEnrollment? enrollment)
+    {
+        return _currentUser.CurrentUserRole ==  UserRole.Admin
+               || (_currentUser.CurrentUserRole == UserRole.Teacher && _currentUser.CurrentUserId == authorId)
+               || (enrollment is not null 
+                   && _currentUser.CurrentUserRole == UserRole.Student 
+                   && _currentUser.CurrentUserId == enrollment.StudentId
+                   && authorId == enrollment.CourseId);
     }
 
     public bool CanEdit(Domain.Entities.LessonMaterial lessonMaterial)
