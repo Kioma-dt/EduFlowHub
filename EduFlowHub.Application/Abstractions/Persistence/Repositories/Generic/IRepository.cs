@@ -9,6 +9,8 @@ public interface IRepository<T>
     public Task<IEnumerable<T>> GetAllAsync(
         Expression<Func<T, bool>>? filter = null,
         Func<IQueryable<T>, IOrderedQueryable<T>>? orderBy = null,
+        int page = 1, 
+        int pageSize = 10,
         CancellationToken cancellationToken = default,
         params Expression<Func<T, object>>[] includes);
     
