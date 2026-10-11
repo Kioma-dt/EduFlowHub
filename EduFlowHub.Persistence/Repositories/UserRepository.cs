@@ -1,10 +1,11 @@
+using System.Linq.Expressions;
 using EduFlowHub.Application.Abstractions.Persistence.Repositories;
 using EduFlowHub.Persistence.Repositories.Generic;
 
 namespace EduFlowHub.Persistence.Repositories;
 
 public class UserRepository
-    : Repository<User>, 
+    : Repository<User>,
         IUserRepository
         
 {
@@ -17,13 +18,41 @@ public class UserRepository
     {
         return await DbSet.FirstOrDefaultAsync(u => u.Name == name, cancellationToken);
     }
-
-    public async Task<IEnumerable<User>> GetEnrolledOnCourse(Guid courseId, CancellationToken cancellationToken = default)
+    
+    public async Task<IEnumerable<User>> GetEnrolledOnCourse(Guid courseId, 
+        Expression<Func<User, bool>>? filter = null, 
+        Func<IQueryable<User>, IOrderedQueryable<User>>? orderBy = null,
+        int page = 1,
+        int pageSize = 10,
+        CancellationToken cancellationToken = default)
     {
-        return await DbContext.Set<CourseEnrollment>()
+        var query = DbContext.Set<CourseEnrollment>()
             .Include(enrollment => enrollment.Student)
             .Where(enrollment => enrollment.CourseId.Equals(courseId))
             .Select(enrollment => enrollment.Student!)
-            .ToListAsync(cancellationToken);
+            .AsQueryable();
+
+        if (filter is not null)
+        {
+            query = query.Where(filter);
+        }
+        
+        int skip = (page - 1) * pageSize;
+        int take = pageSize;
+        
+        if (orderBy is not null)
+        {
+            return await orderBy(query)
+                .Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
+        }
+        else
+        {
+            return await query.OrderBy(course => course.Id).
+                Skip(skip)
+                .Take(take)
+                .ToListAsync(cancellationToken);
+        }
     }
 }

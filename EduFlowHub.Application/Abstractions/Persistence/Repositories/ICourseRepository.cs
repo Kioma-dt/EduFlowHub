@@ -11,6 +11,9 @@ public interface ICourseRepository
     Task<Course?> GetByIdForAuthorAsync(Guid courseId, Guid authorId, CancellationToken cancellationToken = default);
     Task<IEnumerable<Course>> GetEnrolledCoursesAsync(
         Guid studentId, 
-        Expression<Func<Course, bool>> filter,
+        Expression<Func<Course, bool>>? filter = null,
+        Func<IQueryable<Course>, IOrderedQueryable<Course>>? orderBy = null,
+        int page = 1, 
+        int pageSize = 10,
         CancellationToken cancellationToken = default);
 }
