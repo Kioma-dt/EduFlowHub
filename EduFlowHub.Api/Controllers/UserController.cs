@@ -32,7 +32,7 @@ public class UserController
     }
     
     [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<UserResponse>>> Get(CancellationToken cancellationToken)
     {
         var query = new ListAllUsersQuery();
         IEnumerable<UserDto> result = await _mediator.Send(query, cancellationToken);
@@ -41,7 +41,7 @@ public class UserController
     }
     
     [HttpGet("{userId:guid}")]
-    public async Task<IActionResult> GetById(
+    public async Task<ActionResult<UserResponse>> GetById(
         [FromRoute] Guid userId,
         CancellationToken cancellationToken)
     {
@@ -52,7 +52,7 @@ public class UserController
     }
     
     [HttpPost]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<UserResponse>> Create(
         [FromBody] CreateUserRequest request,
         CancellationToken cancellationToken)
     {

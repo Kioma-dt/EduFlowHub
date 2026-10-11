@@ -29,7 +29,7 @@ public class CourseCategoryController
     }
     
     [HttpGet]
-    public async Task<IActionResult> Get(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<CourseCategoryResponse>>> Get(CancellationToken cancellationToken)
     {
         var query = new ListAllCourseCategoriesQuery();
         IEnumerable<CourseCategoryDto> result = await _mediator.Send(query, cancellationToken);
@@ -38,7 +38,7 @@ public class CourseCategoryController
     }
 
     [HttpGet("{courseCategoryId:guid}")]
-    public async Task<IActionResult> GetById(
+    public async Task<ActionResult<CourseCategoryResponse>> GetById(
         [FromRoute] Guid courseCategoryId,
         CancellationToken cancellationToken)
     {
@@ -50,7 +50,7 @@ public class CourseCategoryController
 
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<CourseCategoryResponse>> Create(
         [FromBody] CreateCourseCategoryRequest request,
         CancellationToken cancellationToken)
     {
@@ -65,7 +65,7 @@ public class CourseCategoryController
     
     [Authorize(Roles = "Admin")]
     [HttpPut("{courseCategoryId:guid}")]
-    public async Task<IActionResult> Put(
+    public async Task<ActionResult<CourseCategoryResponse>> Put(
         [FromRoute] Guid courseCategoryId,
         [FromBody] PutCourseCategoryRequest request,
         CancellationToken cancellationToken)

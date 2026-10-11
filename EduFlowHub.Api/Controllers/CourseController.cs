@@ -40,18 +40,18 @@ public class CourseController
 
     [Authorize(Roles = "Admin, Teacher")]
     [HttpGet("{courseId:guid}")]
-    public async Task<IActionResult> GetById(
+    public async Task<ActionResult<CourseResponse>> GetById(
         [FromRoute] Guid courseId,
         CancellationToken cancellationToken)
     {
         var query = new GetCourseByIdQuery(courseId);
         CourseDto course = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<CourseDto>(course);
+        var response = _mapper.Map<CourseResponse>(course);
         return Ok(response);
     }
     
     [HttpGet]
-    public async Task<IActionResult> GetPublished(
+    public async Task<ActionResult<IEnumerable<CourseResponse>>> GetPublished(
         [FromQuery] GetPublishedCoursesQueryString filterQuery,
         CancellationToken cancellationToken)
     {
@@ -65,7 +65,7 @@ public class CourseController
     
     [Authorize(Roles = "Teacher")]
     [HttpGet("my")]
-    public async Task<IActionResult> Get(
+    public async Task<ActionResult<IEnumerable<CourseResponse>>> Get(
         [FromQuery] GetMyCoursesQueryString filterQuery,
         CancellationToken cancellationToken)
     {
@@ -80,7 +80,7 @@ public class CourseController
 
     [Authorize(Roles = "Teacher")]
     [HttpPost]
-    public async Task<IActionResult> CreateCourse(
+    public async Task<ActionResult<CourseResponse>> CreateCourse(
         [FromBody] CreateCourseRequest request,
         CancellationToken cancellationToken)
     {
@@ -150,7 +150,7 @@ public class CourseController
 
     [Authorize(Roles = "Student")]
     [HttpGet("enrolled")]
-    public async Task<IActionResult> GetEnrolled(CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<CourseResponse>>> GetEnrolled(CancellationToken cancellationToken)
     {
         var query = new ListEnrolledCoursesQuery(_currentUser.CurrentUserId);
         IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
