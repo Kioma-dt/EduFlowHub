@@ -3,13 +3,13 @@ using EduFlowHub.Application.Features.Course.Dtos;
 
 namespace EduFlowHub.Application.Features.Course.Queries.ListEnrollerd;
 
-public class ListAllCoursesHandler
+public class ListEnrollerdCoursesHandler
     : IRequestHandler<ListEnrolledCoursesQuery, IEnumerable<CourseDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ListAllCoursesHandler(
+    public ListEnrollerdCoursesHandler(
         IMapper mapper,
         IUnitOfWork unitOfWork)
     {

@@ -17,4 +17,13 @@ public class UserRepository
     {
         return await DbSet.FirstOrDefaultAsync(u => u.Name == name, cancellationToken);
     }
+
+    public async Task<IEnumerable<User>> GetEnrolledOnCourse(Guid courseId, CancellationToken cancellationToken = default)
+    {
+        return await DbContext.Set<CourseEnrollment>()
+            .Include(enrollment => enrollment.Student)
+            .Where(enrollment => enrollment.CourseId.Equals(courseId))
+            .Select(enrollment => enrollment.Student!)
+            .ToListAsync(cancellationToken);
+    }
 }

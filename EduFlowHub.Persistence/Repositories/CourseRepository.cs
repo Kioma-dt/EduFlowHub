@@ -13,6 +13,18 @@ public class CourseRepository
     {
     }
 
+    public async Task<Course?> GetByIdForAuthorAsync(
+        Guid courseId,
+        Guid authorId, 
+        CancellationToken cancellationToken = default)
+    {
+        return await DbSet
+            .Include(course => course.Author)
+            .Include(course => course.Category)
+            .FirstOrDefaultAsync(course => (course.Id.Equals(courseId) 
+                                            && course.AuthorId.Equals(authorId)), cancellationToken);
+    }
+
     public async Task<IEnumerable<Course>> GetEnrolledCoursesAsync(Guid studentId, CancellationToken  cancellationToken = default)
     {
         return await DbContext.Set<CourseEnrollment>()

@@ -1,4 +1,4 @@
-namespace EduFlowHub.Api.Contracts.CourseAdmin.QueryStrings.Validators;
+namespace EduFlowHub.Api.Contracts.Course.QueryStrings.Validators;
 
 public class GetAllCoursesQueryStringValidator
     : AbstractValidator<GetAllCoursesQueryString>

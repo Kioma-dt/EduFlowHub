@@ -1,5 +1,3 @@
 namespace EduFlowHub.Api.Contracts.Course.QueryStrings;
 
-public sealed record GetPublishedCoursesQueryString(
-    string? Category,
-    Guid? AuthorId);
+public sealed record GetPublishedCoursesQueryString(string? Category, Guid? AuthorId);

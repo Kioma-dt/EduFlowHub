@@ -2,6 +2,7 @@ using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Access.Service;
 using EduFlowHub.Application.Features.CourseEnrollment.Access.Policy;
 using EduFlowHub.Application.Features.CourseEnrollment.Access.Service;
+using EduFlowHub.Application.Features.CourseEnrollment.Exceptions;
 using EduFlowHub.Domain.Exceptions;
 
 namespace EduFlowHub.Application.Features.CourseEnrollment.Commands.EnrollStudentOnCourse;
@@ -30,10 +31,7 @@ public class EnrollStudentOnCourseHandler
                 .CourseEnrollmentRepository
                 .GetByIdAsync(request.StudentId, request.CourseId, cancellationToken) is not null)
         {
-            throw new EntityAlreadyExistsException(
-                "CourseEnrollment", 
-                "StudentId/CourseId",
-                $"{request.StudentId}/{request.CourseId}");
+            throw new StudentAlreadyEnrolledOnCourseException(request.StudentId, request.CourseId);
         }
         
         var student = await _unitOfWork
