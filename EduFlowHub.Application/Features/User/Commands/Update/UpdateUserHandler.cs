@@ -1,6 +1,5 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.User.Access.Service;
-using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.User.Commands.Update;
 
@@ -28,7 +27,8 @@ public class UpdateUserHandler
 
         if (user is null)
         {
-            throw new EntityNotFoundException("User", 
+            throw new EntityNotFoundException(
+                "User", 
                 "Id",
                 request.UserId.ToString());
         }

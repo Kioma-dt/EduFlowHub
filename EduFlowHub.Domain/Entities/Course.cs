@@ -48,6 +48,7 @@ public class Course
         string description,
         decimal price)
     {
+        EnsureCanChange();
         Title = ValidateTitle(title);
         Description = ValidateDescription(description);
         Price = ValidatePrice(price);
@@ -55,11 +56,13 @@ public class Course
 
     public void ChangeAuthor(Guid authorId)
     {
+        EnsureCanChange();
         AuthorId = ValidateAuthorId(authorId);
     }
 
     public void ChangeCategory(Guid categoryId)
     {
+        EnsureCanChange();
         CategoryId = ValidateCategory(categoryId);
     }
 
@@ -115,6 +118,30 @@ public class Course
         CheckLessonMaterialOrder();
 
         Status = CourseStatus.Published;
+    }
+    
+    public void EnsureCanChange()
+    {
+        if (Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
+        }
+    }
+
+    public void EnsureCanDelete()
+    { 
+        if (Status != CourseStatus.Draft)
+        {
+            throw new DomainWrongStatusException("Can not change not draft course");
+        }
+    }
+
+    public void EnsureCanEnrollStudent()
+    {
+        if (Status != CourseStatus.Published)
+        {
+            throw new DomainWrongStatusException("Can not enroll on not published course");
+        }
     }
     
     private string ValidateTitle(string title)
