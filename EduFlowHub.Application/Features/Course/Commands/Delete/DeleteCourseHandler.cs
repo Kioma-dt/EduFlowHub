@@ -34,14 +34,10 @@ public class DeleteCourseHandler
         }
         
         _courseAccessService.EnsureCanDelete(course);
-
-        IEnumerable<Domain.Entities.CourseEnrollment> enrollments = await _unitOfWork
-            .CourseEnrollmentRepository
-            .GetByCourseIdAsync(course.Id, cancellationToken);
-
-        if (enrollments.Any())
+        
+        if (await _unitOfWork.CourseEnrollmentRepository.ExistsAsync(course.Id, null, cancellationToken))
         {
-            throw new CanNotDeleteEntityException("Can not delete Course due to multiple enrollments");
+            throw new CanNotDeleteEntityException("Can not delete Course due to dependent Enrollments");
         }
         
         await _unitOfWork

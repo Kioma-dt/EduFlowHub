@@ -7,8 +7,7 @@ public class IsStudentEnrolledOnCourseQueryHandler
 {
     private readonly IUnitOfWork _unitOfWork;
 
-    public IsStudentEnrolledOnCourseQueryHandler(
-        IUnitOfWork unitOfWork)
+    public IsStudentEnrolledOnCourseQueryHandler(IUnitOfWork unitOfWork)
     {
         _unitOfWork = unitOfWork;
     }
