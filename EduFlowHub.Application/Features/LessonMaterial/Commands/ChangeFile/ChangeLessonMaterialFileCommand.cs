@@ -1,5 +1,3 @@
-using EduFlowHub.Application.Features.LessonMaterial.Dtos;
-
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.ChangeFile;
 
 public sealed record ChangeLessonMaterialFileCommand(

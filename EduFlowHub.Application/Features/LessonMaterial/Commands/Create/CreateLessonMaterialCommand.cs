@@ -7,5 +7,6 @@ public sealed record CreateLessonMaterialCommand(
     int OrderNumber,
     Stream FileStream,
     string FileExtension,
+    long FileLength,
     Guid CourseId)
     : IRequest<LessonMaterialDto>;

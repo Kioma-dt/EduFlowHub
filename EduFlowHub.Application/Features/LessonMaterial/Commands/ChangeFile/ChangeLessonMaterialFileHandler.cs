@@ -1,8 +1,7 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Services.File;
 using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
-using EduFlowHub.Application.Features.LessonMaterial.Exceptions;
-using EduFlowHub.Domain.Exceptions;
+using EduFlowHub.Application.Features.LessonMaterial.FileValidator;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Commands.ChangeFile;
 
@@ -11,26 +10,20 @@ public class ChangeLessonMaterialFileHandler
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IFileStorage _fileStorage;
-    private readonly IFileContentTypeChecker  _fileContentTypeChecker;
-    private readonly ISupportedFileTypeChecker _supportedFileTypeChecker;
-    private readonly IFileStorageRequirements  _fileStorageRequirements;
     private readonly ILessonMaterialAccessService _lessonMaterialAccessService;
+    private readonly IFileValidator _fileValidator;
     
 
     public ChangeLessonMaterialFileHandler(
         IUnitOfWork unitOfWork,
         IFileStorage fileStorage,
-        IFileContentTypeChecker fileContentTypeChecker,
-        ISupportedFileTypeChecker supportedFileTypeChecker,
-        IFileStorageRequirements fileStorageRequirements,
-        ILessonMaterialAccessService lessonMaterialAccessService)
+        ILessonMaterialAccessService lessonMaterialAccessService,
+        IFileValidator fileValidator)
     {
         _unitOfWork = unitOfWork;
         _fileStorage = fileStorage;
-        _fileContentTypeChecker = fileContentTypeChecker;
-        _supportedFileTypeChecker = supportedFileTypeChecker;
-        _fileStorageRequirements = fileStorageRequirements;
         _lessonMaterialAccessService = lessonMaterialAccessService;
+        _fileValidator = fileValidator;
     }
 
     public async Task Handle(
@@ -54,27 +47,9 @@ public class ChangeLessonMaterialFileHandler
         
         _lessonMaterialAccessService.EnsureCanChangeFile(lessonMaterial);
 
-        if (lessonMaterial.Course!.Status != CourseStatus.Draft)
-        {
-            throw new DomainWrongStatusException("Can not change not draft course");
-        }
+        lessonMaterial.Course?.EnsureCanChange();
         
-        if (!_fileContentTypeChecker.IsContentTypeCorrect(
-                request.FileStream,
-                request.FileExtension))
-        {
-            throw new FileContentTypeMismatchException();
-        }
-
-        if (!_supportedFileTypeChecker.IsFileTypeSupported(request.FileExtension))
-        {
-            throw new UnsupportedFileTypeException(request.FileExtension);
-        }
-
-        if (request.FileLength > _fileStorageRequirements.MaxFileSize)
-        {
-            throw new FileTooLargeException(_fileStorageRequirements.MaxFileSize);
-        }
+        _fileValidator.ValidateFile(request.FileStream, request.FileExtension, request.FileLength);
         
         string filePathOld = lessonMaterial.FileMetadata!.Path;
 
@@ -84,10 +59,7 @@ public class ChangeLessonMaterialFileHandler
             request.FileExtension,
             cancellationToken);
 
-        FileMetadata fileMetadata = new FileMetadata(
-            filePath,
-            request.FileExtension,
-            fileSize);
+        FileMetadata fileMetadata = new FileMetadata(filePath, request.FileExtension, fileSize);
         
         MaterialType materialType = MaterialTypeResolver.FromExtension(request.FileExtension);
 

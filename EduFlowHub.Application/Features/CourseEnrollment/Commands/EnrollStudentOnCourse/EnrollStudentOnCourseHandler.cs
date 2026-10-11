@@ -54,10 +54,7 @@ public class EnrollStudentOnCourseHandler
             throw new InvalidEntityReferenceException("Course", request.CourseId);
         }
 
-        if (course.Status != CourseStatus.Published)
-        {
-            throw new DomainWrongStatusException("Can not enroll on not published course");
-        }
+        course.EnsureCanEnrollStudent();
         
         var enrollment = new Domain.Entities.CourseEnrollment(
             request.CourseId, 
