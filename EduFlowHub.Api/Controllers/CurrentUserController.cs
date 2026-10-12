@@ -13,6 +13,12 @@ namespace EduFlowHub.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/users/me")]
 public class CurrentUserController
     : ControllerBase
@@ -31,6 +37,7 @@ public class CurrentUserController
         _currentUser = currentUser;
     }
     
+    [ProducesResponseType<CurrentUserResponse>(StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<CurrentUserResponse>> GetById(CancellationToken cancellationToken)
     {
@@ -40,6 +47,8 @@ public class CurrentUserController
         return Ok(response);
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPatch]
     public async Task<IActionResult> Update(
         [FromBody] UpdateCurrentUserRequest request,
@@ -53,6 +62,7 @@ public class CurrentUserController
         return NoContent();
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpPut("password")]
     public async Task<IActionResult> ChangePassword(
         [FromBody] ChangeCurrentUserPasswordRequest request,

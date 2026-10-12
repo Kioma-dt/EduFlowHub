@@ -6,11 +6,18 @@ using EduFlowHub.Application.Features.Authentication.Dtos;
 using EduFlowHub.Application.Features.User.Dtos;
 
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace EduFlowHub.Api.Controllers;
 
 [ApiController]
+[EnableRateLimiting("auth")]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/auth")]
 public class AuthController
     : ControllerBase
@@ -27,6 +34,9 @@ public class AuthController
     }
 
     [AllowAnonymous]
+    [ProducesResponseType<RegisterResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("register")]
     public async Task<ActionResult<RegisterResponse>> Register(
         [FromBody] RegisterRequest request,
@@ -35,11 +45,18 @@ public class AuthController
         var command = _mapper.Map<RegisterCommand>(request);
         UserDto result = await _mediator.Send(command, cancellationToken);
         var response =  _mapper.Map<RegisterResponse>(result);
-        return StatusCode(StatusCodes.Status201Created, response);
+        return Created($"api/v1/users/me", response);
     }
     
     [AllowAnonymous]
+    [ProducesResponseType<LoginResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
     [HttpPost("login")]
+    
     public async Task<ActionResult<LoginResponse>> Login(
         [FromBody] LoginRequest request,
         CancellationToken cancellationToken)

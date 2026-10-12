@@ -20,6 +20,12 @@ namespace EduFlowHub.Api.Controllers;
 
 [ApiController]
 [Authorize(Roles = "Teacher")]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/courses/teachers/me")]
 public class TeacherCourseController
     :ControllerBase
@@ -38,8 +44,9 @@ public class TeacherCourseController
         _currentUser = currentUser;
     }
     
+    [ProducesResponseType<PagedResponse<CourseResponse>>(StatusCodes.Status200OK)]
     [HttpGet]
-    public async Task<ActionResult<PagedDto<CourseResponse>>> Get(
+    public async Task<ActionResult<PagedResponse<CourseResponse>>> Get(
         [FromQuery] GetMyCoursesQueryString filterQueryString,
         [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
@@ -56,6 +63,8 @@ public class TeacherCourseController
         return Ok(response);
     }
     
+    [ProducesResponseType<PagedResponse<CourseResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [HttpGet("{courseId:guid}")]
     public async Task<ActionResult<CourseResponse>> GetById(
         [FromRoute] Guid courseId,
@@ -69,7 +78,8 @@ public class TeacherCourseController
         return Ok(response);
     }
 
-    
+    [ProducesResponseType<PagedResponse<CourseResponse>>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost]
     public async Task<ActionResult<CourseResponse>> CreateCourse(
         [FromBody] CreateMyCourseRequest request,
@@ -88,6 +98,9 @@ public class TeacherCourseController
             response);
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpDelete("{courseId:guid}")]
     public async Task<IActionResult> DeleteCourse(
         [FromRoute] Guid courseId,
@@ -98,6 +111,9 @@ public class TeacherCourseController
         return NoContent();
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPatch("{courseId:guid}")]
     public async Task<IActionResult> UpdateCourse(
         [FromRoute] Guid courseId,
@@ -114,6 +130,9 @@ public class TeacherCourseController
         return NoContent();
     }
 
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/publish")]
     public async Task<IActionResult> Publish(
         [FromRoute] Guid courseId,
@@ -124,6 +143,9 @@ public class TeacherCourseController
         return NoContent();
     }
 
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/archive")]
     public async Task<IActionResult> Archive(
         [FromRoute] Guid courseId,

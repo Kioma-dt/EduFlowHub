@@ -19,6 +19,12 @@ namespace EduFlowHub.Api.Controllers;
 
 [ApiController]
 [Authorize(Roles = "Admin")]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/users")]
 public class UserController
     : ControllerBase
@@ -34,6 +40,7 @@ public class UserController
         _mapper = mapper;
     }
     
+    [ProducesResponseType<PagedResponse<UserResponse>>(StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<PagedResponse<UserResponse>>> Get(
         [FromQuery] PageQueryString pageQueryString,
@@ -46,6 +53,8 @@ public class UserController
         return Ok(response);
     }
     
+    [ProducesResponseType<UserResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [HttpGet("{userId:guid}")]
     public async Task<ActionResult<UserResponse>> GetById(
         [FromRoute] Guid userId,
@@ -57,6 +66,8 @@ public class UserController
         return Ok(response);
     }
     
+    [ProducesResponseType<UserResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost]
     public async Task<ActionResult<UserResponse>> Create(
         [FromBody] CreateUserRequest request,
@@ -71,6 +82,9 @@ public class UserController
             response);
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPatch("{userId:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid userId,
@@ -85,6 +99,9 @@ public class UserController
         return NoContent();
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpDelete("{userId:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid userId,
@@ -95,6 +112,9 @@ public class UserController
         return NoContent();
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPut("{userId:guid}/password")]
     public async Task<IActionResult> ChangePassword(
         [FromRoute] Guid userId,
@@ -108,6 +128,8 @@ public class UserController
         return NoContent();
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [HttpPost("{userId:guid}/unlock")]
     public async Task<IActionResult> Unlock(
         [FromRoute] Guid userId,
