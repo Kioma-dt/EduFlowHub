@@ -1,12 +1,14 @@
 using EduFlowHub.Api.Contracts.CourseCategory.Requests;
 using EduFlowHub.Api.Contracts.CourseCategory.Responses;
+using EduFlowHub.Api.Contracts.Generic.QueryStrings;
+using EduFlowHub.Api.Contracts.Generic.Responses;
 using EduFlowHub.Application.Features.CourseCategory.Commands.Create;
 using EduFlowHub.Application.Features.CourseCategory.Commands.Delete;
 using EduFlowHub.Application.Features.CourseCategory.Commands.Update;
 using EduFlowHub.Application.Features.CourseCategory.Dtos;
 using EduFlowHub.Application.Features.CourseCategory.Queries.GetById;
 using EduFlowHub.Application.Features.CourseCategory.Queries.ListAll;
-
+using EduFlowHub.Application.Features.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,11 +32,14 @@ public class CourseCategoryController
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CourseCategoryResponse>>> Get(CancellationToken cancellationToken)
+    public async Task<ActionResult<PagedResponse<CourseCategoryResponse>>> Get(
+        [FromQuery] PageQueryString pageQueryString,
+        CancellationToken cancellationToken)
     {
-        var query = new ListAllCourseCategoriesQuery();
-        IEnumerable<CourseCategoryDto> result = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<CourseCategoryResponse>>(result);
+        var query = new ListAllCourseCategoriesQuery(pageQueryString.Page, pageQueryString.PageSize);
+        PagedDto<CourseCategoryDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<CourseCategoryResponse>>(result.Items);
+        var response = new PagedResponse<CourseCategoryResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
 

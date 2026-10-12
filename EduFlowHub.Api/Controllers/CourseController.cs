@@ -1,6 +1,9 @@
 using EduFlowHub.Api.Contracts.Course.QueryStrings;
 using EduFlowHub.Api.Contracts.Course.Requests;
 using EduFlowHub.Api.Contracts.Course.Responses;
+using EduFlowHub.Api.Contracts.Generic.QueryStrings;
+using EduFlowHub.Api.Contracts.Generic.Responses;
+using EduFlowHub.Api.Contracts.User.Responses;
 using EduFlowHub.Application.Abstractions.Services.User;
 using EduFlowHub.Application.Features.Course.Commands.Archive;
 using EduFlowHub.Application.Features.Course.Commands.ChangeAuthor;
@@ -17,6 +20,8 @@ using EduFlowHub.Application.Features.Course.Queries.ListPublished;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.EnrollStudentOnCourse;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
 using EduFlowHub.Application.Features.CourseEnrollment.Queries.GetEnrolledStudentsOnCourse;
+using EduFlowHub.Application.Features.Dtos;
+using EduFlowHub.Application.Features.User.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -43,28 +48,34 @@ public class CourseController
     }
     
     [HttpGet("published")]
-    public async Task<ActionResult<IEnumerable<CourseResponse>>> GetPublished(
-        [FromQuery] GetPublishedCoursesQueryString filterQuery,
+    public async Task<ActionResult<PagedResponse<CourseResponse>>> GetPublished(
+        [FromQuery] GetPublishedCoursesQueryString filterQueryString,
+        [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
     {
-        var query = new ListPublishedCoursesQuery(filterQuery.AuthorId, filterQuery.CategoryNormalizedName);
-        IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+        var query = new ListPublishedCoursesQuery(filterQueryString.AuthorId, filterQueryString.CategoryNormalizedName);
+        PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<CourseResponse>>(result);
+        var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
     
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CourseResponse>>> Get(
+    public async Task<ActionResult<PagedResponse<CourseResponse>>> Get(
         [FromQuery] GetAllCoursesQueryString filterQuery,
+        [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
     {
         var query = new ListAllCoursesQuery(
             filterQuery.CategoryNormalizedName,
             filterQuery.AuthorId,
-            filterQuery.Status);
-        IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+            filterQuery.Status,
+            pageQueryString.Page,
+            pageQueryString.PageSize);
+        PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<CourseResponse>>(result);
+        var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
 
@@ -190,13 +201,16 @@ public class CourseController
 
     [Authorize(Roles = "Admin")]
     [HttpGet("{courseId:guid}/students/enrolled")]
-    public async Task<IActionResult> GetEnrolledStudents(
+    public async Task<ActionResult<PagedResponse<UserResponse>>> GetEnrolledStudents(
         [FromRoute] Guid courseId,
+        [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
     {
-        var command = new GetEnrolledStudentsOnCourseQuery(courseId);
-        await _mediator.Send(command, cancellationToken);
-        return NoContent();
+        var command = new GetEnrolledStudentsOnCourseQuery(courseId, pageQueryString.Page, pageQueryString.PageSize);
+        PagedDto<UserDto> result = await _mediator.Send(command, cancellationToken);
+        var items = _mapper.Map<IEnumerable<UserResponse>>(result.Items);
+        var response = new PagedResponse<UserResponse>(items, result.Page, result.PageSize, result.TotalCount);
+        return Ok(response);
     }
     
     [Authorize(Roles = "Admin")]

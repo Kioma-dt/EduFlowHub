@@ -1,10 +1,13 @@
 using EduFlowHub.Api.Contracts.Course.QueryStrings;
 using EduFlowHub.Api.Contracts.Course.Responses;
+using EduFlowHub.Api.Contracts.Generic.QueryStrings;
+using EduFlowHub.Api.Contracts.Generic.Responses;
 using EduFlowHub.Application.Abstractions.Services.User;
 using EduFlowHub.Application.Features.Course.Dtos;
 using EduFlowHub.Application.Features.Course.Queries.ListEnrolledPublished;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.EnrollStudentOnCourse;
 using EduFlowHub.Application.Features.CourseEnrollment.Commands.UnenrollStudentFromCourse;
+using EduFlowHub.Application.Features.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,13 +35,20 @@ public class StudentCourseController
     
     [Authorize(Roles = "Student")]
     [HttpGet("enrolled")]
-    public async Task<ActionResult<IEnumerable<CourseResponse>>> GetEnrolled(
-        [FromQuery] GetStudentEnrolledCoursesQueryString filter,
+    public async Task<ActionResult<PagedDto<CourseResponse>>> GetEnrolled(
+        [FromQuery] GetStudentEnrolledCoursesQueryString filterQueryString,
+        [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
     {
-        var query = new ListEnrolledCoursesPublishedQuery(_currentUser.CurrentUserId, filter.CategoryNormalizedName, filter.AuthorId);
-        IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+        var query = new ListEnrolledCoursesPublishedQuery(
+            _currentUser.CurrentUserId, 
+            filterQueryString.CategoryNormalizedName, 
+            filterQueryString.AuthorId,
+            pageQueryString.Page,
+            pageQueryString.PageSize);
+        PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<CourseResponse>>(result.Items);
+        var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize,result.TotalPages);
         return Ok(response);
     }
     

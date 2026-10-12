@@ -1,5 +1,8 @@
+using EduFlowHub.Api.Contracts.Generic.QueryStrings;
+using EduFlowHub.Api.Contracts.Generic.Responses;
 using EduFlowHub.Api.Contracts.User.Requests;
 using EduFlowHub.Api.Contracts.User.Responses;
+using EduFlowHub.Application.Features.Dtos;
 using EduFlowHub.Application.Features.User.Commands.ChangePasswordWithoutOldPassword;
 using EduFlowHub.Application.Features.User.Commands.Create;
 using EduFlowHub.Application.Features.User.Commands.Delete;
@@ -31,11 +34,14 @@ public class UserController
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<UserResponse>>> Get(CancellationToken cancellationToken)
+    public async Task<ActionResult<PagedResponse<UserResponse>>> Get(
+        [FromQuery] PageQueryString pageQueryString,
+        CancellationToken cancellationToken)
     {
-        var query = new ListAllUsersQuery();
-        IEnumerable<UserDto> result = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<UserResponse>>(result);
+        var query = new ListAllUsersQuery(pageQueryString.Page, pageQueryString.PageSize);
+        PagedDto<UserDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<UserResponse>>(result.Items);
+        var response = new PagedResponse<UserResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
     

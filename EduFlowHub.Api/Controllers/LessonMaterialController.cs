@@ -1,5 +1,8 @@
+using EduFlowHub.Api.Contracts.Generic.QueryStrings;
+using EduFlowHub.Api.Contracts.Generic.Responses;
 using EduFlowHub.Api.Contracts.LessonMaterial.Requests;
 using EduFlowHub.Api.Contracts.LessonMaterial.Responses;
+using EduFlowHub.Application.Features.Dtos;
 using EduFlowHub.Application.Features.LessonMaterial.Commands.ChangeFile;
 using EduFlowHub.Application.Features.LessonMaterial.Commands.Create;
 using EduFlowHub.Application.Features.LessonMaterial.Commands.Delete;
@@ -33,14 +36,16 @@ public class LessonMaterialController
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<LessonMaterialResponse>>> Get(
+    public async Task<ActionResult<PagedResponse<LessonMaterialResponse>>> Get(
         CancellationToken cancellationToken,
         [FromRoute] Guid courseId,
+        [FromQuery] PageQueryString pageQueryString,
         [FromQuery] bool orderByNumber = false)
     {
-        var query = new ListLessonMaterialsOfCourseQuery(courseId, orderByNumber);
-        IEnumerable<LessonMaterialDto> result = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<LessonMaterialResponse>>(result);
+        var query = new ListLessonMaterialsOfCourseQuery(courseId, orderByNumber, pageQueryString.Page, pageQueryString.PageSize);
+        PagedDto<LessonMaterialDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<LessonMaterialResponse>>(result.Items);
+        var response = new PagedResponse<LessonMaterialResponse>(items, result.Page,result.PageSize, result.TotalCount);
         return Ok(response);
     }
     
