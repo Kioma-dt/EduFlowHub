@@ -21,7 +21,7 @@ internal class EducationDesignTimeDbContextFactory
             user is null ||
             password is null)
         {
-            throw new InvalidOperationException("Enviorment varibles for connection string not configured");
+            throw new InvalidOperationException("Enviorment varibles for connection string not configured");  
         }
 
         var connectionString =

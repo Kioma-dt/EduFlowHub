@@ -14,6 +14,13 @@ COPY . .
 WORKDIR /source/EduFlowHub.Api
 RUN dotnet publish -c Release -o /app/publish --no-restore
 
+FROM mcr.microsoft.com/dotnet/runtime-deps:10.0 AS migration
+WORKDIR /app
+COPY efbundle .
+RUN chmod +x efbundle
+USER $APP_UID
+ENTRYPOINT ["./efbundle"]
+
 FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS final
 RUN apt-get update \
     && apt-get install -y libfontconfig
