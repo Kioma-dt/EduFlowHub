@@ -1,6 +1,8 @@
 using EduFlowHub.Api.Contracts.Course.QueryStrings;
 using EduFlowHub.Api.Contracts.Course.Requests;
 using EduFlowHub.Api.Contracts.Course.Responses;
+using EduFlowHub.Api.Contracts.Generic.QueryStrings;
+using EduFlowHub.Api.Contracts.Generic.Responses;
 using EduFlowHub.Application.Abstractions.Services.User;
 using EduFlowHub.Application.Features.Course.Commands.Archive;
 using EduFlowHub.Application.Features.Course.Commands.Create;
@@ -10,6 +12,7 @@ using EduFlowHub.Application.Features.Course.Commands.Update;
 using EduFlowHub.Application.Features.Course.Dtos;
 using EduFlowHub.Application.Features.Course.Queries.GetByIdForAuthor;
 using EduFlowHub.Application.Features.Course.Queries.ListOfAuthor;
+using EduFlowHub.Application.Features.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -36,16 +39,20 @@ public class TeacherCourseController
     }
     
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<CourseResponse>>> Get(
-        [FromQuery] GetMyCoursesQueryString filterQuery,
+    public async Task<ActionResult<PagedDto<CourseResponse>>> Get(
+        [FromQuery] GetMyCoursesQueryString filterQueryString,
+        [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
     {
         var query = new ListCoursesOfAuthorQuery(
             _currentUser.CurrentUserId,
-            filterQuery.CategoryNormalizedName,
-            filterQuery.Status);
-        IEnumerable<CourseDto> courses = await _mediator.Send(query, cancellationToken);
-        var response = _mapper.Map<IEnumerable<CourseResponse>>(courses);
+            filterQueryString.CategoryNormalizedName,
+            filterQueryString.Status,
+            pageQueryString.Page, 
+            pageQueryString.PageSize);
+        PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
+        var items = _mapper.Map<IEnumerable<CourseResponse>>(result.Items);
+        var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
     
