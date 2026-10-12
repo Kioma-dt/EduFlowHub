@@ -31,8 +31,6 @@ public static class ServiceCollectionExtension
         
         services.AddScoped<IUserAccessPolicy, UserAccessPolicy>();
         services.AddScoped<IUserAccessService, UserAccessService>();
-
-        services.AddScoped<IFileValidator, FileValidator>();
         
         return services;
     }

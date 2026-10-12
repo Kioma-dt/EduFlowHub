@@ -4,6 +4,7 @@ using EduFlowHub.Application.Exceptions.ApplicationStateExceptions;
 using EduFlowHub.Application.Exceptions.ApplicationValidationExceptions;
 using EduFlowHub.Application.Exceptions.ContentTooLarge;
 using EduFlowHub.Application.Exceptions.NotFoundExceptions;
+using EduFlowHub.Application.Exceptions.TooManyRequestsExceptions;
 using EduFlowHub.Application.Exceptions.UnsupportedFileTypeExceptions;
 using EduFlowHub.Domain.Exceptions.DomainStateException;
 using EduFlowHub.Domain.Exceptions.DomainValidationExceptions;
@@ -38,6 +39,9 @@ public class GlobalExceptionHandler
             Detail = status >= 500 ? null : exception.Message
         };
         
+        if (exception is UserIsBlockedExceptiom blocked)
+            httpContext.Response.Headers.RetryAfter = ((int)Math.Ceiling(blocked.TryAfter.TotalSeconds)).ToString();
+        
         if (exception is ValidationException validationException)
         {
             var errors = validationException.Errors.GroupBy(e => e.PropertyName)
@@ -65,6 +69,7 @@ public class GlobalExceptionHandler
         DomainStateException => (409, "Invalid state transition"),
         ContentTooLargeException => (413, "Payload Too Large"),
         UnsupportedFileTypeException => (415, "Unsupported Media Type"),
+        UserIsBlockedExceptiom => (429, "Too many requests"),
         BadHttpRequestException bad => (bad.StatusCode, bad.StatusCode == 413
             ? "Payload Too Large"
             : "Bad Request"),

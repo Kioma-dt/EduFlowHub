@@ -6,6 +6,7 @@ using EduFlowHub.Application.Features.Dtos;
 using EduFlowHub.Application.Features.User.Commands.ChangePasswordWithoutOldPassword;
 using EduFlowHub.Application.Features.User.Commands.Create;
 using EduFlowHub.Application.Features.User.Commands.Delete;
+using EduFlowHub.Application.Features.User.Commands.Unlock;
 using EduFlowHub.Application.Features.User.Commands.Update;
 using EduFlowHub.Application.Features.User.Dtos;
 using EduFlowHub.Application.Features.User.Queries.GetById;
@@ -103,6 +104,16 @@ public class UserController
         var command = new ChangeUserPasswordWithoutOldPasswordCommand(
             userId,
             request.Password);
+        await _mediator.Send(command, cancellationToken);
+        return NoContent();
+    }
+    
+    [HttpPost("{userId:guid}/unlock")]
+    public async Task<IActionResult> Unlock(
+        [FromRoute] Guid userId,
+        CancellationToken cancellationToken)
+    {
+        var command = new UnlockUserCommand(userId); 
         await _mediator.Send(command, cancellationToken);
         return NoContent();
     }

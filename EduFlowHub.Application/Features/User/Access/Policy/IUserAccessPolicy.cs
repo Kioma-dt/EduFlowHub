@@ -8,4 +8,5 @@ public interface IUserAccessPolicy
     bool CanChangePassword(Domain.Entities.User user);
     bool CanCreate();
     bool CanDelete(Domain.Entities.User user);
+    bool CanUnlock(Domain.Entities.User user);
 }

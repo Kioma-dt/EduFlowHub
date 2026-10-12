@@ -45,6 +45,9 @@ public class User
     public string FirstName { get; private set; } = null!;
     public string LastName { get; private set; } = null!;
     
+    public int FailedLoginAttempts { get; private set; }
+    public DateTime? LockoutEnd { get; private set; }
+    
     private string ValidateName(string name)
     {
         if (string.IsNullOrWhiteSpace(name))
@@ -81,5 +84,32 @@ public class User
             throw new DomainValidationException("User last name cannot be empty");
         }
         return lastName.Trim();
+    }
+
+    public bool IsLockedOut(DateTime now)
+    {
+        return LockoutEnd.HasValue && LockoutEnd.Value > now;
+    }
+    
+    public void FailedLoginAttempt(DateTime now, int maxAttempts, TimeSpan lockoutDuration)
+    {
+        if (IsLockedOut(now))
+        {
+            return;
+        }
+        
+        FailedLoginAttempts++;
+
+        if (FailedLoginAttempts >= maxAttempts)
+        {
+            FailedLoginAttempts = 0;
+            LockoutEnd = now.Add(lockoutDuration);
+        }
+    }
+    
+    public void ResetFailedLoginAttempts()
+    {
+        FailedLoginAttempts = 0;
+        LockoutEnd = null;
     }
 }

@@ -1,8 +1,8 @@
 using EduFlowHub.Api.Contracts.Auth.Requests;
 using EduFlowHub.Api.Contracts.Auth.Responses;
+using EduFlowHub.Application.Features.Authentication.Commands.Login;
 using EduFlowHub.Application.Features.Authentication.Commands.Register;
 using EduFlowHub.Application.Features.Authentication.Dtos;
-using EduFlowHub.Application.Features.Authentication.Queries.Login;
 using EduFlowHub.Application.Features.User.Dtos;
 
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +44,7 @@ public class AuthController
         [FromBody] LoginRequest request,
         CancellationToken cancellationToken)
     {
-        var query = _mapper.Map<LoginQuery>(request);
+        var query = _mapper.Map<LoginCommand>(request);
         UserTokenDto result = await _mediator.Send(query,  cancellationToken);
         var response =  _mapper.Map<LoginResponse>(result);
         return Ok(response);

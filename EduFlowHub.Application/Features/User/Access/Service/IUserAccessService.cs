@@ -7,4 +7,5 @@ public interface IUserAccessService
     void EnsureCanCreate();
     void EnsureCanDelete(Domain.Entities.User user);
     void EnsureCanUpdate(Domain.Entities.User user);
+    void EnsureCanUnlock(Domain.Entities.User user);
 }

@@ -1,8 +1,8 @@
 using EduFlowHub.Api.Contracts.Auth.Requests;
 using EduFlowHub.Api.Contracts.Auth.Responses;
+using EduFlowHub.Application.Features.Authentication.Commands.Login;
 using EduFlowHub.Application.Features.Authentication.Commands.Register;
 using EduFlowHub.Application.Features.Authentication.Dtos;
-using EduFlowHub.Application.Features.Authentication.Queries.Login;
 using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Api.Contracts.Auth.Mapping;
@@ -12,7 +12,7 @@ public class AuthMappingProfile
 {
     public  AuthMappingProfile()
     {
-        CreateMap<LoginRequest, LoginQuery>();
+        CreateMap<LoginRequest, LoginCommand>();
         CreateMap<RegisterRequest, RegisterCommand>();
         
         CreateMap<UserTokenDto, LoginResponse>()
