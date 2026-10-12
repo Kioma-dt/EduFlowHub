@@ -26,3 +26,6 @@ README.md
 **/.idea/
 **/appsettings.Development.json
 **/storage/
+**/bin/
+**/obj/
+**/.git

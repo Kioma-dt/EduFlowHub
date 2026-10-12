@@ -74,7 +74,8 @@ public class LoginHandler
 
         string jwtToken = _jwtTokenGenerator.GenerateJwtToken(user.Id, user.Role);
 
-        var userDto = _mapper.Map<UserDto>(user);
+        // var userDto = _mapper.Map<UserDto>(user);
+        var userDto = new UserDto(user.Id, user.Name, user.Role, user.FirstName, user.LastName);
 
         return new UserTokenDto(jwtToken, userDto);
     }

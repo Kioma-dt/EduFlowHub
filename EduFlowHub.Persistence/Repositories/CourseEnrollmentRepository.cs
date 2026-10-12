@@ -52,12 +52,12 @@ public class CourseEnrollmentRepository
     {
         var query = CourseEnrollments.AsQueryable();
 
-        if (!courseId.HasValue)
+        if (courseId.HasValue)
         {
             query = query.Where(enrollment => enrollment.CourseId.Equals(courseId));
         }
         
-        if (!studentId.HasValue)
+        if (studentId.HasValue)
         {
             query = query.Where(enrollment => enrollment.StudentId.Equals(studentId));
         }

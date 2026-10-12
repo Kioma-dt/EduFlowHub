@@ -42,6 +42,11 @@ public class GetLessonMaterialFileHandler
                 "Id",
                 request.LessonMaterialId.ToString());
         }
+        
+        if (lessonMaterial is null || lessonMaterial.CourseId != request.CourseId)
+        {
+            throw new EntityNotFoundException("LessonMaterial", "Id", request.LessonMaterialId.ToString());
+        }
 
         Stream file = await _fileStorage.DownloadAsync(lessonMaterial.FileMetadata!.Path, cancellationToken);
         string fileExtension = lessonMaterial.FileMetadata!.Extension;

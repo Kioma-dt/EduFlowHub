@@ -69,7 +69,7 @@ public class LessonMaterialAccessService
 
         var enrollment =
             await _unitOfWork.CourseEnrollmentRepository.GetByIdAsync(_currentUser.CurrentUserId, course.Id, cancellationToken);
-        if (!_lessonMaterialAccessPolicy.CanViewList(course.AuthorId, enrollment))
+        if (!_lessonMaterialAccessPolicy.CanViewList(course, enrollment))
         {
             throw new AccessDeniedException("View lesson material");
         }

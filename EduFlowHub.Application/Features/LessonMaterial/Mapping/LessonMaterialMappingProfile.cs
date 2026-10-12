@@ -7,7 +7,8 @@ public class LessonMaterialMappingProfile
 {
     public LessonMaterialMappingProfile()
     {
-        CreateMap<Domain.Entities.LessonMaterial, LessonMaterialDto>();
+        CreateMap<Domain.Entities.LessonMaterial, LessonMaterialDto>()
+            .ForCtorParam(nameof(LessonMaterialDto.MaterialType), opt => opt.MapFrom(src => src.Type));
         CreateMap<FileMetadata, FileMetadataDto>();
     }
 }

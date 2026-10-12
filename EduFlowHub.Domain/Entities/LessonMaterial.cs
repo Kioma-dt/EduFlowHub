@@ -19,7 +19,7 @@ public class LessonMaterial
         Title = ValidateTitle(title);
         OrderNumber = ValidateOrderNumber(orderNumber);
         Type = type;
-        CourseId = courseId;
+        CourseId = ValidateCourseId(courseId);
         FileMetadata = fileMetadata;
     }
 

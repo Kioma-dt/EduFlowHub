@@ -7,6 +7,7 @@ public class UserMappingProfile
 {
     public UserMappingProfile()
     {
-        CreateMap<Domain.Entities.User, UserDto>();
+        CreateMap<Domain.Entities.User, UserDto>()
+            .ForCtorParam(nameof(UserDto.Username), opt => opt.MapFrom(src => src.Name));
     }
 }

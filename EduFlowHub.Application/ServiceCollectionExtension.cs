@@ -15,7 +15,7 @@ public static class ServiceCollectionExtension
     {
         var assembly = typeof(ServiceCollectionExtension).Assembly;
 
-        services.AddAutoMapper(cfg => cfg.AddMaps(assembly));
+        // services.AddAutoMapper(cfg => cfg.AddMaps(assembly));
         
         services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(assembly));
 

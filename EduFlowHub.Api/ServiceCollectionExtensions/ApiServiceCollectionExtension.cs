@@ -9,7 +9,9 @@ public static class ApiServiceCollectionExtension
     {
         var assembly = typeof(ApiServiceCollectionExtension).Assembly;
 
-        services.AddAutoMapper(cfg => cfg.AddMaps(assembly));
+        services.AddAutoMapper(cfg => cfg.AddMaps(
+            typeof(ApiServiceCollectionExtension).Assembly,
+            typeof(EduFlowHub.Application.ServiceCollectionExtension).Assembly));
 
         services.AddScoped<ICurrentUser, CurrentUser>();
         

@@ -15,4 +15,5 @@ public interface IUserRepository
         int page = 1, 
         int pageSize = 10,
         CancellationToken cancellationToken = default);
+    Task<bool> AnyByRoleAsync(UserRole roleId, CancellationToken cancellationToken = default);
 }

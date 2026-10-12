@@ -52,7 +52,7 @@ public class ChangeCourseAuthorHandler
 
         if (!AllowedAuthors.Contains(newAuthor.Role))
         {
-            throw new ApplicationException($"Author {newAuthor.Role} is not allowed");
+            throw new ApplicationValidationException($"Author {newAuthor.Role} is not allowed");
         }
 
         if (newAuthor.Id == course.AuthorId)

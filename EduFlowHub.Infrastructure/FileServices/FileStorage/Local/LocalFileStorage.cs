@@ -63,7 +63,7 @@ public class LocalFileStorage
             FileMode.CreateNew,
             FileAccess.Write,
             FileShare.None,
-            bufferSize: _maxFileSize,
+            bufferSize: 81920,
             useAsync: true);
 
         await fileStream.CopyToAsync(destination, cancellationToken);
@@ -80,7 +80,7 @@ public class LocalFileStorage
             FileMode.Open,
             FileAccess.Read,
             FileShare.Read,
-            bufferSize: _maxFileSize,
+            bufferSize: 81920,
             useAsync: true);
 
         return Task.FromResult(stream);

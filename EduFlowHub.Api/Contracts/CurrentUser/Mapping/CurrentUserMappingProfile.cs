@@ -8,6 +8,7 @@ public class CurrentUserMappingProfile
 {
     public CurrentUserMappingProfile()
     {
-        CreateMap<UserDto, CurrentUserResponse>();
+        CreateMap<UserDto, CurrentUserResponse>()
+            .ForCtorParam(nameof(CurrentUserResponse.UserId), opt => opt.MapFrom(src => src.Id));
     }
 }

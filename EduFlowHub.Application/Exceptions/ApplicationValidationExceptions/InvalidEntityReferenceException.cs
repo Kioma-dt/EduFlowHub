@@ -1,7 +1,7 @@
 namespace EduFlowHub.Application.Exceptions.ApplicationValidationExceptions;
 
 public class InvalidEntityReferenceException
-    : ApplicationException
+    : ApplicationValidationException
 {
     public InvalidEntityReferenceException(
         string entityName,
