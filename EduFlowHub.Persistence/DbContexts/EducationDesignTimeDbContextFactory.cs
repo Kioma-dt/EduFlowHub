@@ -9,11 +9,11 @@ internal class EducationDesignTimeDbContextFactory
     {
         DotNetEnv.Env.TraversePath().Load(".env.development");
         
-        var host = Environment.GetEnvironmentVariable("DB_HOST");
-        var port = Environment.GetEnvironmentVariable("DB_PORT");
-        var db = Environment.GetEnvironmentVariable("DB_NAME");
-        var user = Environment.GetEnvironmentVariable("DB_USER");
-        var password = Environment.GetEnvironmentVariable("DB_PASSWORD");
+        var host = Environment.GetEnvironmentVariable("ConnectionStrings__Postgres__DB_HOST");
+        var port = Environment.GetEnvironmentVariable("ConnectionStrings__Postgres__DB_PORT");
+        var db = Environment.GetEnvironmentVariable("ConnectionStrings__Postgres__DB_NAME");
+        var user = Environment.GetEnvironmentVariable("ConnectionStrings__Postgres__DB_USER");
+        var password = Environment.GetEnvironmentVariable("ConnectionStrings__Postgres__DB_PASSWORD");
 
         if (host is null ||
             port is null ||
