@@ -35,16 +35,15 @@ public class GlobalExceptionHandler
         {
             Status = status,
             Title = title,
-            Detail = status >= 500 ? null : exception.Message,
-            Instance = httpContext.Request.Path
+            Detail = status >= 500 ? null : exception.Message
         };
-
-        problem.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
-
-        if (exception is ValidationException ve)
-            problem.Extensions["errors"] = ve.Errors
-                .GroupBy(e => e.PropertyName)
+        
+        if (exception is ValidationException validationException)
+        {
+            var errors = validationException.Errors.GroupBy(e => e.PropertyName)
                 .ToDictionary(g => g.Key, g => g.Select(e => e.ErrorMessage).ToArray());
+            problem = new ValidationProblemDetails(errors) { Status = 400, Title = "Validation failed" };
+        }
 
         return await _problemDetailsService.TryWriteAsync(new ProblemDetailsContext
         {
@@ -66,6 +65,9 @@ public class GlobalExceptionHandler
         DomainStateException => (409, "Invalid state transition"),
         ContentTooLargeException => (413, "Payload Too Large"),
         UnsupportedFileTypeException => (415, "Unsupported Media Type"),
+        BadHttpRequestException bad => (bad.StatusCode, bad.StatusCode == 413
+            ? "Payload Too Large"
+            : "Bad Request"),
         _ => (500, "Internal Server Error")
     };
 
