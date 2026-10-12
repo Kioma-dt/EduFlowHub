@@ -14,15 +14,8 @@ public class CourseAccessService
     
     public void EnsureCanArchive(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
-
-        if (!_courseAccessPolicy.CanArchive(course))
+        if (!_courseAccessPolicy.CanArchive(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Archive course");
         }
@@ -30,15 +23,8 @@ public class CourseAccessService
 
     public void EnsureCanChangeAuthor(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
-
-        if (!_courseAccessPolicy.CanChangeAuthor(course))
+        if (!_courseAccessPolicy.CanChangeAuthor(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Change course author");
         }
@@ -54,15 +40,8 @@ public class CourseAccessService
 
     public void EnsureCanDelete(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
-
-        if (!_courseAccessPolicy.CanDelete(course))
+        if (!_courseAccessPolicy.CanDelete(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Delete course");
         }
@@ -70,15 +49,8 @@ public class CourseAccessService
 
     public void EnsureCanPublish(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
-
-        if (!_courseAccessPolicy.CanPublish(course))
+        if (!_courseAccessPolicy.CanPublish(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Publish course");
         }
@@ -86,15 +58,8 @@ public class CourseAccessService
 
     public void EnsureCanRestore(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
-
-        if (!_courseAccessPolicy.CanRestore(course))
+        if (!_courseAccessPolicy.CanRestore(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Restore course");
         }
@@ -102,15 +67,8 @@ public class CourseAccessService
 
     public void EnsureCanUnpublish(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
-
-        if (!_courseAccessPolicy.CanUnpublish(course))
+        if (!_courseAccessPolicy.CanUnpublish(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Unpublish course");
         }
@@ -118,15 +76,9 @@ public class CourseAccessService
 
     public void EnsureCanUpdate(Domain.Entities.Course course)
     {
-        if (!_courseAccessPolicy.CanView(course))
-        {
-            throw new EntityNotFoundException(
-                "Course",
-                "Id",
-                course.Id.ToString());
-        }
 
-        if (!_courseAccessPolicy.CanEditDetails(course))
+        if (!_courseAccessPolicy.CanEditDetails(course)
+            || !_courseAccessPolicy.CanView(course))
         {
             throw new AccessDeniedException("Update course");
         }
