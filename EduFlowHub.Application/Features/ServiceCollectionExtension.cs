@@ -6,6 +6,7 @@ using EduFlowHub.Application.Features.CourseEnrollment.Access.Policy;
 using EduFlowHub.Application.Features.CourseEnrollment.Access.Service;
 using EduFlowHub.Application.Features.LessonMaterial.Access.Policy;
 using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
+using EduFlowHub.Application.Features.LessonMaterial.FileValidator;
 using EduFlowHub.Application.Features.User.Access.Policy;
 using EduFlowHub.Application.Features.User.Access.Service;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,6 +31,8 @@ public static class ServiceCollectionExtension
         
         services.AddScoped<IUserAccessPolicy, UserAccessPolicy>();
         services.AddScoped<IUserAccessService, UserAccessService>();
+
+        services.AddScoped<IFileValidator, FileValidator>();
         
         return services;
     }
