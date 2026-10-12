@@ -1,7 +1,9 @@
-namespace EduFlowHub.Application.Exceptions;
+using EduFlowHub.Application.Exceptions.ContentTooLarge;
+
+namespace EduFlowHub.Application.Features.LessonMaterial.Exceptions;
 
 public class FileTooLargeException
-    : Exception
+    : ContentTooLargeException
 {
     public FileTooLargeException(int maxFileSize)
         : base($"File too large. Max Size: {maxFileSize}")

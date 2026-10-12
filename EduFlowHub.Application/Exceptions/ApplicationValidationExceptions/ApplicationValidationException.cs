@@ -1,4 +1,4 @@
-namespace EduFlowHub.Application.Exceptions;
+namespace EduFlowHub.Application.Exceptions.ApplicationValidationExceptions;
 
 public class ApplicationValidationException
     : Exception

@@ -1,7 +1,7 @@
-namespace EduFlowHub.Application.Exceptions;
+namespace EduFlowHub.Application.Exceptions.NotFoundExceptions;
 
 public class EntityNotFoundException
-    : Exception
+    : NotFoundException
 {
     public EntityNotFoundException(
         string entityName, 

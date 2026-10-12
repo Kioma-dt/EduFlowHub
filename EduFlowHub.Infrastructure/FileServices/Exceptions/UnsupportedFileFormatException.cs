@@ -1,10 +1,10 @@
 namespace EduFlowHub.Infrastructure.FileServices.Exceptions;
 
-public class UnsupportedFileFormatException
+public class UnsupportedFileFormatStorageException
     : FileStorageException
 {
-    public  UnsupportedFileFormatException()
-        : base($"Unsupported file format")
+    public  UnsupportedFileFormatStorageException(string extension)
+        : base($"Unsupported file format with extension {extension}")
     {
     }
 }

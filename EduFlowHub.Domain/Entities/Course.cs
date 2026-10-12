@@ -124,7 +124,7 @@ public class Course
     {
         if (Status != CourseStatus.Draft)
         {
-            throw new DomainWrongStatusException("Can not change not draft course");
+            throw new DomainStateException("Can not change not draft course");
         }
     }
 
@@ -132,7 +132,7 @@ public class Course
     { 
         if (Status != CourseStatus.Draft)
         {
-            throw new DomainWrongStatusException("Can not change not draft course");
+            throw new DomainStateException("Can not change not draft course");
         }
     }
 
@@ -140,7 +140,7 @@ public class Course
     {
         if (Status != CourseStatus.Published)
         {
-            throw new DomainWrongStatusException("Can not enroll on not published course");
+            throw new DomainStateException("Can not enroll on not published course");
         }
     }
     

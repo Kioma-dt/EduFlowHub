@@ -1,7 +1,7 @@
-namespace EduFlowHub.Application.Exceptions;
+namespace EduFlowHub.Application.Exceptions.ApplicationStateExceptions;
 
 public class CanNotDeleteEntityException
-    : Exception
+    : ApplicationStateException
 {
     public CanNotDeleteEntityException(string message)
         : base(message)

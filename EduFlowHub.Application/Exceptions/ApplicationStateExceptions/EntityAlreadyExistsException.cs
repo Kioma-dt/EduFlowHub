@@ -1,7 +1,7 @@
-namespace EduFlowHub.Application.Exceptions;
+namespace EduFlowHub.Application.Exceptions.ApplicationStateExceptions;
 
 public class EntityAlreadyExistsException
-    : Exception
+    : ApplicationStateException
 {
     public EntityAlreadyExistsException(
         string entityName,

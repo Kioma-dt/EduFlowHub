@@ -1,9 +1,11 @@
+using EduFlowHub.Application.Exceptions;
+
 namespace EduFlowHub.Application.Features.LessonMaterial.Exceptions;
 
-public class UnsupportedFileTypeException
+public class UnsupportedFileExtensionException
     : ApplicationValidationException
 {
-    public UnsupportedFileTypeException(string extension)
+    public UnsupportedFileExtensionException(string extension)
         : base($"File extension ${extension} is not supported")
     {
     }
