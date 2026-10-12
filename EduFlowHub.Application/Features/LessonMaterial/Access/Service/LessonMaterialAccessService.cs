@@ -23,15 +23,8 @@ public class LessonMaterialAccessService
 
     public void EnsureCanChangeFile(Domain.Entities.LessonMaterial lessonMaterial)
     {
-        if (!_lessonMaterialAccessPolicy.CanView(lessonMaterial, null))
-        {
-            throw new EntityNotFoundException(
-                "LessonMaterial",
-                "Id",
-                lessonMaterial.Id.ToString());
-        }
-
-        if (!_lessonMaterialAccessPolicy.CanEdit(lessonMaterial))
+        if (!_lessonMaterialAccessPolicy.CanEdit(lessonMaterial)
+            || !_lessonMaterialAccessPolicy.CanView(lessonMaterial, null))
         {
             throw new AccessDeniedException("Change lesson material file");
         }
@@ -47,15 +40,8 @@ public class LessonMaterialAccessService
 
     public void EnsureCanDelete(Domain.Entities.LessonMaterial lessonMaterial)
     {
-        if (!_lessonMaterialAccessPolicy.CanView(lessonMaterial, null))
-        {
-            throw new EntityNotFoundException(
-                "LessonMaterial",
-                "Id",
-                lessonMaterial.Id.ToString());
-        }
-
-        if (!_lessonMaterialAccessPolicy.CanDelete(lessonMaterial))
+        if (!_lessonMaterialAccessPolicy.CanDelete(lessonMaterial)
+            || !_lessonMaterialAccessPolicy.CanView(lessonMaterial, null))
         {
             throw new AccessDeniedException("Delete lesson material");
         }
@@ -63,15 +49,8 @@ public class LessonMaterialAccessService
 
     public void EnsureCanUpdate(Domain.Entities.LessonMaterial lessonMaterial)
     {
-        if (!_lessonMaterialAccessPolicy.CanView(lessonMaterial, null))
-        {
-            throw new EntityNotFoundException(
-                "LessonMaterial",
-                "Id",
-                lessonMaterial.Id.ToString());
-        }
-
-        if (!_lessonMaterialAccessPolicy.CanEdit(lessonMaterial))
+        if (!_lessonMaterialAccessPolicy.CanEdit(lessonMaterial)
+            || !_lessonMaterialAccessPolicy.CanView(lessonMaterial, null))
         {
             throw new AccessDeniedException("Update lesson material");
         }

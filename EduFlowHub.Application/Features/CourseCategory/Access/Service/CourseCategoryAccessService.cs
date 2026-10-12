@@ -22,15 +22,8 @@ public class CourseCategoryAccessService
 
     public void EnsureCanDelete(Domain.Entities.CourseCategory courseCategory)
     {
-        if (!_courseCategoryAccessPolicy.CanView(courseCategory))
-        {
-            throw new EntityNotFoundException(
-                "CourseCategory",
-                "Id",
-                courseCategory.Id.ToString());
-        }
-
-        if (!_courseCategoryAccessPolicy.CanDelete(courseCategory))
+        if (!_courseCategoryAccessPolicy.CanDelete(courseCategory)
+            || !_courseCategoryAccessPolicy.CanView(courseCategory))
         {
             throw new AccessDeniedException("Delete course category");
         }
@@ -38,15 +31,9 @@ public class CourseCategoryAccessService
 
     public void EnsureCanUpdate(Domain.Entities.CourseCategory courseCategory)
     {
-        if (!_courseCategoryAccessPolicy.CanView(courseCategory))
-        {
-            throw new EntityNotFoundException(
-                "CourseCategory",
-                "Id",
-                courseCategory.Id.ToString());
-        }
 
-        if (!_courseCategoryAccessPolicy.CanEdit(courseCategory))
+        if (!_courseCategoryAccessPolicy.CanEdit(courseCategory)
+            || !_courseCategoryAccessPolicy.CanView(courseCategory))
         {
             throw new AccessDeniedException("Update course category");
         }

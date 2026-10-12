@@ -14,15 +14,8 @@ public class UserAccessService
     
     public void EnsureCanChangePassword(Domain.Entities.User user)
     {
-        if (!_userAccessPolicy.CanView(user))
-        {
-            throw new EntityNotFoundException(
-                "User",
-                "Id",
-                user.Id.ToString());
-        }
-
-        if (!_userAccessPolicy.CanChangePassword(user))
+        if (!_userAccessPolicy.CanChangePassword(user)
+            || !_userAccessPolicy.CanView(user))
         {
             throw new AccessDeniedException("Change user password");
         }
@@ -30,15 +23,8 @@ public class UserAccessService
 
     public void EnsureCanChangePasswordWithoutOldPassword(Domain.Entities.User user)
     {
-        if (!_userAccessPolicy.CanView(user))
-        {
-            throw new EntityNotFoundException(
-                "User",
-                "Id",
-                user.Id.ToString());
-        }
-
-        if (!_userAccessPolicy.CanChangePasswordWithoutOldPassword(user))
+        if (!_userAccessPolicy.CanChangePasswordWithoutOldPassword(user)
+            || !_userAccessPolicy.CanView(user))
         {
             throw new AccessDeniedException("Change user password without old password");
         }
@@ -54,15 +40,8 @@ public class UserAccessService
 
     public void EnsureCanDelete(Domain.Entities.User user)
     {
-        if (!_userAccessPolicy.CanView(user))
-        {
-            throw new EntityNotFoundException(
-                "User",
-                "Id",
-                user.Id.ToString());
-        }
-
-        if (!_userAccessPolicy.CanDelete(user))
+        if (!_userAccessPolicy.CanDelete(user)
+            || !_userAccessPolicy.CanView(user))
         {
             throw new AccessDeniedException("Delete user");
         }
@@ -70,15 +49,8 @@ public class UserAccessService
 
     public void EnsureCanUpdate(Domain.Entities.User user)
     {
-        if (!_userAccessPolicy.CanView(user))
-        {
-            throw new EntityNotFoundException(
-                "User",
-                "Id",
-                user.Id.ToString());
-        }
-
-        if (!_userAccessPolicy.CanEditDetails(user))
+        if (!_userAccessPolicy.CanEditDetails(user)
+            || !_userAccessPolicy.CanView(user))
         {
             throw new AccessDeniedException("Update user");
         }
