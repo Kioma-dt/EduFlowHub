@@ -16,6 +16,12 @@ namespace EduFlowHub.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/course-categories")]
 public class CourseCategoryController
     : ControllerBase
@@ -31,6 +37,7 @@ public class CourseCategoryController
         _mapper = mapper;
     }
     
+    [ProducesResponseType<PagedResponse<CourseCategoryResponse>>(StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<PagedResponse<CourseCategoryResponse>>> Get(
         [FromQuery] PageQueryString pageQueryString,
@@ -42,7 +49,9 @@ public class CourseCategoryController
         var response = new PagedResponse<CourseCategoryResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
-
+    
+    [ProducesResponseType<CourseCategoryResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [HttpGet("{courseCategoryId:guid}")]
     public async Task<ActionResult<CourseCategoryResponse>> GetById(
         [FromRoute] Guid courseCategoryId,
@@ -55,6 +64,8 @@ public class CourseCategoryController
     }
 
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<CourseCategoryResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost]
     public async Task<ActionResult<CourseCategoryResponse>> Create(
         [FromBody] CreateCourseCategoryRequest request,
@@ -70,6 +81,9 @@ public class CourseCategoryController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<CourseCategoryResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPut("{courseCategoryId:guid}")]
     public async Task<ActionResult<CourseCategoryResponse>> Put(
         [FromRoute] Guid courseCategoryId,
@@ -86,6 +100,9 @@ public class CourseCategoryController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpDelete("{courseCategoryId:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid courseCategoryId,

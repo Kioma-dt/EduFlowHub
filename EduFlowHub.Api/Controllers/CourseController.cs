@@ -29,6 +29,12 @@ namespace EduFlowHub.Api.Controllers;
 
 [Authorize]
 [ApiController]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/courses")]
 public class CourseController
     : ControllerBase
@@ -47,6 +53,7 @@ public class CourseController
         _currentUser = currentUser;
     }
     
+    [ProducesResponseType<PagedResponse<CourseResponse>>(StatusCodes.Status200OK)]
     [HttpGet("published")]
     public async Task<ActionResult<PagedResponse<CourseResponse>>> GetPublished(
         [FromQuery] GetPublishedCoursesQueryString filterQueryString,
@@ -61,6 +68,7 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<PagedResponse<CourseResponse>>(StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<PagedResponse<CourseResponse>>> Get(
         [FromQuery] GetAllCoursesQueryString filterQuery,
@@ -80,6 +88,8 @@ public class CourseController
     }
 
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<CourseResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [HttpGet("{courseId:guid}")]
     public async Task<ActionResult<CourseResponse>> GetById(
         [FromRoute] Guid courseId,
@@ -92,6 +102,8 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<CourseResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost]
     public async Task<ActionResult<CourseResponse>> Create(
         [FromBody] CreateCourseRequest request,
@@ -112,6 +124,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPatch("{courseId:guid}")]
     public async Task<IActionResult> Update(
         [FromRoute] Guid courseId,
@@ -129,6 +144,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpDelete("{courseId:guid}")]
     public async Task<IActionResult> DeleteCourse(
         [FromRoute] Guid courseId,
@@ -141,6 +159,9 @@ public class CourseController
     
         
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPut("{courseId:guid}/author")]
     public async Task<IActionResult> ChangeAuthor(
         [FromRoute] Guid courseId,
@@ -156,6 +177,9 @@ public class CourseController
 
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/unpublish")]
     public async Task<IActionResult> Unpublish(
         [FromRoute] Guid courseId,
@@ -167,6 +191,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/restore")]
     public async Task<IActionResult> Restore(
         [FromRoute] Guid courseId,
@@ -178,6 +205,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/publish")]
     public async Task<IActionResult> Publish(
         [FromRoute] Guid courseId,
@@ -189,6 +219,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/archive")]
     public async Task<IActionResult> Archive(
         [FromRoute] Guid courseId,
@@ -200,6 +233,8 @@ public class CourseController
     }
 
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType<PagedResponse<UserResponse>>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
     [HttpGet("{courseId:guid}/students/enrolled")]
     public async Task<ActionResult<PagedResponse<UserResponse>>> GetEnrolledStudents(
         [FromRoute] Guid courseId,
@@ -214,6 +249,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/students/{studentId:guid}/enroll")]
     public async Task<IActionResult> EnrollStudentOnCourse(
         [FromRoute] Guid courseId,
@@ -226,6 +264,9 @@ public class CourseController
     }
     
     [Authorize(Roles = "Admin")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/students/{studentId:guid}/unenroll")]
     public async Task<IActionResult> UnenrollStudentOnCourse(
         [FromRoute] Guid courseId,

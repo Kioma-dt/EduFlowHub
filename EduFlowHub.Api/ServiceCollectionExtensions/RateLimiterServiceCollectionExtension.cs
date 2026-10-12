@@ -22,6 +22,17 @@ public static class RateLimiterServiceCollectionExtension
                 });
             });
             
+            options.AddPolicy("auth", context =>
+                RateLimitPartition.GetSlidingWindowLimiter(
+                    $"ip:{context.Connection.RemoteIpAddress}",
+                    _ => new SlidingWindowRateLimiterOptions
+                    {
+                        PermitLimit = 5,
+                        Window = TimeSpan.FromMinutes(1),
+                        SegmentsPerWindow = 6,
+                        QueueLimit = 0
+                    }));
+            
             options.OnRejected = async (context, cancellationToken) =>
             {
                 if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))

@@ -15,6 +15,12 @@ namespace EduFlowHub.Api.Controllers;
 
 [ApiController]
 [Authorize(Roles = "Student")]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/courses")]
 public class StudentCourseController
     : ControllerBase
@@ -33,9 +39,9 @@ public class StudentCourseController
         _currentUser = currentUser;
     }
     
-    [Authorize(Roles = "Student")]
+    [ProducesResponseType<PagedResponse<PagedResponse<CourseResponse>>>(StatusCodes.Status200OK)]
     [HttpGet("enrolled")]
-    public async Task<ActionResult<PagedDto<CourseResponse>>> GetEnrolled(
+    public async Task<ActionResult<PagedResponse<CourseResponse>>> GetEnrolled(
         [FromQuery] GetStudentEnrolledCoursesQueryString filterQueryString,
         [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
@@ -52,6 +58,9 @@ public class StudentCourseController
         return Ok(response);
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/enroll")]
     public async Task<IActionResult> EnrollOnCourse(
         [FromRoute] Guid courseId,
@@ -64,6 +73,9 @@ public class StudentCourseController
         return NoContent();
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [HttpPost("{courseId:guid}/unenroll")]
     public async Task<IActionResult> UnenrollFromCourse(
         [FromRoute] Guid courseId,

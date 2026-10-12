@@ -20,6 +20,13 @@ namespace EduFlowHub.Api.Controllers;
 
 [ApiController]
 [Authorize]
+[ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status401Unauthorized)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status403Forbidden)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status404NotFound)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status413PayloadTooLarge)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status429TooManyRequests)]
+[ProducesResponseType<ProblemDetails>(StatusCodes.Status500InternalServerError)]
 [Route("api/v1/courses/{courseId:guid}/lesson-materials")]
 public class LessonMaterialController
     : ControllerBase
@@ -35,6 +42,7 @@ public class LessonMaterialController
         _mapper = mapper;
     }
 
+    [ProducesResponseType<PagedResponse<LessonMaterialResponse>>(StatusCodes.Status200OK)]
     [HttpGet]
     public async Task<ActionResult<PagedResponse<LessonMaterialResponse>>> Get(
         CancellationToken cancellationToken,
@@ -49,6 +57,7 @@ public class LessonMaterialController
         return Ok(response);
     }
     
+    [ProducesResponseType<LessonMaterialResponse>(StatusCodes.Status200OK)]
     [HttpGet("{lessonMaterialId:guid}")]
     public async Task<ActionResult<LessonMaterialResponse>> GetById(
         [FromRoute] Guid courseId,
@@ -61,6 +70,7 @@ public class LessonMaterialController
         return Ok(response);
     }
     
+    [ProducesResponseType<LessonMaterialResponse>(StatusCodes.Status200OK)]
     [HttpGet("by-order/{orderNumber:int}")]
     public async Task<ActionResult<LessonMaterialResponse>> GetByOrderNumber(
         [FromRoute] Guid courseId,
@@ -77,10 +87,13 @@ public class LessonMaterialController
 
 
     [Authorize(Roles = "Admin, Teacher")]
-    [HttpPost]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(500 * 1024 * 1024)]
     [RequestFormLimits(MultipartBodyLengthLimit = 500 * 1024 * 1024)]
+    [ProducesResponseType<LessonMaterialResponse>(StatusCodes.Status201Created)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType)]
+    [HttpPost]
     public async Task<ActionResult<LessonMaterialResponse>> Create(
         [FromRoute] Guid courseId,
         [FromForm] CreateLessonMaterialRequest request,
@@ -104,6 +117,8 @@ public class LessonMaterialController
             response);
     }
     
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status409Conflict)]
     [Authorize(Roles = "Admin, Teacher")]
     [HttpPatch("{lessonMaterialId:guid}")]
     public async Task<IActionResult> Update(
@@ -122,6 +137,7 @@ public class LessonMaterialController
     }
     
     [Authorize(Roles = "Admin, Teacher")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
     [HttpDelete("{lessonMaterialId:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid courseId,
@@ -133,6 +149,7 @@ public class LessonMaterialController
         return NoContent();
     }
     
+    [ProducesResponseType(typeof(FileStreamResult), StatusCodes.Status200OK)]
     [HttpGet("{lessonMaterialId:guid}/file")]
     public async Task<IActionResult> GetFile(
         [FromRoute] Guid courseId,
@@ -147,10 +164,12 @@ public class LessonMaterialController
             result.FileName);
     }
     
-    [HttpPut("{lessonMaterialId:guid}/file")]
     [Consumes("multipart/form-data")]
     [RequestSizeLimit(500 * 1024 * 1024)]
     [RequestFormLimits(MultipartBodyLengthLimit = 500 * 1024 * 1024)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]   
+    [ProducesResponseType<ProblemDetails>(StatusCodes.Status415UnsupportedMediaType)]
+    [HttpPut("{lessonMaterialId:guid}/file")]
     public async Task<IActionResult> ChangeFile(
         [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
