@@ -20,7 +20,12 @@ RUN apt-get update \
 WORKDIR /app
 COPY --from=build /app/publish .
 
+RUN mkdir -p /var/app/storage && chown -R $APP_UID:$APP_UID /var/app/storage
+
+ENV FileStorage__Local__RootPath=/var/app/storage
 ENV ASPNETCORE_URLS=http://+:8080
+
+USER $APP_UID
 
 EXPOSE 8080
 

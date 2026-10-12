@@ -1,0 +1,44 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: edu-flow-hub-api
+    ports:
+      - "5292:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT}
+      ConnectionStrings__Postgres__DB_HOST: postgres
+      ConnectionStrings__Postgres__DB_PORT: 5432
+      ConnectionStrings__Postgres__DB_NAME: ${DB_NAME}
+      ConnectionStrings__Postgres__DB_USER: ${DB_USER}
+      ConnectionStrings__Postgres__DB_PASSWORD: ${DB_PASSWORD}
+      Authentication__Jwt__SecretKey: ${JWT_KEY}
+      FileStorage__Local__RootPath: ${STORAGE_ROOT_PATH}
+    volumes:
+      - storage:${STORAGE_ROOT_PATH:-/var/app/storage}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:17
+    container_name: edu-flow-hub-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "${DB_PORT}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 15s
+
+volumes:
+  postgres-data:
+  storage:
