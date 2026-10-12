@@ -1,7 +1,7 @@
 namespace EduFlowHub.Application.Features.Authentication.Exceptions;
 
 public class LoginFailedException
-    : Exception
+    : UnauthorizedAccessException
 {
     public LoginFailedException() 
         : base("Wrong username or password")

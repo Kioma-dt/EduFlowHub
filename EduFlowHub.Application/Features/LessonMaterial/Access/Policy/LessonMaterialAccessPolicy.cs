@@ -32,15 +32,13 @@ public class LessonMaterialAccessPolicy
                 && lessonMaterial.Course.Id == enrollment.CourseId);
     }
 
-    public bool CanViewList(Guid authorId, Domain.Entities.CourseEnrollment? enrollment)
-    {
-        return _currentUser.CurrentUserRole ==  UserRole.Admin
-               || (_currentUser.CurrentUserRole == UserRole.Teacher && _currentUser.CurrentUserId == authorId)
-               || (enrollment is not null 
-                   && _currentUser.CurrentUserRole == UserRole.Student 
-                   && _currentUser.CurrentUserId == enrollment.StudentId
-                   && authorId == enrollment.CourseId);
-    }
+    public bool CanViewList(Domain.Entities.Course course, Domain.Entities.CourseEnrollment? enrollment) =>
+        _currentUser.CurrentUserRole == UserRole.Admin
+        || (_currentUser.CurrentUserRole == UserRole.Teacher && _currentUser.CurrentUserId == course.AuthorId)
+        || (_currentUser.CurrentUserRole == UserRole.Student
+            && enrollment is not null
+            && enrollment.StudentId == _currentUser.CurrentUserId
+            && enrollment.CourseId == course.Id);
 
     public bool CanEdit(Domain.Entities.LessonMaterial lessonMaterial)
     {

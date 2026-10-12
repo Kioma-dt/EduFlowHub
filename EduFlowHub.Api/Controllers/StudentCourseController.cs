@@ -54,7 +54,7 @@ public class StudentCourseController
             pageQueryString.PageSize);
         PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
         var items = _mapper.Map<IEnumerable<CourseResponse>>(result.Items);
-        var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize,result.TotalPages);
+        var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize,result.TotalCount);
         return Ok(response);
     }
     

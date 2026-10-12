@@ -1,3 +1,4 @@
+using EduFlowHub.Api.Seeders;
 using EduFlowHub.Api.ServiceCollectionExtensions;
 using EduFlowHub.Application;
 using EduFlowHub.Infrastructure;
@@ -27,6 +28,8 @@ public class Program
         });
         
         builder.Services.AddHttpContextAccessor();
+        
+        builder.Services.AddExceptionHandler<GlobalExceptionHandler.GlobalExceptionHandler>();
 
         builder.Services
             .AddInfrastructure(builder.Configuration)
@@ -45,11 +48,16 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGenConfigured();
         
+        builder.Services.AddSeeders(builder.Configuration);
+        
         var app = builder.Build();
         
         app.UseForwardedHeaders();      
         app.UseExceptionHandler();      
         app.UseStatusCodePages();
+        
+        if (app.Environment.IsDevelopment())
+            app.Services.GetRequiredService<IMapper>().ConfigurationProvider.AssertConfigurationIsValid();
 
         if (app.Environment.IsDevelopment())
         {

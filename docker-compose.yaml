@@ -15,6 +15,8 @@ services:
       ConnectionStrings__Postgres__DB_PASSWORD: ${DB_PASSWORD}
       Authentication__Jwt__SecretKey: ${JWT_KEY}
       FileStorage__Local__RootPath: ${STORAGE_ROOT_PATH}
+      InitialAdmin__Username: ${ADMIN_USERNAME}
+      InitialAdmin__Password: ${ADMIN_PASSWORD}
     volumes:
       - storage:${STORAGE_ROOT_PATH:-/var/app/storage}
     depends_on:

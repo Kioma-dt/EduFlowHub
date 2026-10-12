@@ -5,6 +5,7 @@ using EduFlowHub.Application.Exceptions.ApplicationValidationExceptions;
 using EduFlowHub.Application.Exceptions.ContentTooLarge;
 using EduFlowHub.Application.Exceptions.NotFoundExceptions;
 using EduFlowHub.Application.Exceptions.TooManyRequestsExceptions;
+using EduFlowHub.Application.Exceptions.UnauthorizedExceptions;
 using EduFlowHub.Application.Exceptions.UnsupportedFileTypeExceptions;
 using EduFlowHub.Domain.Exceptions.DomainStateException;
 using EduFlowHub.Domain.Exceptions.DomainValidationExceptions;
@@ -62,6 +63,8 @@ public class GlobalExceptionHandler
         NotFoundException => (404, "Not Found"),
         AccessDeniedException => (403, "Forbidden"),
         UnauthorizedUserException => (401, "Unauthorized"),
+        UnauthorizedAccessException => (401, "Unauthorized"),
+        UnauthorizedException => (401, "Unauthorized"),
         ValidationException => (400, "Validation failed"),
         DomainValidationException => (400, "Invalid data"),
         ApplicationValidationException => (400, "Invalid data"),

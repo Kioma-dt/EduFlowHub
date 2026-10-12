@@ -17,13 +17,7 @@ public class CourseCategory
         Name = ValidateName(name);
         NormalizedName = NormalizeName(Name);
     }
-    
-    //! КОСТЫЛЬ
-    public void SetId(Guid id)
-    {
-        Id = id;
-    }
-    
+
     public string Name { get; private set; } = null!;
     public string NormalizedName { get; private set; } = null!;
     

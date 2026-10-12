@@ -16,21 +16,11 @@ public class AuthMappingProfile
         CreateMap<RegisterRequest, RegisterCommand>();
         
         CreateMap<UserTokenDto, LoginResponse>()
-            .ForMember(dst => dst.Id,
-                opt 
-                    => opt.MapFrom(src => src.User.Id))
-            .ForMember(dst => dst.Username,
-                opt 
-                    => opt.MapFrom(src => src.User.Username))
-            .ForMember(dst => dst.Role,
-                opt 
-                    => opt.MapFrom(src => src.User.Role))
-            .ForMember(dst => dst.FirstName,
-                opt 
-                    => opt.MapFrom(src => src.User.FirstName))
-            .ForMember(dst => dst.LastName,
-                opt 
-                    => opt.MapFrom(src => src.User.LastName));
+            .ForCtorParam(nameof(LoginResponse.Id),        o => o.MapFrom(s => s.User.Id))
+            .ForCtorParam(nameof(LoginResponse.Username),  o => o.MapFrom(s => s.User.Username))
+            .ForCtorParam(nameof(LoginResponse.Role),      o => o.MapFrom(s => s.User.Role))
+            .ForCtorParam(nameof(LoginResponse.FirstName), o => o.MapFrom(s => s.User.FirstName))
+            .ForCtorParam(nameof(LoginResponse.LastName),  o => o.MapFrom(s => s.User.LastName));
         CreateMap<UserDto, RegisterResponse>();
     }
 }

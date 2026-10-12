@@ -49,7 +49,7 @@ public class FileMetadata
             throw new DomainValidationException("File extenstion cannot be empty");
         }
 
-        if (!FilePathRegex.IsMatch(extension.ToLowerInvariant().Trim()))
+        if (!ExtensionRegex.IsMatch(extension))
         {
             throw new DomainValidationException("File extension is in not valid format");
         }

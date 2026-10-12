@@ -43,7 +43,8 @@ public class ListLessonMaterialsOfCourseHandler
                 orderBy,
                 request.Page,
                 request.PageSize,
-                cancellationToken);
+                cancellationToken,
+                material => material.FileMetadata!);
         
         var items = _mapper.Map<IEnumerable<LessonMaterialDto>>(lessonMaterials);
         int totalCount =  await _unitOfWork

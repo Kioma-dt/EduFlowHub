@@ -1,7 +1,7 @@
 namespace EduFlowHub.Api.Contracts.User.Requests.Validators;
 
 public class UpdateUserRequestValidator
-    : AbstractValidator<CreateUserRequest>
+    : AbstractValidator<UpdateUserRequest>
 {
     public  UpdateUserRequestValidator()
     {

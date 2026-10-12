@@ -60,9 +60,13 @@ public class CourseController
         [FromQuery] PageQueryString pageQueryString,
         CancellationToken cancellationToken)
     {
-        var query = new ListPublishedCoursesQuery(filterQueryString.AuthorId, filterQueryString.CategoryNormalizedName);
+        var query = new ListPublishedCoursesQuery(
+                filterQueryString.AuthorId,
+                filterQueryString.CategoryNormalizedName,
+                pageQueryString.Page,
+                pageQueryString.PageSize);
         PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
-        var items = _mapper.Map<IEnumerable<CourseResponse>>(result);
+        var items = _mapper.Map<IEnumerable<CourseResponse>>(result.Items);
         var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }
@@ -82,7 +86,7 @@ public class CourseController
             pageQueryString.Page,
             pageQueryString.PageSize);
         PagedDto<CourseDto> result = await _mediator.Send(query, cancellationToken);
-        var items = _mapper.Map<IEnumerable<CourseResponse>>(result);
+        var items = _mapper.Map<IEnumerable<CourseResponse>>(result.Items);
         var response = new PagedResponse<CourseResponse>(items, result.Page, result.PageSize, result.TotalCount);
         return Ok(response);
     }

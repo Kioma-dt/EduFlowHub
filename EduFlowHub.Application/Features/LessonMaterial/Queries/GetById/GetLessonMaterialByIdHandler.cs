@@ -44,6 +44,11 @@ public class GetLessonMaterialByIdHandler
                 request.LessonMaterialId.ToString());
         }
         
+        if (lessonMaterial is null || lessonMaterial.CourseId != request.CourseId)
+        {
+            throw new EntityNotFoundException("LessonMaterial", "Id", request.LessonMaterialId.ToString());
+        }
+        
         return _mapper.Map<LessonMaterialDto>(lessonMaterial);
     }
 }

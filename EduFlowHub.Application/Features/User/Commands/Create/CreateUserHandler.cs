@@ -33,7 +33,7 @@ public class CreateUserHandler
         
         if (request.Role == UserRole.Admin)
         {
-            throw new ApplicationException("You cannot create an admin user");
+            throw new ApplicationValidationException("You cannot create an admin user");
         }
         
         if (await _unitOfWork

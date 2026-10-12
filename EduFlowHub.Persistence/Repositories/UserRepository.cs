@@ -55,4 +55,9 @@ public class UserRepository
                 .ToListAsync(cancellationToken);
         }
     }
+
+    public async Task<bool> AnyByRoleAsync(UserRole role, CancellationToken cancellationToken = default)
+    {
+        return await DbSet.AnyAsync(user => user.Role == role, cancellationToken);
+    }
 }
