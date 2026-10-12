@@ -14,6 +14,7 @@ Backend-система для онлайн-обучения на ASP.NET Core. �
 - Фильтрация и пагинация на стороне БД, ограничение частоты запросов (rate limiting)
 - Документация API в Swagger
 
+
 ## Стек
 
 .NET 10 · ASP.NET Core Web API · EF Core · PostgreSQL · MediatR · AutoMapper · FluentValidation · Docker Compose · Swagger
