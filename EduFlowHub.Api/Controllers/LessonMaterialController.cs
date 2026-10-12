@@ -79,6 +79,8 @@ public class LessonMaterialController
     [Authorize(Roles = "Admin, Teacher")]
     [HttpPost]
     [Consumes("multipart/form-data")]
+    [RequestSizeLimit(500 * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 500 * 1024 * 1024)]
     public async Task<ActionResult<LessonMaterialResponse>> Create(
         [FromRoute] Guid courseId,
         [FromForm] CreateLessonMaterialRequest request,
@@ -147,6 +149,8 @@ public class LessonMaterialController
     
     [HttpPut("{lessonMaterialId:guid}/file")]
     [Consumes("multipart/form-data")]
+    [RequestSizeLimit(500 * 1024 * 1024)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 500 * 1024 * 1024)]
     public async Task<IActionResult> ChangeFile(
         [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
