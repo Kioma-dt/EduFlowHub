@@ -14,22 +14,25 @@ Backend-система для онлайн-обучения на ASP.NET Core. �
 - Фильтрация и пагинация на стороне БД, ограничение частоты запросов (rate limiting)
 - Документация API в Swagger
 
-
 ## Стек
 
 .NET 10 · ASP.NET Core Web API · EF Core · PostgreSQL · MediatR · AutoMapper · FluentValidation · Docker Compose · Swagger
 
 ## Структура
 
-| Проект | Назначение |
-|---|---|
-| `EduFlowHub.Domain` | Сущности и бизнес-правила |
-| `EduFlowHub.Application` | Сценарии (команды и запросы MediatR), проверка прав, DTO |
-| `EduFlowHub.Infrastructure` | JWT, хеширование паролей, файловое хранилище |
-| `EduFlowHub.Persistence` | EF Core: контекст, репозитории, миграции |
-| `EduFlowHub.Api` | Контроллеры, валидация, обработка ошибок, Swagger |
+| Проект                      | Назначение                                               |
+| --------------------------- | -------------------------------------------------------- |
+| `EduFlowHub.Domain`         | Сущности и бизнес-правила                                |
+| `EduFlowHub.Application`    | Сценарии (команды и запросы MediatR), проверка прав, DTO |
+| `EduFlowHub.Infrastructure` | JWT, хеширование паролей, файловое хранилище             |
+| `EduFlowHub.Persistence`    | EF Core: контекст, репозитории, миграции                 |
+| `EduFlowHub.Api`            | Контроллеры, валидация, обработка ошибок, Swagger        |
 
----
+--
+
+## Efbundle
+
+## \*\*
 
 ## Запуск в Docker
 
@@ -63,12 +66,16 @@ docker compose up --build
 
 Сначала стартует PostgreSQL, затем контейнер `migration` применяет миграции, после чего запускается API. Загруженные файлы хранятся в Docker volume `storage`.
 
-| Сервис | Адрес |
-|---|---|
-| API | http://localhost:5292/api/v1 |
+| Сервис  | Адрес                         |
+| ------- | ----------------------------- |
+| API     | http://localhost:5292/api/v1  |
 | Swagger | http://localhost:5292/swagger |
 
 Остановить: `docker compose down`. Остановить и удалить данные: `docker compose down -v`.
+
+**ЗАМЕЧАНИЕ**
+
+Для корректной работы миграций при запуске в Docker распакуйте, пожалуйста, архив **EFBUNDE.TAR.GZ** в корень проекта (рядом с Dockerfile)
 
 ---
 
@@ -108,11 +115,11 @@ API: http://localhost:5292, Swagger: http://localhost:5292/swagger
 
 ## Тестовые пользователи
 
-| Роль | Логин | Пароль |
-|---|---|---|
-| Admin | `admin` | `Admin123` (значения из `ADMIN_USERNAME` / `ADMIN_PASSWORD`) |
-| Teacher | `teacher` | `Teacher123` |
-| Student | `student` | `Student123` |
+| Роль    | Логин     | Пароль                                                       |
+| ------- | --------- | ------------------------------------------------------------ |
+| Admin   | `admin`   | `Admin123` (значения из `ADMIN_USERNAME` / `ADMIN_PASSWORD`) |
+| Teacher | `teacher` | `Teacher123`                                                 |
+| Student | `student` | `Student123`                                                 |
 
 - Администратор создаётся при первом запуске, если в базе ещё нет ни одного администратора.
 - Преподаватель, студент, 4 категории и 5 черновиков курсов создаются автоматически в окружении `Development`.
