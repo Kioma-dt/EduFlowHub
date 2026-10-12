@@ -31,6 +31,7 @@ public static class ServiceCollectionExtension
         {
             options.UseNpgsql($"Host={host};Port={port};Database={db};Username={user};Password={password}");
         });
+        services.AddScoped<DbContext>(sp => sp.GetRequiredService<EducationDbContext>());
 
         services.AddScoped<ICourseCategoryRepository, CourseCategoryRepository>();
         services.AddScoped<ICourseEnrollmentRepository, CourseEnrollmentRepository>();

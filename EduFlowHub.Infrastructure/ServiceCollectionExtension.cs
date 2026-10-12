@@ -6,6 +6,7 @@ using EduFlowHub.Infrastructure.AuthenticationServices.PasswordHasher;
 using EduFlowHub.Infrastructure.FileServices.FileCheckers;
 using EduFlowHub.Infrastructure.FileServices.FileStorage.Local;
 using EduFlowHub.Infrastructure.FileServices.FileStorage.Local.Options;
+using EduFlowHub.Infrastructure.FileServices.FileStorage.Local.Requirments;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -39,6 +40,8 @@ public static class ServiceCollectionExtension
         services.AddScoped<ISupportedFileTypeChecker, SupportedFileTypeChecker>();
 
         services.AddScoped<IFileStorage, LocalFileStorage>();
+
+        services.AddScoped<IFileStorageRequirements, LocalFileStorageRequirments>();
         
         return services;
     }

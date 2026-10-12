@@ -154,12 +154,12 @@ public class LessonMaterialController
     public async Task<IActionResult> ChangeFile(
         [FromRoute] Guid courseId,
         [FromRoute] Guid lessonMaterialId,
-        [FromForm] IFormFile file,
+        [FromForm] ChangeLessonMaterialFileRequest request,
         CancellationToken cancellationToken)
     {
-        await using Stream fileStream = file.OpenReadStream();
-        string fileExtension = Path.GetExtension(file.FileName);
-        var fileLength = file.Length;
+        await using Stream fileStream = request.File.OpenReadStream();
+        string fileExtension = Path.GetExtension(request.File.FileName);
+        var fileLength = request.File.Length;
         var command = new ChangeLessonMaterialFileCommand(
             lessonMaterialId,
             courseId,
