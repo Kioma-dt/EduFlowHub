@@ -34,4 +34,8 @@ public class UserAccessPolicy
     public bool CanDelete(Domain.Entities.User user) =>
         _currentUser.CurrentUserRole == UserRole.Admin
         && _currentUser.CurrentUserId != user.Id;
+
+    public bool CanUnlock(Domain.Entities.User user) =>
+        _currentUser.CurrentUserRole == UserRole.Admin
+        && _currentUser.CurrentUserId != user.Id;
 }

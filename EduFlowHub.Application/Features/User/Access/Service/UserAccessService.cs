@@ -55,4 +55,13 @@ public class UserAccessService
             throw new AccessDeniedException("Update user");
         }
     }
+
+    public void EnsureCanUnlock(Domain.Entities.User user)
+    {
+        if (!_userAccessPolicy.CanEditDetails(user)
+           || !_userAccessPolicy.CanUnlock(user))
+        {
+            throw new AccessDeniedException("Unlock user");
+        }
+    }
 }

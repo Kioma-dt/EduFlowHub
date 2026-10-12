@@ -31,7 +31,7 @@ public class Program
         builder.Services
             .AddInfrastructure(builder.Configuration)
             .AddPersistence(builder.Configuration)
-            .AddApplication()
+            .AddApplication(builder.Configuration)
             .AddApiServices();
 
         builder.Services
