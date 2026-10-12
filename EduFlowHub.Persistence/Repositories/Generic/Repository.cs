@@ -87,7 +87,7 @@ public abstract class Repository<T>
         return await query.AnyAsync(cancellationToken);
     }
 
-    public async Task<long> CountAsync(
+    public async Task<int> CountAsync(
         Expression<Func<T, bool>>? filter = null,
         CancellationToken cancellationToken = default)
     {
