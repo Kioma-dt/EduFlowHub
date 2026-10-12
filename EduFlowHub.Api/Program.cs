@@ -50,13 +50,13 @@ public class Program
         app.UseForwardedHeaders();      
         app.UseExceptionHandler();      
         app.UseStatusCodePages();
-        
-        //! if (app.Environment.IsDevelopment())
-        //! {
+
+        if (app.Environment.IsDevelopment())
+        {
             app.UseSwagger();
             app.UseSwaggerUI();
-        //!}
-        
+        }
+
         app.UseHttpsRedirection();
         app.UseRouting();
 
