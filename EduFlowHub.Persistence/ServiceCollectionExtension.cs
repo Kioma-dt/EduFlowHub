@@ -1,17 +1,16 @@
+using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Abstractions.Persistence.Repositories;
-using EduFlowHub.Application.Abstractions.Persistence.Repositories.Generic;
 using EduFlowHub.Persistence.DbContexts;
 using EduFlowHub.Persistence.Options;
 using EduFlowHub.Persistence.Repositories;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace EduFlowHub.Persistence;
 
 public static class ServiceCollectionExtension
 {
-    public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddOptions<PostgresConnectionStringOptions>()
             .Bind(configuration.GetSection(PostgresConnectionStringOptions.SectionName))
@@ -39,6 +38,7 @@ public static class ServiceCollectionExtension
         services.AddScoped<IFileMetadataRepository, FileMetadataRepository>();
         services.AddScoped<ILessonMaterialRepository, LessonMaterialRepository>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
         
         return services;
     }
