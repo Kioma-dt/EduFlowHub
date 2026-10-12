@@ -1,11 +1,12 @@
 using EduFlowHub.Application.Abstractions.Persistence;
 using EduFlowHub.Application.Features.Course.Dtos;
+using EduFlowHub.Application.Features.Dtos;
 using EduFlowHub.Application.Filters.Course;
 
 namespace EduFlowHub.Application.Features.Course.Queries.ListEnrolledPublished;
 
 public class ListEnrolledCoursesPublishedHandler
-    : IRequestHandler<ListEnrolledCoursesPublishedQuery, IEnumerable<CourseDto>>
+    : IRequestHandler<ListEnrolledCoursesPublishedQuery, PagedDto<CourseDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +22,7 @@ public class ListEnrolledCoursesPublishedHandler
         _filterBuilder = filterBuilder;
     }
     
-    public async Task<IEnumerable<CourseDto>> Handle(
+    public async Task<PagedDto<CourseDto>> Handle(
         ListEnrolledCoursesPublishedQuery request, 
         CancellationToken cancellationToken)
     {
@@ -39,13 +40,23 @@ public class ListEnrolledCoursesPublishedHandler
             filters.Add(new CourseFilter(CourseFilterType.AuthorId, request.AuthorId));
         }
         
+        var expression = _filterBuilder.BuildFilter(filters);
+        
         IEnumerable<Domain.Entities.Course> courses = await _unitOfWork
             .CourseRepository
             .GetEnrolledCoursesAsync(
                 request.StudentId, 
-                _filterBuilder.BuildFilter(filters),
+                expression,
+                null,
+                request.Page,
+                request.PageSize,
                 cancellationToken);
+
+        var items = _mapper.Map<List<CourseDto>>(courses);
+        int totalCount = await _unitOfWork
+            .CourseRepository
+            .CountAsync(expression, cancellationToken);
         
-        return _mapper.Map<List<CourseDto>>(courses);
+        return new PagedDto<CourseDto>(items, request.Page, request.PageSize, totalCount);
     }
 }

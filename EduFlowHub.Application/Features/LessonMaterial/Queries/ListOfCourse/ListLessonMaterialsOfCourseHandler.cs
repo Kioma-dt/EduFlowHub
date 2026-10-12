@@ -1,11 +1,12 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.Dtos;
 using EduFlowHub.Application.Features.LessonMaterial.Access.Service;
 using EduFlowHub.Application.Features.LessonMaterial.Dtos;
 
 namespace EduFlowHub.Application.Features.LessonMaterial.Queries.ListOfCourse;
 
 public class ListLessonMaterialsOfCourseHandler
-    : IRequestHandler<ListLessonMaterialsOfCourseQuery, IEnumerable<LessonMaterialDto>>
+    : IRequestHandler<ListLessonMaterialsOfCourseQuery, PagedDto<LessonMaterialDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -21,7 +22,7 @@ public class ListLessonMaterialsOfCourseHandler
         _lessonMaterialAccessService = lessonMaterialAccessService;
     }
 
-    public async Task<IEnumerable<LessonMaterialDto>> Handle(
+    public async Task<PagedDto<LessonMaterialDto>> Handle(
         ListLessonMaterialsOfCourseQuery request,
         CancellationToken cancellationToken)
     {
@@ -40,8 +41,15 @@ public class ListLessonMaterialsOfCourseHandler
             .GetAllAsync(
                 lessonMaterial => lessonMaterial.CourseId.Equals(request.CourseId),
                 orderBy,
+                request.Page,
+                request.PageSize,
                 cancellationToken);
         
-        return _mapper.Map<IEnumerable<LessonMaterialDto>>(lessonMaterials);
+        var items = _mapper.Map<IEnumerable<LessonMaterialDto>>(lessonMaterials);
+        int totalCount =  await _unitOfWork
+            .LessonMaterialRepository
+            .CountAsync(lessonMaterial => lessonMaterial.CourseId.Equals(request.CourseId), cancellationToken);
+        
+        return new PagedDto<LessonMaterialDto>(items, request.Page, request.PageSize, totalCount);
     }
 }

@@ -20,7 +20,7 @@ public interface IRepository<T>
         params Expression<Func<T, object>>[] includes);
 
     public Task<bool> ExistsAsync(Expression<Func<T, bool>>? filter = null, CancellationToken cancellationToken = default);
-    public Task<long> CountAsync(Expression<Func<T, bool>>? filter = null, CancellationToken cancellationToken = default);
+    public Task<int> CountAsync(Expression<Func<T, bool>>? filter = null, CancellationToken cancellationToken = default);
     
     public Task InsertAsync(T entity, CancellationToken cancellationToken = default);
     public Task UpdateAsync(T entity, CancellationToken cancellationToken = default);
