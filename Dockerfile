@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /source
 
-COPY *.slnx Directory.Build.props* Directory.Packages.props* nuget.config* ./
+COPY *.sln .
 COPY EduFlowHub.Api/*.csproj ./EduFlowHub.Api/
 COPY EduFlowHub.Application/*.csproj ./EduFlowHub.Application/
 COPY EduFlowHub.Infrastructure/*.csproj ./EduFlowHub.Infrastructure/
