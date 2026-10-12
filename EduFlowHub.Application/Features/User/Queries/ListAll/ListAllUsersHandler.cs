@@ -1,10 +1,11 @@
 using EduFlowHub.Application.Abstractions.Persistence;
+using EduFlowHub.Application.Features.Dtos;
 using EduFlowHub.Application.Features.User.Dtos;
 
 namespace EduFlowHub.Application.Features.User.Queries.ListAll;
 
 public class ListAllUsersHandler
-    : IRequestHandler<ListAllUsersQuery, IEnumerable<UserDto>>
+    : IRequestHandler<ListAllUsersQuery, PagedDto<UserDto>>
 {
     private readonly IMapper _mapper;
     private readonly IUnitOfWork _unitOfWork;
@@ -18,14 +19,19 @@ public class ListAllUsersHandler
     }
 
 
-    public async Task<IEnumerable<UserDto>> Handle(
+    public async Task<PagedDto<UserDto>> Handle(
         ListAllUsersQuery request,
         CancellationToken cancellationToken)
     {
         IEnumerable<Domain.Entities.User> users = await _unitOfWork
             .UserRepository
-            .GetAllAsync(null, null, cancellationToken);
+            .GetAllAsync(null, null, request.Page, request.PageSize,cancellationToken);
 
-        return _mapper.Map<IEnumerable<UserDto>>(users);
+        var items = _mapper.Map<IEnumerable<UserDto>>(users);
+        int totalCount = await _unitOfWork
+            .UserRepository
+            .CountAsync(null, cancellationToken);
+        
+        return new PagedDto<UserDto>(items, request.Page, request.PageSize, totalCount);
     }
 }
