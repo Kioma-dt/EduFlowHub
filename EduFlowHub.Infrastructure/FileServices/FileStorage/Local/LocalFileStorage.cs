@@ -52,7 +52,7 @@ public class LocalFileStorage
         if (!FileExtensionRegex.IsMatch(fileExtension)
             || !_supportedExtensions.Contains(fileExtension.ToLowerInvariant()))
         {
-            throw new UnsupportedFileTypeException(fileExtension);
+            throw new UnsupportedFileFormatStorageException(fileExtension);
         }
         
         var filePath = $"{Guid.NewGuid():N}{fileExtension.ToLowerInvariant()}";

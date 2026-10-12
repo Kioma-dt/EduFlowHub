@@ -1,7 +1,7 @@
-namespace EduFlowHub.Domain.Exceptions;
+namespace EduFlowHub.Domain.Exceptions.DomainStateException;
 
 public class CourseCanNotBePublishedException
-    : DomainWrongStatusException{
+    : DomainStateException{
     public CourseCanNotBePublishedException(string reason)
         : base($"Can not publish course: {reason}")
     {

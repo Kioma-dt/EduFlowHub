@@ -1,7 +1,7 @@
-namespace EduFlowHub.Domain.Exceptions;
+namespace EduFlowHub.Domain.Exceptions.DomainStateException;
 
 public class InvalidCourseStatusTransitionException
-    : DomainWrongStatusException
+    : DomainStateException
 {
     public InvalidCourseStatusTransitionException(
         CourseStatus current,

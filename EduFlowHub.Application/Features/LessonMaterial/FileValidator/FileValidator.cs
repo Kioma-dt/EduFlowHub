@@ -29,7 +29,7 @@ public class FileValidator
 
         if (!_supportedFileTypeChecker.IsFileTypeSupported(fileExtension))
         {
-            throw new UnsupportedFileTypeException(fileExtension);
+            throw new UnsupportedFileExtensionException(fileExtension);
         }
 
         if (fileLength > _fileStorageRequirements.MaxFileSize)

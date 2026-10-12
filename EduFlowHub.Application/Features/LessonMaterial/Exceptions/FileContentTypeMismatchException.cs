@@ -1,3 +1,5 @@
+using EduFlowHub.Application.Exceptions;
+
 namespace EduFlowHub.Application.Features.LessonMaterial.Exceptions;
 
 public class FileContentTypeMismatchException
